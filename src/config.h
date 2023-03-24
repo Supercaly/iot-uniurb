@@ -18,6 +18,10 @@
 #define LOGGER_SERIAL Serial
 // Serial Baud Rate.
 #define BAUD_RATE 115200
+// Serial for the MHZ19 sensor.
+#define MHZ19_SERIAL Serial2
+// Serial Baud Rate for the MHZ19 sensor.
+#define MHZ19_BAUD_RATE 9600
 
 // WiFi Settings
 #define WIFI_SSID "SSID"
@@ -39,5 +43,8 @@ static_assert(SENSOR_AVG_WINDOW > 2, "SENSOR_AVG_WINDOW must be > 2");
 #define SIGNAL_LED_PIN 4
 // PIN of the DHT11 sensor.
 #define DHT11_PIN 15
+// PINs of the MHZ19 sensor.
+#define MHZ19_RX 16
+#define MHZ19_TX 17
 
 #endif  // CONFIG_H

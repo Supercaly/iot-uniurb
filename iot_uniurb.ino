@@ -2,6 +2,7 @@
 #include "src/network/wifi.h"
 #include "src/sensor/DHT11_sensor.h"
 #include "src/sensor/SGP30_sensor.h"
+#include "src/sensor/MHZ19_sensor.h"
 
 void setup() {
   Log.init(BAUD_RATE);
@@ -22,12 +23,16 @@ void setup() {
   if (!SGP30_init()) {
     Log.errorln("something went wrong initializing SGP30");
   }
+  if (!MHZ19_init()) {
+    Log.errorln("something went wrong initializing MHZ19");
+  }
 }
 
 void loop() {
   // Read the available sensors
   DHT11_read();
   SGP30_read();
+  MHZ19_read();
 
   // Wait for some time before reading the sensors again
   delay(SENSOR_READING_DELAY_MS);
