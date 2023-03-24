@@ -47,4 +47,16 @@ static_assert(SENSOR_AVG_WINDOW > 2, "SENSOR_AVG_WINDOW must be > 2");
 #define MHZ19_RX 16
 #define MHZ19_TX 17
 
+// InfluxDB settings.
+#define HAS_INFLUXDB
+#define INFLUXDB_URL "url"
+#define INFLUXDB_ORG "org"
+#define INFLUXDB_BUCKET "bucket"
+#define INFLUXDB_TOKEN ""
+#define INFLUXDB_POINT_NAME "point"
+
+#define HOST ""
+#define LOC ""
+#define ROOM ""
+
 #endif  // CONFIG_H
