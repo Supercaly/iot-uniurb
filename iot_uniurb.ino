@@ -3,6 +3,7 @@
 #include "src/sensor/DHT11_sensor.h"
 #include "src/sensor/SGP30_sensor.h"
 #include "src/sensor/MHZ19_sensor.h"
+#include "src/sensor/SPS30_sensor.h"
 
 void setup() {
   Log.init(BAUD_RATE);
@@ -26,6 +27,9 @@ void setup() {
   if (!MHZ19_init()) {
     Log.errorln("something went wrong initializing MHZ19");
   }
+  if (!SPS30_init()) {
+    Log.errorln("something went wrong initializing SPS30");
+  }
 }
 
 void loop() {
@@ -33,6 +37,7 @@ void loop() {
   DHT11_read();
   SGP30_read();
   MHZ19_read();
+  SPS30_read();
 
   // Wait for some time before reading the sensors again
   delay(SENSOR_READING_DELAY_MS);
