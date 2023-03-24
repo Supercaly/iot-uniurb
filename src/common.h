@@ -7,6 +7,7 @@
  */
 
 #include "config.h"
+#include "utils.h"
 #include "version.h"
 
 #include <Arduino.h>
