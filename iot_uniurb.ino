@@ -1,9 +1,10 @@
-void setup() {
-  // put your setup code here, to run once:
+#include "common.h"
 
+void setup() {
+  LOGGER_SERIAL.begin(BAUD_RATE);
+  LOGGER_SERIAL.println("Hello");
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  
 }
