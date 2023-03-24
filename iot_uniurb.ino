@@ -2,16 +2,16 @@
 #include "src/network/wifi.h"
 
 void setup() {
-  LOGGER_SERIAL.begin(BAUD_RATE);
+  Log.init(BAUD_RATE);
 
   // Connecto to WiFi network
   if (!wifi_connect(WIFI_SSID, WIFI_PWD, WIFI_MAX_CONN_RETRY, WIFI_RETRY_PAUSE_MS)) {
-    LOGGER_SERIAL.println("something went wrong connecting to WiFi");
+    Log.fatalln("something went wrong connecting to WiFi");
     reboot_board();
   }
 
-  LOGGER_SERIAL.println("SSID:               " + String(WIFI_SSID));
-  LOGGER_SERIAL.println("Device IP:          " + wifi_get_ip().toString());
+  Log.infoln("SSID:               " + String(WIFI_SSID));
+  Log.infoln("Device IP:          " + wifi_get_ip());
 }
 
 void loop() {

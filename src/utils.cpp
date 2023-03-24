@@ -1,8 +1,8 @@
 #include "utils.h"
-#include "config.h"
+#include "log.h"
 
 void reboot_board() {
-  LOGGER_SERIAL.println("rebooting the board...");
+  Log.infoln("rebooting the board...");
   delay(BOARD_REBOOT_DELAY_MS);
   ESP.restart();
 }
