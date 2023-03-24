@@ -7,6 +7,7 @@ void setup() {
   // Connecto to WiFi network
   if (!wifi_connect(WIFI_SSID, WIFI_PWD, WIFI_MAX_CONN_RETRY, WIFI_RETRY_PAUSE_MS)) {
     LOGGER_SERIAL.println("something went wrong connecting to WiFi");
+    reboot_board();
   }
 
   LOGGER_SERIAL.println("SSID:               " + String(WIFI_SSID));

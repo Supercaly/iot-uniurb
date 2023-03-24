@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 
+// Delay in milliseconds before the board reboots.
+#define BOARD_REBOOT_DELAY_MS 1000
+
 /*
  * Macro to turn on a LED.
  */
@@ -20,5 +23,15 @@
     pinMode(led, OUTPUT); \
     digitalWrite(led, LOW); \
   } while (0)
+
+/*
+ * Perform a full reboot on this board causing
+ * the setup method to be called again.
+ *
+ * This method is intended to be called in case something
+ * crucial is going bad and can cause a state of boot-loop if
+ * not done correctly.
+ */
+void reboot_board();
 
 #endif  // UTILS_H
