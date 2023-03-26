@@ -9,11 +9,18 @@
 #include "src/sensor/SPS30_sensor.h"
 
 void setup() {
+  // Init logger
   Log.init(BAUD_RATE);
 
-  Log.infoln("Device Host Name:   " HOST);
-  Log.infoln("Device Location:    " LOG);
-  Log.infoln("Device Room:        " ROOM);
+  // Init preferences
+  if (!preferences_init()) {
+    Log.errorln("something went wrong initializing board preferences");
+  }
+
+  Log.infoln("Available Sensors:   " + available_sensors_to_String());
+  Log.infoln("Device Host Name:   '" + get_board_host_name() + "'");
+  Log.infoln("Device Location:    '" + get_board_location() + "'");
+  Log.infoln("Device Room:        '" + get_board_room() + "'");
 
   // Connecto to WiFi network
   if (!wifi_connect(WIFI_SSID, WIFI_PWD, WIFI_MAX_CONN_RETRY, WIFI_RETRY_PAUSE_MS)) {
@@ -21,14 +28,14 @@ void setup() {
     reboot_board();
   }
 
-  Log.infoln("SSID:               " + String(WIFI_SSID));
-  Log.infoln("Device IP:          " + wifi_get_ip());
+  Log.infoln("SSID:               '" + String(WIFI_SSID) + "'");
+  Log.infoln("Device IP:          '" + wifi_get_ip() + "'");
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB
-  Log.infoln("InfluxDB url:       " INFLUXDB_URL);
-  Log.infoln("InfluxDB org:       " INFLUXDB_ORG);
-  Log.infoln("InfluxDB bucket:    " INFLUXDB_BUCKET);
+  Log.infoln("InfluxDB url:       '" INFLUXDB_URL "'");
+  Log.infoln("InfluxDB org:       '" INFLUXDB_ORG "'");
+  Log.infoln("InfluxDB bucket:    '" INFLUXDB_BUCKET "'");
 
   if (!influxdb_init()) {
     Log.fatalln("something went wrong initializing InfluxDB");
@@ -37,26 +44,42 @@ void setup() {
 #endif  // HAS_INFLUXDB
 
   // Init available sensors
-  if (!DHT11_init()) {
-    Log.errorln("something went wrong initializing DHT11");
+  if (has_sensor(SensorType::SENSOR_DHT11)) {
+    if (!DHT11_init()) {
+      Log.errorln("something went wrong initializing DHT11");
+    }
   }
-  if (!SGP30_init()) {
-    Log.errorln("something went wrong initializing SGP30");
+  if (has_sensor(SensorType::SENSOR_SGP30)) {
+    if (!SGP30_init()) {
+      Log.errorln("something went wrong initializing SGP30");
+    }
   }
-  if (!MHZ19_init()) {
-    Log.errorln("something went wrong initializing MHZ19");
+  if (has_sensor(SensorType::SENSOR_MHZ19)) {
+    if (!MHZ19_init()) {
+      Log.errorln("something went wrong initializing MHZ19");
+    }
   }
-  if (!SPS30_init()) {
-    Log.errorln("something went wrong initializing SPS30");
+  if (has_sensor(SensorType::SENSOR_SPS30)) {
+    if (!SPS30_init()) {
+      Log.errorln("something went wrong initializing SPS30");
+    }
   }
 }
 
 void loop() {
   // Read the available sensors
-  DHT11_read();
-  SGP30_read();
-  MHZ19_read();
-  SPS30_read();
+  if (has_sensor(SensorType::SENSOR_DHT11)) {
+    DHT11_read();
+  }
+  if (has_sensor(SensorType::SENSOR_SGP30)) {
+    SGP30_read();
+  }
+  if (has_sensor(SensorType::SENSOR_MHZ19)) {
+    MHZ19_read();
+  }
+  if (has_sensor(SensorType::SENSOR_SPS30)) {
+    SPS30_read();
+  }
 
 #ifdef HAS_INFLUXDB
   // Send sensor values to InfluxDB

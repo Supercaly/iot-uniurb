@@ -9,6 +9,7 @@
 #include "config.h"
 #include "utils.h"
 #include "log.h"
+#include "board_preferences.h"
 #include "version.h"
 
 #include <Arduino.h>
