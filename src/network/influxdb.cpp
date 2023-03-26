@@ -23,14 +23,13 @@ bool influxdb_init() {
                                       INFLUXDB_TOKEN,
                                       InfluxDbCloud2CACert);
 
-  influxdb_point.addTag("host", HOST);
-  influxdb_point.addTag("location", LOC);
-  influxdb_point.addTag("room", ROOM);
+  influxdb_point.addTag("host", get_board_host_name());
+  influxdb_point.addTag("location", get_board_location());
+  influxdb_point.addTag("room", get_board_room());
 
-  Log.traceln("influxdb_init: added tags: "
-              "host '" HOST "'"
-              " location '" LOC "'"
-              " room '" ROOM "'");
+  Log.traceln("influxdb_init: added tags: host '" + get_board_host_name()
+              + "' location '" + get_board_location()
+              + "' room '" + get_board_room() + "'");
 
   if (!influxdb_client.validateConnection()) {
     Log.errorln("InfluxDB: connection error: " + influxdb_client.getLastErrorMessage());
