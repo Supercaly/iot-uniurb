@@ -28,4 +28,9 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause);
  */
 String wifi_get_ip();
 
+/*
+ * Returns the board's MAC address as String.
+ */
+String wifi_get_mac_address();
+
 #endif  // WIFI_H

@@ -18,7 +18,6 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   // Enable WiFi
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pwd);
-  Log.debugln("WiFi: board MAC Address '" + WiFi.macAddress() + "'");
   Log.debug("WiFi: connecing to WiFi");
 
   // Test the connection for some times
@@ -46,4 +45,8 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
 
 String wifi_get_ip() {
   return WiFi.localIP().toString();
+}
+
+String wifi_get_mac_address() {
+  return WiFi.macAddress();
 }
