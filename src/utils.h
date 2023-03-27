@@ -3,9 +3,6 @@
 
 #include <Arduino.h>
 
-// Delay in milliseconds before the board reboots.
-#define BOARD_REBOOT_DELAY_MS 1000
-
 /*
  * Macro to turn on a LED.
  */
