@@ -29,8 +29,8 @@ static bool read_board_preferences() {
   addr += sizeof(uint32_t);
   Log.debugln("read_board_preferences: header magic number: 0x" + String(magic, HEX));
   if (magic != PREFERENCES_HEADER_MAGIC) {
-    Log.errorln("read_board_preferences: cannot find matching preferences header "
-                "expecting header magic: 0x"
+    Log.errorln("read_board_preferences: error reading preferences; "
+                "expecting header magic number: 0x"
                 + String(PREFERENCES_HEADER_MAGIC, HEX)
                 + " but got: 0x" + String(magic, HEX));
     return false;
