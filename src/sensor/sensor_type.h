@@ -25,4 +25,9 @@ static_assert(COUNT_SENSORS == 4, "The number of Sensor Types have changed. "
  */
 String SensorType_to_String(SensorType t);
 
+/*
+ * Returns a SensorType form his name String.
+ */
+bool SensorType_by_name(String s, SensorType *t);
+
 #endif  // SENSOR_TYPE_H

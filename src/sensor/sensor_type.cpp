@@ -15,3 +15,21 @@ String SensorType_to_String(SensorType t) {
       exit(1);
   }
 }
+
+bool SensorType_by_name(String s, SensorType *t) {
+  if (s == "DHT11") {
+    *t = SensorType::SENSOR_DHT11;
+    return true;
+  } else if (s == "SGP30") {
+    *t = SensorType::SENSOR_SGP30;
+    return true;
+  } else if (s == "SPS30") {
+    *t = SensorType::SENSOR_SPS30;
+    return true;
+  } else if (s == "MHZ19") {
+    *t = SensorType::SENSOR_MHZ19;
+    return true;
+  } else {
+    return false;
+  }
+}
