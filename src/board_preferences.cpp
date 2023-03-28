@@ -4,8 +4,8 @@
 #include <assert.h>
 #include <EEPROM.h>
 
-#define _PREF_HAS_SENSOR_BIT(idx) (available_sensors_bytes >> (uint16_t)idx) & (uint16_t)0x01
-#define _PREF_SET_SENSOR_BIT(idx) available_sensors_bytes |= (uint16_t)0x01 << (uint16_t)idx
+#define _PREF_HAS_SENSOR_BIT(idx) (((available_sensors_bytes >> (uint16_t)idx)) & (uint16_t)0x01)
+#define _PREF_SET_SENSOR_BIT(idx) available_sensors_bytes |= ((uint16_t)0x01 << (uint16_t)idx)
 #define _PREF_UNSET_SENSOR_BIT(idx) available_sensors_bytes &= ~((uint16_t)0x01 << (uint16_t)idx)
 
 /*
