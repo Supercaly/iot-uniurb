@@ -1,7 +1,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "config.h"
+
 #include <Arduino.h>
+
+// Constant used to reboot the device without waiting.
+#define BOARD_REBOOT_DELAY_NOW 0
 
 /*
  * Macro to turn on a LED.
@@ -29,6 +34,6 @@
  * crucial is going bad and can cause a state of boot-loop if
  * not done correctly.
  */
-void reboot_board();
+void reboot_board(int wait_ms = BOARD_REBOOT_DELAY_MS);
 
 #endif  // UTILS_H
