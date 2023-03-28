@@ -3,6 +3,9 @@
 #ifdef HAS_INFLUXDB
 #include "src/network/influxdb.h"
 #endif  // HAS_INFLUXDB
+#ifdef HAS_TELNET
+#include "src/network/telnet.h"
+#endif  // HAS_TELNET
 #include "src/sensor/DHT11_sensor.h"
 #include "src/sensor/SGP30_sensor.h"
 #include "src/sensor/MHZ19_sensor.h"
@@ -30,6 +33,14 @@ void setup() {
     reboot_board();
   }
   Log.infoln("Device IP:          '" + wifi_get_ip() + "'");
+
+#ifdef HAS_TELNET
+  // Init telnet
+  if (!telnet_init()) {
+    Log.errorln("something went wrong initializing Telnet");
+  }
+  telnet_run_on_core(0);
+#endif  // HAS_TELNET
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB

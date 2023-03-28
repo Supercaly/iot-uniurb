@@ -62,5 +62,7 @@ static_assert(SENSOR_AVG_WINDOW > 2, "SENSOR_AVG_WINDOW must be > 2");
 #define INFLUXDB_TOKEN ""
 #define INFLUXDB_POINT_NAME "point"
 
+// Telnet settings.
+#define HAS_TELNET
 
 #endif  // CONFIG_H
