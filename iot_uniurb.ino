@@ -56,22 +56,22 @@ void setup() {
 
   // Init available sensors
   if (has_sensor(SensorType::SENSOR_DHT11)) {
-    if (!DHT11_init()) {
+    if (!DHT11Sensor.init()) {
       Log.errorln("something went wrong initializing DHT11");
     }
   }
   if (has_sensor(SensorType::SENSOR_SGP30)) {
-    if (!SGP30_init()) {
+    if (!SGP30Sensor.init()) {
       Log.errorln("something went wrong initializing SGP30");
     }
   }
   if (has_sensor(SensorType::SENSOR_MHZ19)) {
-    if (!MHZ19_init()) {
+    if (!MHZ19Sensor.init()) {
       Log.errorln("something went wrong initializing MHZ19");
     }
   }
   if (has_sensor(SensorType::SENSOR_SPS30)) {
-    if (!SPS30_init()) {
+    if (!SPS30Sensor.init()) {
       Log.errorln("something went wrong initializing SPS30");
     }
   }
@@ -80,16 +80,24 @@ void setup() {
 void loop() {
   // Read the available sensors
   if (has_sensor(SensorType::SENSOR_DHT11)) {
-    DHT11_read();
+    if (!DHT11Sensor.measure()) {
+      Log.errorln("something went wrong measuring DHT11");
+    }
   }
   if (has_sensor(SensorType::SENSOR_SGP30)) {
-    SGP30_read();
+    if (!SGP30Sensor.measure()) {
+      Log.errorln("something went wrong measuring SGP30");
+    }
   }
   if (has_sensor(SensorType::SENSOR_MHZ19)) {
-    MHZ19_read();
+    if (!MHZ19Sensor.measure()) {
+      Log.errorln("something went wrong measuring MHZ19");
+    }
   }
   if (has_sensor(SensorType::SENSOR_SPS30)) {
-    SPS30_read();
+    if (!SPS30Sensor.measure()) {
+      Log.errorln("something went wrong measuring SPS30");
+    }
   }
 
 #ifdef HAS_INFLUXDB

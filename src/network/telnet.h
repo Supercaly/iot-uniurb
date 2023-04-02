@@ -9,6 +9,14 @@
 #define TELNET_TASK_PRIORITY 0
 #define TELNET_LOOP_DELAY_MS 200
 
+// Error message for sensors command unknown.
+#define SENSORS_CMD_ERROR_STR(cmd) "expecting a sensor name after " cmd " command. " \
+                                   "If you wanto to list all available sensors use the " \
+                                   "sensors command instead or use help to view all commands."
+
+// Macro for computing the size of an array.
+#define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
+
 /*
  * Init Telnet server.
  */
