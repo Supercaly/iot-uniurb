@@ -1,7 +1,7 @@
 #ifndef SGP30_SENSOR_H
 #define SGP30_SENSOR_H
 
-#include "AbstractSensor.h"
+#include "abstract_sensor.h"
 
 #include <Adafruit_SGP30.h>
 

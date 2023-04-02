@@ -5,7 +5,7 @@
  * Class representing an abstract sensor that
  * is implemented by a real sensor.
  *
- * This class offers interfaces to initialize the 
+ * This class offers interfaces to initialize the
  * sensor and measure his data.
  */
 class AbstractSensor {

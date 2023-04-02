@@ -1,7 +1,7 @@
 #ifndef DHT11_SENSOR_H
 #define DHT11_SENSOR_H
 
-#include "AbstractSensor.h"
+#include "abstract_sensor.h"
 
 #include <DHT.h>
 

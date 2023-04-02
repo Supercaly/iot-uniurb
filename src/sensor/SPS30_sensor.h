@@ -1,7 +1,7 @@
 #ifndef SPS30_SENSOR_H
 #define SPS30_SENSOR_H
 
-#include "AbstractSensor.h"
+#include "abstract_sensor.h"
 
 #include <sps30.h>
 

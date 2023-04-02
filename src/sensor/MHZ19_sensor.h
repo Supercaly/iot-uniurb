@@ -1,7 +1,7 @@
 #ifndef MHZ19_SENSOR_H
 #define MHZ19_SENSOR_H
 
-#include "AbstractSensor.h"
+#include "abstract_sensor.h"
 
 #include <MHZCO2.h>
 
