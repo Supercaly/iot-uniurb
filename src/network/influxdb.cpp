@@ -8,8 +8,8 @@
 #include <InfluxDbClient.h>
 #include <InfluxDbCloud.h>
 
-InfluxDBClient influxdb_client;
-Point influxdb_point(INFLUXDB_POINT_NAME);
+static InfluxDBClient influxdb_client;
+static Point influxdb_point(INFLUXDB_POINT_NAME);
 
 bool influxdb_init() {
   Log.debugln("influxdb_init: init influxDB with following parameters: "

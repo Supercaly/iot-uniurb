@@ -15,8 +15,8 @@
  * of a particular sensor (the index depends on the SensorType enum order)
  * and if the bit is set it means that the sensor is present.
  */
-uint16_t available_sensors_bytes = 0;
-String board_host_name,
+static uint16_t available_sensors_bytes = 0;
+static String board_host_name,
   board_location,
   board_room;
 

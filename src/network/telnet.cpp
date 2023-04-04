@@ -24,8 +24,8 @@ struct Cmd {
   String help;
 };
 
-ESPTelnet telnet;
-TaskHandle_t telnet_task;
+static ESPTelnet telnet;
+static TaskHandle_t telnet_task;
 
 static void cmd_info(String);
 static void cmd_sensors_list(String);
