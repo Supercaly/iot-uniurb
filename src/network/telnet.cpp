@@ -7,8 +7,7 @@
 
 #include "ESPTelnet.h"
 
-static String
-string_divide_by(String *s, char delim) {
+static String string_divide_by(String *s, char delim) {
   size_t i = 0;
   while (i < s->length() && (*s)[i] != delim) {
     i++;

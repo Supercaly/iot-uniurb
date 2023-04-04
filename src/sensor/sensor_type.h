@@ -16,9 +16,10 @@ enum SensorType {
 
   COUNT_SENSORS
 };
-static_assert(COUNT_SENSORS == 4, "The number of Sensor Types have changed. "
-                                  "You probably have added or removed a sensor. "
-                                  "Please update the definitions above accordingly");
+static_assert(COUNT_SENSORS == 4,
+              "The number of Sensor Types have changed. "
+              "You probably have added or removed a sensor. "
+              "Please update the definitions above accordingly");
 
 /*
  * Returns a String representation of given SensorType.

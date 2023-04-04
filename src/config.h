@@ -1,6 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "../arduino_secrets.h"
 #include <assert.h>
 
 /*
@@ -22,8 +23,8 @@
 #define BAUD_RATE 115200
 
 // WiFi Settings
-#define WIFI_SSID "SSID"
-#define WIFI_PWD "pwd"
+#define WIFI_SSID SECRET_WIFI_SSID
+#define WIFI_PWD SECRET_WIFI_PWD
 
 // Delay in milliseconds after each sensor reading loop.
 #define SENSOR_READING_DELAY_MS 1000 * 60 * 5
@@ -56,11 +57,11 @@ static_assert(SENSOR_AVG_WINDOW > 2, "SENSOR_AVG_WINDOW must be > 2");
 
 // InfluxDB settings.
 #define HAS_INFLUXDB
-#define INFLUXDB_URL "url"
-#define INFLUXDB_ORG "org"
-#define INFLUXDB_BUCKET "bucket"
-#define INFLUXDB_TOKEN ""
-#define INFLUXDB_POINT_NAME "point"
+#define INFLUXDB_URL SECRET_INFLUXDB_URL
+#define INFLUXDB_ORG SECRET_INFLUXDB_ORG
+#define INFLUXDB_BUCKET SECRET_INFLUXDB_BUCKET
+#define INFLUXDB_TOKEN SECRET_INFLUXDB_TOKEN
+#define INFLUXDB_POINT_NAME SECRET_INFLUXDB_POINT_NAME
 
 // Telnet settings.
 #define HAS_TELNET
