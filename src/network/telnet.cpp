@@ -7,12 +7,6 @@
 
 #include "ESPTelnet.h"
 
-#define SENSORS_CMD_ERROR_STR(cmd) "expecting a sensor name after " cmd " command. " \
-                                   "If you wanto to list all available sensors use the " \
-                                   "sensors command instead or use help to view all commands."
-
-#define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
-
 static String
 string_divide_by(String *s, char delim) {
   size_t i = 0;
@@ -64,30 +58,26 @@ static const Cmd commands[] = {
 
 static void cmd_info(String _) {
   telnet.println("Values from available sensors:");
+  // TODO: Remove all this sensor-checking code inside telnet.
   if (has_sensor(SensorType::SENSOR_DHT11)) {
-    telnet.println("DHT11 Temperature: " + String(DHT11_get_temperature()));
-    telnet.println("DHT11 Humidity: " + String(DHT11_get_humidity()));
+    telnet.println("DHT11 Temperature: " + String(DHT11Sensor.get_temperature()));
+    telnet.println("DHT11 Humidity: " + String(DHT11Sensor.get_humidity()));
   }
   if (has_sensor(SensorType::SENSOR_SGP30)) {
-    telnet.println("SGP30 TVOC: " + String(SGP30_get_TVOC()));
-    telnet.println("SGP30 eCO2: " + String(SGP30_get_eCO2()));
-    telnet.println("SGP30 raw H2: " + String(SGP30_get_raw_H2()));
-    telnet.println("SGP30 raw Ethanol: " + String(SGP30_get_raw_ethanol()));
+    telnet.println("SGP30 TVOC: " + String(SGP30Sensor.get_TVOC()));
+    telnet.println("SGP30 eCO2: " + String(SGP30Sensor.get_eCO2()));
   }
   if (has_sensor(SensorType::SENSOR_SPS30)) {
     Log.traceln("influxdb_write_sensors: sending SPS30 values");
-    telnet.println("SPS30 MC 1.0: " + String(SPS30_get_mc1p0()));
-    telnet.println("SPS30 MC 2.5: " + String(SPS30_get_mc2p5()));
-    telnet.println("SPS30 MC 4.0: " + String(SPS30_get_mc4p0()));
-    telnet.println("SPS30 MC 10.0: " + String(SPS30_get_mc10p0()));
-    telnet.println("SPS30 Particle Size: " + String(SPS30_get_particle_size()));
+    telnet.println("SPS30 MC 1.0: " + String(SPS30Sensor.get_mc_1p0()));
+    telnet.println("SPS30 MC 2.5: " + String(SPS30Sensor.get_mc_2p5()));
+    telnet.println("SPS30 MC 4.0: " + String(SPS30Sensor.get_mc_4p0()));
+    telnet.println("SPS30 MC 10.0: " + String(SPS30Sensor.get_mc_10p0()));
+    telnet.println("SPS30 Particle Size: " + String(SPS30Sensor.get_particle_size()));
   }
   if (has_sensor(SensorType::SENSOR_MHZ19)) {
     Log.traceln("influxdb_write_sensors: sending MHZ19 values");
-    telnet.println("MHZ19 CO2: " + String(MHZ19_get_co2()));
-    telnet.println("MHZ19 min CO2: " + String(MHZ19_get_minCo2()));
-    telnet.println("MHZ19 Temperature: " + String(MHZ19_get_temperature()));
-    telnet.println("MHZ19 Accuracy: " + String(MHZ19_get_accuracy()));
+    telnet.println("MHZ19 CO2: " + String(MHZ19Sensor.get_co2()));
   }
 }
 
@@ -200,11 +190,11 @@ static void cmd_help(String cmd) {
   telnet.println("");
   telnet.println("commands:");
 
-  for (int i = 0; i < ARRAY_SIZE(commands); i++) {
+  for (int i = 0; i < size_of_array(commands); i++) {
     telnet.print("  " + commands[i].name);
     String spaces;
     for (int s = 0; s < (20 - commands[i].name.length()); s++) {
-      spaces += ' ';      
+      spaces += ' ';
     }
     telnet.print(spaces);
     telnet.println(commands[i].help);
@@ -241,7 +231,7 @@ static void telnet_on_input_received_cb(String input) {
   }
 
   cmd = string_divide_by(&input, ' ');
-  for (int i = 0; i < ARRAY_SIZE(commands); i++) {
+  for (int i = 0; i < size_of_array(commands); i++) {
     if (cmd == commands[i].name) {
       commands[i].run(input);
       goto telnet_parse_input_defer;

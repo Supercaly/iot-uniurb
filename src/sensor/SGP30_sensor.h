@@ -1,45 +1,49 @@
 #ifndef SGP30_SENSOR_H
 #define SGP30_SENSOR_H
 
+#include "abstract_sensor.h"
+
+#include <Adafruit_SGP30.h>
+
 // Delay in milliseconds for the init process.
 #define SGP30_INIT_DELAY_MS 300
+// Delay in milliseconds before measuring the sensor.
+#define SGP30_MEASURE_DELAY_MS 1000
+
+class SGP30_Sensor : public AbstractSensor {
+public:
+  bool init() override;
+  bool measure() override;
+
+  /*
+   * Return the last measured Total Volatile Organic
+   * Compounds in ppb.
+   */
+  int get_TVOC() const {
+    return _tvoc;
+  }
+
+  /*
+   * Return the last measured equivalent CO2 in ppm.
+   */
+  int get_eCO2() const {
+    return _eco2;
+  }
+
+private:
+  /*
+   * Return the absolute humidity from given temperature and humidity.
+   */
+  static uint32_t get_absolute_humidity(float temperature, float humidity);
+
+  Adafruit_SGP30 _sgp;
+  uint16_t _tvoc = 0.0;
+  uint16_t _eco2 = 0.0;
+};
 
 /*
- * Init the SGP30 sensor.
+ * Global instance of SGP30_Sensor
  */
-bool SGP30_init();
-
-/*
- * Read data from the SGP30 sensor.
- *
- * After calling this method the data will be
- * available using the getters:
- * - `SGP30_get_TVOC`
- * - `SGP30_get_eCO2`
- * - `SGP30_get_raw_H2`
- * - `SGP30_get_raw_ethanol`
- */
-void SGP30_read();
-
-/*
- * Return the last measured Total Volatile
- * Organic Compounds in ppb.
- */
-int SGP30_get_TVOC();
-
-/*
- * Return the last measured equivalent CO2 in ppm.
- */
-int SGP30_get_eCO2();
-
-/*
- * Return the last measured raw H2.
- */
-int SGP30_get_raw_H2();
-
-/*
- * Return the last measured raw Ethanol.
- */
-int SGP30_get_raw_ethanol();
+extern SGP30_Sensor SGP30Sensor;
 
 #endif  // SGP30_SENSOR_H

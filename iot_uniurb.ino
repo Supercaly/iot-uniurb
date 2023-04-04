@@ -6,10 +6,7 @@
 #ifdef HAS_TELNET
 #include "src/network/telnet.h"
 #endif  // HAS_TELNET
-#include "src/sensor/DHT11_sensor.h"
-#include "src/sensor/SGP30_sensor.h"
-#include "src/sensor/MHZ19_sensor.h"
-#include "src/sensor/SPS30_sensor.h"
+#include "src/sensor/sensor_helper.h"
 
 void setup() {
   // Init logger
@@ -55,42 +52,12 @@ void setup() {
 #endif  // HAS_INFLUXDB
 
   // Init available sensors
-  if (has_sensor(SensorType::SENSOR_DHT11)) {
-    if (!DHT11_init()) {
-      Log.errorln("something went wrong initializing DHT11");
-    }
-  }
-  if (has_sensor(SensorType::SENSOR_SGP30)) {
-    if (!SGP30_init()) {
-      Log.errorln("something went wrong initializing SGP30");
-    }
-  }
-  if (has_sensor(SensorType::SENSOR_MHZ19)) {
-    if (!MHZ19_init()) {
-      Log.errorln("something went wrong initializing MHZ19");
-    }
-  }
-  if (has_sensor(SensorType::SENSOR_SPS30)) {
-    if (!SPS30_init()) {
-      Log.errorln("something went wrong initializing SPS30");
-    }
-  }
+  init_all_available_sensors();
 }
 
 void loop() {
   // Read the available sensors
-  if (has_sensor(SensorType::SENSOR_DHT11)) {
-    DHT11_read();
-  }
-  if (has_sensor(SensorType::SENSOR_SGP30)) {
-    SGP30_read();
-  }
-  if (has_sensor(SensorType::SENSOR_MHZ19)) {
-    MHZ19_read();
-  }
-  if (has_sensor(SensorType::SENSOR_SPS30)) {
-    SPS30_read();
-  }
+  measure_all_available_sensors();
 
 #ifdef HAS_INFLUXDB
   // Send sensor values to InfluxDB

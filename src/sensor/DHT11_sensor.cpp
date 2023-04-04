@@ -1,20 +1,28 @@
 #include "DHT11_sensor.h"
 #include "../common.h"
 
-#include <DHT.h>
+DHT11_Sensor DHT11Sensor;
 
-DHT dht(DHT11_PIN, DHT11);
-float dht_temperature = 0.0,
-      dht_humidity = 0.0;
+DHT11_Sensor::DHT11_Sensor()
+  : _dht(DHT11_PIN, DHT11),
+    _temperature(0.0),
+    _humidity(0.0) {}
 
-bool DHT11_init() {
-  Log.traceln("DHT11_init: sensor initialized");
-  dht.begin();
+bool DHT11_Sensor::init() {
+  if (p_is_init) {
+    Log.traceln("DHT11_Sensor::init: sensor already initialized");
+    return true;
+  }
+
+  _dht.begin();
   delay(DHT11_INIT_DELAY_MS);
+  Log.traceln("DHT11_Sensor::init: sensor initialized");
+
+  p_is_init = true;
   return true;
 }
 
-void DHT11_read() {
+bool DHT11_Sensor::measure() {
   float currentT = 0.0,
         currentH = 0.0,
         maxT = 0.0,
@@ -22,12 +30,17 @@ void DHT11_read() {
         maxH = 0.0,
         minH = 0.0;
 
-  Log.traceln("DHT11_read: reading sensor values");
-  dht_temperature = 0.0;
-  dht_humidity = 0.0;
+  if (!p_is_init) {
+    Log.errorln("DHT11_Sensor::measure: sensor not initialized");
+    return false;
+  }
+
+  Log.traceln("DHT11_Sensor::measure: reading sensor values");
+  _temperature = 0.0;
+  _humidity = 0.0;
   for (int i = 0; i < SENSOR_AVG_WINDOW; ++i) {
-    currentT = dht.readTemperature();
-    currentH = dht.readHumidity();
+    currentT = _dht.readTemperature();
+    currentH = _dht.readHumidity();
 
     if (currentT < minT) {
       minT = currentT;
@@ -42,28 +55,22 @@ void DHT11_read() {
       maxH = currentH;
     }
 
-    dht_temperature += currentT;
-    dht_humidity += currentH;
+    _temperature += currentT;
+    _humidity += currentH;
     delay(SENSOR_AVG_DELAY_MS);
   }
-  dht_temperature -= minT;
-  dht_temperature -= maxT;
-  dht_humidity -= minH;
-  dht_humidity -= maxH;
+  _temperature -= minT;
+  _temperature -= maxT;
+  _humidity -= minH;
+  _humidity -= maxH;
 
-  dht_temperature /= (SENSOR_AVG_WINDOW - 2);
-  dht_humidity /= (SENSOR_AVG_WINDOW - 2);
+  _temperature /= (SENSOR_AVG_WINDOW - 2);
+  _humidity /= (SENSOR_AVG_WINDOW - 2);
 
 #ifdef PRINT_SENSORS_ON_READ
-  Log.debugln("DHT11 temperature: " + String(dht_temperature));
-  Log.debugln("DHT11 humidity: " + String(dht_humidity));
+  Log.debugln("DHT11 temperature: " + String(_temperature));
+  Log.debugln("DHT11 humidity: " + String(_humidity));
 #endif  // PRINT_SENSORS_ON_READ
-}
 
-float DHT11_get_temperature() {
-  return dht_temperature;
-}
-
-float DHT11_get_humidity() {
-  return dht_humidity;
+  return true;
 }

@@ -6,17 +6,12 @@
 #define INFLUXDB_FIELD_DHT11_HUMIDITY "dht11_humidity"
 #define INFLUXDB_FIELD_SGP30_TVOC "sgp30_TVOC"
 #define INFLUXDB_FIELD_SGP30_ECO2 "sgp30_eCO2"
-#define INFLUXDB_FIELD_SGP30_RAW_H2 "sgp30_raw_H2"
-#define INFLUXDB_FIELD_SGP30_RAW_ETHANOL "sgp30_raw_ethanol"
 #define INFLUXDB_FIELD_SPS30_MC_1p0 "sps30_mc_1p0"
 #define INFLUXDB_FIELD_SPS30_MC_2p5 "sps30_mc_2p5"
 #define INFLUXDB_FIELD_SPS30_MC_4p0 "sps30_mc_4p0"
 #define INFLUXDB_FIELD_SPS30_MC_10p0 "sps30_mc_10p0"
 #define INFLUXDB_FIELD_SPS30_PARTICLE_SIZE "sps30_particle_size"
 #define INFLUXDB_FIELD_MHZ19_CO2 "mhz19_co2"
-#define INFLUXDB_FIELD_MHZ19_MIN_CO2 "mhz19_min_co2"
-#define INFLUXDB_FIELD_MHZ19_TEMPERATURE "mhz19_temperature"
-#define INFLUXDB_FIELD_MHZ19_ACCURACY "mhz19_accuracy"
 
 /*
  * Init a new connection with InfluxDB server.

@@ -9,6 +9,11 @@
 #define TELNET_TASK_PRIORITY 0
 #define TELNET_LOOP_DELAY_MS 200
 
+// Error message for sensors command unknown.
+#define SENSORS_CMD_ERROR_STR(cmd) "expecting a sensor name after " cmd " command. " \
+                                   "If you wanto to list all available sensors use the " \
+                                   "sensors command instead or use help to view all commands."
+
 /*
  * Init Telnet server.
  */

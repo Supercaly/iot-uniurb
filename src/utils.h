@@ -5,6 +5,14 @@
 
 #include <Arduino.h>
 
+/*
+ * Compute the size of an array at compile time.
+ */
+template<class A, size_t N>
+constexpr size_t size_of_array(A (&)[N]) {
+  return N;
+}
+
 // Constant used to reboot the device without waiting.
 #define BOARD_REBOOT_DELAY_NOW 0
 
