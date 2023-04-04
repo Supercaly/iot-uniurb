@@ -7,6 +7,8 @@
 
 // Delay in milliseconds for the init process.
 #define SGP30_INIT_DELAY_MS 300
+// Delay in milliseconds before measuring the sensor.
+#define SGP30_MEASURE_DELAY_MS 1000
 
 class SGP30_Sensor : public AbstractSensor {
 public:
@@ -28,20 +30,6 @@ public:
     return _eco2;
   }
 
-  /*
-   * Return the last measured raw H2.
-   */
-  int get_raw_H2() const {
-    return _raw_h2;
-  }
-
-  /*
-   * Return the last measured raw Ethanol.
-   */
-  int get_raw_ethanol() const {
-    return _raw_ethanol;
-  }
-
 private:
   /*
    * Return the absolute humidity from given temperature and humidity.
@@ -51,8 +39,6 @@ private:
   Adafruit_SGP30 _sgp;
   uint16_t _tvoc = 0.0;
   uint16_t _eco2 = 0.0;
-  uint16_t _raw_h2 = 0.0;
-  uint16_t _raw_ethanol = 0.0;
 };
 
 /*

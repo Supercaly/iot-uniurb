@@ -58,6 +58,7 @@ static const Cmd commands[] = {
 
 static void cmd_info(String _) {
   telnet.println("Values from available sensors:");
+  // TODO: Remove all this sensor-checking code inside telnet.
   if (has_sensor(SensorType::SENSOR_DHT11)) {
     telnet.println("DHT11 Temperature: " + String(DHT11Sensor.get_temperature()));
     telnet.println("DHT11 Humidity: " + String(DHT11Sensor.get_humidity()));
@@ -65,8 +66,6 @@ static void cmd_info(String _) {
   if (has_sensor(SensorType::SENSOR_SGP30)) {
     telnet.println("SGP30 TVOC: " + String(SGP30Sensor.get_TVOC()));
     telnet.println("SGP30 eCO2: " + String(SGP30Sensor.get_eCO2()));
-    telnet.println("SGP30 raw H2: " + String(SGP30Sensor.get_raw_H2()));
-    telnet.println("SGP30 raw Ethanol: " + String(SGP30Sensor.get_raw_ethanol()));
   }
   if (has_sensor(SensorType::SENSOR_SPS30)) {
     Log.traceln("influxdb_write_sensors: sending SPS30 values");

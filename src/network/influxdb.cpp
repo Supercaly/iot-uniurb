@@ -46,6 +46,7 @@ bool influxdb_write_sensors() {
   influxdb_point.clearFields();
 
   // Add available sensors
+  // TODO: Remove all this sensor-checking code inside InfluxDB.
   if (has_sensor(SensorType::SENSOR_DHT11)) {
     Log.traceln("influxdb_write_sensors: sending DHT11 values");
     influxdb_point.addField(INFLUXDB_FIELD_DHT11_TEMPERATURE, DHT11Sensor.get_temperature());
@@ -55,8 +56,6 @@ bool influxdb_write_sensors() {
     Log.traceln("influxdb_write_sensors: sending SGP30 values");
     influxdb_point.addField(INFLUXDB_FIELD_SGP30_TVOC, SGP30Sensor.get_TVOC());
     influxdb_point.addField(INFLUXDB_FIELD_SGP30_ECO2, SGP30Sensor.get_eCO2());
-    influxdb_point.addField(INFLUXDB_FIELD_SGP30_RAW_H2, SGP30Sensor.get_raw_H2());
-    influxdb_point.addField(INFLUXDB_FIELD_SGP30_RAW_ETHANOL, SGP30Sensor.get_raw_ethanol());
   }
   if (has_sensor(SensorType::SENSOR_SPS30)) {
     Log.traceln("influxdb_write_sensors: sending SPS30 values");
