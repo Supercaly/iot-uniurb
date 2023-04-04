@@ -14,9 +14,6 @@
                                    "If you wanto to list all available sensors use the " \
                                    "sensors command instead or use help to view all commands."
 
-// Macro for computing the size of an array.
-#define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
-
 /*
  * Init Telnet server.
  */

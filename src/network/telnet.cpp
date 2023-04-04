@@ -191,7 +191,7 @@ static void cmd_help(String cmd) {
   telnet.println("");
   telnet.println("commands:");
 
-  for (int i = 0; i < ARRAY_SIZE(commands); i++) {
+  for (int i = 0; i < size_of_array(commands); i++) {
     telnet.print("  " + commands[i].name);
     String spaces;
     for (int s = 0; s < (20 - commands[i].name.length()); s++) {
@@ -232,7 +232,7 @@ static void telnet_on_input_received_cb(String input) {
   }
 
   cmd = string_divide_by(&input, ' ');
-  for (int i = 0; i < ARRAY_SIZE(commands); i++) {
+  for (int i = 0; i < size_of_array(commands); i++) {
     if (cmd == commands[i].name) {
       commands[i].run(input);
       goto telnet_parse_input_defer;
