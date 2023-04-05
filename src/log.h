@@ -6,47 +6,61 @@
 #include <Arduino.h>
 
 /*
- * Enum representing the log level.
- */
-enum LogLevel {
-  TRACE,
-  DEBUG,
-  INFO,
-  ERROR,
-  FATAL,
-  SILENT
-};
-
-/*
  * Class implementing a logger.
  */
 class Logger {
 public:
+  /*
+   * Enum representing the log level.
+   */
+  enum LogLevel {
+    TRACE,
+    DEBUG,
+    INFO,
+    ERROR,
+    FATAL,
+    SILENT
+  };
+
   Logger(LogLevel level);
 
   void init(int speed = BAUD_RATE);
 
-  void trace(const String &s);
-  void debug(const String &s);
-  void info(const String &s);
-  void error(const String &s);
-  void fatal(const String &s);
+  inline void trace(const String &s) {
+    print(LogLevel::TRACE, s);
+  }
+  inline void debug(const String &s) {
+    print(LogLevel::DEBUG, s);
+  }
+  inline void info(const String &s) {
+    print(LogLevel::INFO, s);
+  }
+  inline void error(const String &s) {
+    print(LogLevel::ERROR, s);
+  }
+  inline void fatal(const String &s) {
+    print(LogLevel::FATAL, s);
+  }
 
-  void traceln();
-  void debugln();
-  void infoln();
-  void errorln();
-  void fatalln();
-
-  void traceln(const String &s);
-  void debugln(const String &s);
-  void infoln(const String &s);
-  void errorln(const String &s);
-  void fatalln(const String &s);
+  inline void traceln(const String &s = "") {
+    println(LogLevel::TRACE, s);
+  }
+  inline void debugln(const String &s = "") {
+    println(LogLevel::DEBUG, s);
+  }
+  inline void infoln(const String &s = "") {
+    println(LogLevel::INFO, s);
+  }
+  inline void errorln(const String &s = "") {
+    println(LogLevel::ERROR, s);
+  }
+  inline void fatalln(const String &s = "") {
+    println(LogLevel::FATAL, s);
+  }
 
 private:
   LogLevel _level;
-  bool _cr_done;
+  bool _cr_done = true;
 
   void print(LogLevel level, const String &s);
   void println(LogLevel level, const String &s);
