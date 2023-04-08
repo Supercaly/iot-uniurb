@@ -7,7 +7,8 @@ bool wifi_is_connected() {
   return (WiFi.status() == WL_CONNECTED);
 }
 
-bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
+bool wifi_connect(const char *ssid, const char *pwd,
+                  int max_retry, int pause) {
   Log.traceln("wifi_connect: connecting to SSID: " + String(ssid)
               + " with pwd: " + String(pwd)
               + " attempt: " + String(max_retry)
@@ -15,10 +16,13 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
 
   LED_ON(SIGNAL_LED_PIN);
 
+  // Remove previous connection
+  WiFi.disconnect();
+
   // Enable WiFi
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pwd);
-  Log.debug("WiFi: connecing to WiFi");
+  Log.debug("wifi_connect: connecing to WiFi");
 
   // Test the connection for some times
   int conn_attempt = 0;

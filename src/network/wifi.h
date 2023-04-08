@@ -20,7 +20,9 @@ bool wifi_is_connected();
  * Return true if the connection is successful,
  * false in case of errors.
  */
-bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause);
+bool wifi_connect(const char *ssid, const char *pwd,
+                  int max_retry = WIFI_MAX_CONN_RETRY,
+                  int pause = WIFI_RETRY_PAUSE_MS);
 
 /*
  * Returns the current IP address as String if the device

@@ -25,7 +25,7 @@ void setup() {
   Log.infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
   Log.infoln("SSID:               '" + String(WIFI_SSID) + "'");
   // Connecto to WiFi network
-  if (!wifi_connect(WIFI_SSID, WIFI_PWD, WIFI_MAX_CONN_RETRY, WIFI_RETRY_PAUSE_MS)) {
+  if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
     Log.fatalln("something went wrong connecting to WiFi");
     reboot_board();
   }
