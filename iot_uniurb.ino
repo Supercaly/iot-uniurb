@@ -9,6 +9,7 @@
 #include "src/sensor_helper.h"
 
 TaskHandle_t measure_task_handler;
+TaskHandle_t wifi_backup_task_handler;
 #ifdef HAS_TELNET
 TaskHandle_t telnet_task_handler;
 #endif  // HAS_TELNET
@@ -74,6 +75,15 @@ void setup() {
                           &measure_task_handler,
                           MEASURE_TASK_CORE);
 
+#ifdef HAS_BACKUP_WIFI
+  xTaskCreatePinnedToCore(wifi_backup_task,
+                          "wifi_backup_task",
+                          WIFI_BACKUP_TASK_STACK_SIZE,
+                          nullptr,
+                          WIFI_BACKUP_TASK_PRIORITY,
+                          &wifi_backup_task_handler,
+                          WIFI_BACKUP_TASK_CORE);
+#endif  // HAS_BACKUP_WIFI
 }
 
 void loop() {}

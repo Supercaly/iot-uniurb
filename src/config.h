@@ -26,6 +26,11 @@
 #define WIFI_SSID SECRET_WIFI_SSID
 #define WIFI_PWD SECRET_WIFI_PWD
 
+#define HAS_BACKUP_WIFI
+#define WIFI_BACKUP_SSID SECRET_WIFI_BACKUP_SSID
+#define WIFI_BACKUP_PWD SECRET_WIFI_BACKUP_PWD
+#define WIFI_BACKUP_JUMPER_PIN 12
+
 // Delay in milliseconds after each sensor reading loop.
 #define SENSOR_READING_DELAY_MS 1000 * 60 * 5
 
