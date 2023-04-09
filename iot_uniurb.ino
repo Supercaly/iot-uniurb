@@ -6,7 +6,7 @@
 #ifdef HAS_TELNET
 #include "src/network/telnet.h"
 #endif  // HAS_TELNET
-#include "src/sensor/sensor_helper.h"
+#include "src/sensor_helper.h"
 
 void setup() {
   // Init logger
