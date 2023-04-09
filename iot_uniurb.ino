@@ -8,6 +8,7 @@
 #endif  // HAS_TELNET
 #include "src/sensor_helper.h"
 
+TaskHandle_t measure_task_handler;
 void setup() {
   // Init logger
   Log.init(BAUD_RATE);
@@ -53,20 +54,15 @@ void setup() {
 
   // Init available sensors
   init_all_available_sensors();
+
+  xTaskCreatePinnedToCore(measure_and_send_task_code,
+                          "measure_task",
+                          MEASURE_TASK_STACK_SIZE,
+                          nullptr,
+                          MEASURE_TASK_PRIORITY,
+                          &measure_task_handler,
+                          MEASURE_TASK_CORE);
+
 }
 
-void loop() {
-  // Read the available sensors
-  measure_all_available_sensors();
-
-#ifdef HAS_INFLUXDB
-  // Send sensor values to InfluxDB
-  if (!influxdb_write_sensors()) {
-    Log.fatalln("something went wrong writing to InfluxDB");
-    reboot_board();
-  }
-#endif  // HAS_INFLUXDB
-
-  // Wait for some time before reading the sensors again
-  delay(SENSOR_READING_DELAY_MS);
-}
+void loop() {}
