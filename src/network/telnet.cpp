@@ -1,5 +1,4 @@
 #include "telnet.h"
-#include "../common.h"
 #include "../sensor/DHT11_sensor.h"
 #include "../sensor/SGP30_sensor.h"
 #include "../sensor/SPS30_sensor.h"
@@ -25,7 +24,6 @@ struct Cmd {
 };
 
 static ESPTelnet telnet;
-static TaskHandle_t telnet_task;
 
 static void cmd_info(String);
 static void cmd_sensors_list(String);
@@ -242,13 +240,6 @@ telnet_parse_input_defer:
   telnet.print("> ");
 }
 
-static void telnet_task_loop_fn(void *params) {
-  for (;;) {
-    telnet.loop();
-    delay(TELNET_LOOP_DELAY_MS);
-  }
-}
-
 bool telnet_init(int port) {
   Log.traceln("telnet_init: init telnet server on port " + String(port));
 
@@ -267,14 +258,12 @@ bool telnet_init(int port) {
   return true;
 }
 
-void telnet_run_on_core(int core_id) {
-  Log.traceln("telnet_run_on_core: start execution of telnet server on core " + String(core_id));
-  xTaskCreatePinnedToCore(
-    telnet_task_loop_fn,
-    "telnet_task",
-    TELNET_TASK_STACK_SIZE,
-    nullptr,
-    TELNET_TASK_PRIORITY,
-    &telnet_task,
-    core_id);
+void telnet_task_code(void *args) {
+  TickType_t last_loop_time = xTaskGetTickCount();
+  for (;;) {
+    xTaskDelayUntil(&last_loop_time,
+                    pdMS_TO_TICKS(TELNET_LOOP_DELAY_MS));
+
+    telnet.loop();
+  }
 }

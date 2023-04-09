@@ -9,6 +9,10 @@
 #include "src/sensor_helper.h"
 
 TaskHandle_t measure_task_handler;
+#ifdef HAS_TELNET
+TaskHandle_t telnet_task_handler;
+#endif  // HAS_TELNET
+
 void setup() {
   // Init logger
   Log.init(BAUD_RATE);
@@ -34,10 +38,17 @@ void setup() {
 
 #ifdef HAS_TELNET
   // Init telnet
-  if (!telnet_init()) {
+  if (telnet_init()) {
+    xTaskCreatePinnedToCore(telnet_task_code,
+                            "telnet_task",
+                            TELNET_TASK_STACK_SIZE,
+                            nullptr,
+                            TELNET_TASK_PRIORITY,
+                            &telnet_task_handler,
+                            TELNET_TASK_CORE);
+  } else {
     Log.errorln("something went wrong initializing Telnet");
   }
-  telnet_run_on_core(0);
 #endif  // HAS_TELNET
 
 #ifdef HAS_INFLUXDB
