@@ -5,7 +5,7 @@ bool init_all_available_sensors() {
   bool has_errors = false;
   for (int i = 0; i < size_of_array(type_to_sensor_map); i++) {
     SensorTypeToImplPair p = type_to_sensor_map[i];
-    if (has_sensor(p.type)) {
+    if (Preference.has_sensor(p.type)) {
       if (p.sensor == nullptr || !p.sensor->init()) {
         Log.errorln("something went wrong initializing "
                     + SensorType_to_String(p.type));
@@ -20,7 +20,7 @@ bool measure_all_available_sensors() {
   bool has_errors = false;
   for (int i = 0; i < size_of_array(type_to_sensor_map); i++) {
     SensorTypeToImplPair p = type_to_sensor_map[i];
-    if (has_sensor(p.type)) {
+    if (Preference.has_sensor(p.type)) {
       if (p.sensor == nullptr || !p.sensor->measure()) {
         Log.errorln("something went wrong measuring "
                     + SensorType_to_String(p.type));

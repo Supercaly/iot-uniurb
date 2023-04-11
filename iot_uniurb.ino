@@ -21,14 +21,14 @@ void setup() {
   Log.init(BAUD_RATE);
 
   // Init preferences
-  if (!preferences_init()) {
+  if (!Preference.init()) {
     Log.errorln("something went wrong initializing board preferences");
   }
 
-  Log.infoln("Available Sensors:   " + available_sensors_to_String());
-  Log.infoln("Device Host Name:   '" + get_board_host_name() + "'");
-  Log.infoln("Device Location:    '" + get_board_location() + "'");
-  Log.infoln("Device Room:        '" + get_board_room() + "'");
+  Log.infoln("Available Sensors:   " + Preference.available_sensors_to_String());
+  Log.infoln("Device Host Name:   '" + Preference.get_board_host_name() + "'");
+  Log.infoln("Device Location:    '" + Preference.get_board_location() + "'");
+  Log.infoln("Device Room:        '" + Preference.get_board_room() + "'");
 
   Log.infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
   Log.infoln("SSID:               '" + String(WIFI_SSID) + "'");
