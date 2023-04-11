@@ -1,4 +1,4 @@
-#include "board_preferences.h"
+#include "board_preference.h"
 #include "log.h"
 
 #include <assert.h>

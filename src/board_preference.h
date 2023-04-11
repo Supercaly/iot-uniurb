@@ -1,5 +1,5 @@
-#ifndef BOARD_PREFERENCES_H
-#define BOARD_PREFERENCES_H
+#ifndef BOARD_PREFERENCE_H
+#define BOARD_PREFERENCE_H
 
 #include "sensor/sensor_type.h"
 
@@ -147,4 +147,4 @@ private:
  */
 extern BoardPreference Preference;
 
-#endif  // BOARD_PREFERENCES_H
+#endif  // BOARD_PREFERENCE_H
