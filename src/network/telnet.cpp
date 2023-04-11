@@ -56,15 +56,15 @@ static const Cmd commands[] = {
 static void cmd_info(String _) {
   telnet.println("Values from available sensors:");
   // TODO: Remove all this sensor-checking code inside telnet.
-  if (has_sensor(SensorType::SENSOR_DHT11)) {
+  if (Preference.has_sensor(SensorType::SENSOR_DHT11)) {
     telnet.println("DHT11 Temperature: " + String(DHT11Sensor.get_temperature()));
     telnet.println("DHT11 Humidity: " + String(DHT11Sensor.get_humidity()));
   }
-  if (has_sensor(SensorType::SENSOR_SGP30)) {
+  if (Preference.has_sensor(SensorType::SENSOR_SGP30)) {
     telnet.println("SGP30 TVOC: " + String(SGP30Sensor.get_TVOC()));
     telnet.println("SGP30 eCO2: " + String(SGP30Sensor.get_eCO2()));
   }
-  if (has_sensor(SensorType::SENSOR_SPS30)) {
+  if (Preference.has_sensor(SensorType::SENSOR_SPS30)) {
     Log.traceln("influxdb_write_sensors: sending SPS30 values");
     telnet.println("SPS30 MC 1.0: " + String(SPS30Sensor.get_mc_1p0()));
     telnet.println("SPS30 MC 2.5: " + String(SPS30Sensor.get_mc_2p5()));
@@ -72,14 +72,14 @@ static void cmd_info(String _) {
     telnet.println("SPS30 MC 10.0: " + String(SPS30Sensor.get_mc_10p0()));
     telnet.println("SPS30 Particle Size: " + String(SPS30Sensor.get_particle_size()));
   }
-  if (has_sensor(SensorType::SENSOR_MHZ19)) {
+  if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
     Log.traceln("influxdb_write_sensors: sending MHZ19 values");
     telnet.println("MHZ19 CO2: " + String(MHZ19Sensor.get_co2()));
   }
 }
 
 static void cmd_sensors_list(String _) {
-  telnet.println(available_sensors_to_String());
+  telnet.println(Preference.available_sensors_to_String());
 }
 
 static void cmd_sensors_add(String sensor_str) {
@@ -98,7 +98,7 @@ static void cmd_sensors_add(String sensor_str) {
     return;
   }
 
-  if (!add_available_sensor(type)) {
+  if (!Preference.add_sensor(type)) {
     telnet.println("error adding sensor '" + sensor_str + "'");
   }
   telnet.println("rebooting board to apply the changes... you will be disconnected");
@@ -122,7 +122,7 @@ static void cmd_sensors_rm(String sensor_str) {
     return;
   }
 
-  if (!remove_available_sensor(type)) {
+  if (!Preference.remove_sensor(type)) {
     telnet.println("error removing sensor '" + sensor_str + "'");
   }
   telnet.println("rebooting board to apply the changes... you will be disconnected");
@@ -134,10 +134,10 @@ static void cmd_board_host(String new_name) {
   new_name.trim();
   if (new_name.isEmpty()) {
     Log.traceln("cmd_board_host: want to get the board host name");
-    telnet.println(get_board_host_name());
+    telnet.println(Preference.get_board_host_name());
   } else {
     Log.traceln("cmd_board_host: wanto to set the board host name to: '" + new_name + "'");
-    set_board_host_name(new_name);
+    Preference.set_board_host_name(new_name);
   }
 }
 
@@ -145,10 +145,10 @@ static void cmd_board_location(String new_loc) {
   new_loc.trim();
   if (new_loc.isEmpty()) {
     Log.traceln("cmd_board_location: wanto to get the board location");
-    telnet.println(get_board_location());
+    telnet.println(Preference.get_board_location());
   } else {
     Log.traceln("cmd_board_location: wanto to set the board location to '" + new_loc + "'");
-    set_board_location(new_loc);
+    Preference.set_board_location(new_loc);
   }
 }
 
@@ -156,10 +156,10 @@ static void cmd_board_room(String new_room) {
   new_room.trim();
   if (new_room.isEmpty()) {
     Log.traceln("cmd_board_room: wanto to get the board room");
-    telnet.println(get_board_room());
+    telnet.println(Preference.get_board_room());
   } else {
     Log.traceln("cmd_board_room: wanto to set the board room to '" + new_room + "'");
-    set_board_room(new_room);
+    Preference.set_board_room(new_room);
   }
 }
 
