@@ -9,7 +9,9 @@
 #include "src/sensor_helper.h"
 
 TaskHandle_t measure_task_handler;
+#ifdef HAS_BACKUP_WIFI
 TaskHandle_t wifi_backup_task_handler;
+#endif  // HAS_BACKUP_WIFI
 #ifdef HAS_TELNET
 TaskHandle_t telnet_task_handler;
 #endif  // HAS_TELNET

@@ -9,9 +9,9 @@ static int old_backup_state = HIGH;
 
 bool wifi_connect(const char *ssid, const char *pwd,
                   int max_retry, int pause) {
-  Log.traceln("wifi_connect: connecting to SSID: " + String(ssid)
-              + " with pwd: " + String(pwd)
-              + " attempt: " + String(max_retry)
+  Log.traceln("wifi_connect: connecting to SSID: '" + String(ssid)
+              + "' with pwd: '" + String(pwd)
+              + "' attempts: " + String(max_retry)
               + " delay: " + String(pause));
 
   LED_ON(SIGNAL_LED_PIN);
