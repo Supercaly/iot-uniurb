@@ -6,7 +6,15 @@
 #ifdef HAS_TELNET
 #include "src/network/telnet.h"
 #endif  // HAS_TELNET
-#include "src/sensor/sensor_helper.h"
+#include "src/sensor_helper.h"
+
+TaskHandle_t measure_task_handler;
+#ifdef HAS_BACKUP_WIFI
+TaskHandle_t wifi_backup_task_handler;
+#endif  // HAS_BACKUP_WIFI
+#ifdef HAS_TELNET
+TaskHandle_t telnet_task_handler;
+#endif  // HAS_TELNET
 
 void setup() {
   // Init logger
@@ -25,7 +33,7 @@ void setup() {
   Log.infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
   Log.infoln("SSID:               '" + String(WIFI_SSID) + "'");
   // Connecto to WiFi network
-  if (!wifi_connect(WIFI_SSID, WIFI_PWD, WIFI_MAX_CONN_RETRY, WIFI_RETRY_PAUSE_MS)) {
+  if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
     Log.fatalln("something went wrong connecting to WiFi");
     reboot_board();
   }
@@ -33,10 +41,17 @@ void setup() {
 
 #ifdef HAS_TELNET
   // Init telnet
-  if (!telnet_init()) {
+  if (telnet_init()) {
+    xTaskCreatePinnedToCore(telnet_task_code,
+                            "telnet_task",
+                            TELNET_TASK_STACK_SIZE,
+                            nullptr,
+                            TELNET_TASK_PRIORITY,
+                            &telnet_task_handler,
+                            TELNET_TASK_CORE);
+  } else {
     Log.errorln("something went wrong initializing Telnet");
   }
-  telnet_run_on_core(0);
 #endif  // HAS_TELNET
 
 #ifdef HAS_INFLUXDB
@@ -53,20 +68,24 @@ void setup() {
 
   // Init available sensors
   init_all_available_sensors();
+
+  xTaskCreatePinnedToCore(measure_and_send_task_code,
+                          "measure_task",
+                          MEASURE_TASK_STACK_SIZE,
+                          nullptr,
+                          MEASURE_TASK_PRIORITY,
+                          &measure_task_handler,
+                          MEASURE_TASK_CORE);
+
+#ifdef HAS_BACKUP_WIFI
+  xTaskCreatePinnedToCore(wifi_backup_task,
+                          "wifi_backup_task",
+                          WIFI_BACKUP_TASK_STACK_SIZE,
+                          nullptr,
+                          WIFI_BACKUP_TASK_PRIORITY,
+                          &wifi_backup_task_handler,
+                          WIFI_BACKUP_TASK_CORE);
+#endif  // HAS_BACKUP_WIFI
 }
 
-void loop() {
-  // Read the available sensors
-  measure_all_available_sensors();
-
-#ifdef HAS_INFLUXDB
-  // Send sensor values to InfluxDB
-  if (!influxdb_write_sensors()) {
-    Log.fatalln("something went wrong writing to InfluxDB");
-    reboot_board();
-  }
-#endif  // HAS_INFLUXDB
-
-  // Wait for some time before reading the sensors again
-  delay(SENSOR_READING_DELAY_MS);
-}
+void loop() {}
