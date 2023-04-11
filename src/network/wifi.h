@@ -44,6 +44,14 @@ String wifi_get_ip();
 String wifi_get_mac_address();
 
 /*
+ * Set the board's MAC address to the given one.
+ *
+ * Returns true if the address is set succesfully,
+ * false otherwise.
+ */
+bool wifi_set_mac_address(uint8_t *mac);
+
+/*
  * Function representing a task running on the board
  * with the purpose of siwtching the WiFi connection
  * from the default one to the backup.

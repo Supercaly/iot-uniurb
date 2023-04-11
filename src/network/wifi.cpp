@@ -1,5 +1,6 @@
 #include "wifi.h"
 
+#include <esp_wifi.h>
 #include <WiFi.h>
 #include "IPAddress.h"
 
@@ -57,6 +58,11 @@ String wifi_get_ip() {
 
 String wifi_get_mac_address() {
   return WiFi.macAddress();
+}
+
+bool wifi_set_mac_address(uint8_t *mac) {
+  esp_err_t err = esp_wifi_set_mac(WIFI_IF_STA, mac);
+  return err == ESP_OK;
 }
 
 #ifdef HAS_BACKUP_WIFI
