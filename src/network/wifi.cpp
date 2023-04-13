@@ -101,7 +101,7 @@ String wifi_get_mac_address() {
 }
 
 #ifdef HAS_BACKUP_WIFI
-void wifi_backup_task(void *args) {
+void wifi_backup_task_code(void *args) {
   pinMode(WIFI_BACKUP_JUMPER_PIN, INPUT_PULLUP);
   digitalWrite(WIFI_BACKUP_JUMPER_PIN, HIGH);
 

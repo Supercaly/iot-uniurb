@@ -11,7 +11,7 @@
 // Backup WiFi task config.
 #ifdef HAS_BACKUP_WIFI
 // TODO: Reduce stack size used by wifi backup task
-#define WIFI_BACKUP_TASK_STACK_SIZE 2048
+#define WIFI_BACKUP_TASK_STACK_SIZE 4096
 #define WIFI_BACKUP_TASK_PRIORITY 5
 #define WIFI_BACKUP_TASK_CORE tskNO_AFFINITY
 #define WIFI_BACKUP_TASK_DELAY_MS 1000
@@ -61,7 +61,7 @@ String wifi_get_mac_address();
  * perform a full board reboot.
  */
 #ifdef HAS_BACKUP_WIFI
-void wifi_backup_task(void *args);
+void wifi_backup_task_code(void *args);
 #endif  // HAS_BACKUP_WIFI
 
 #endif  // WIFI_H

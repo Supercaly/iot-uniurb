@@ -30,6 +30,16 @@ void setup() {
   Log.infoln("Device Location:    '" + Preference.get_board_location() + "'");
   Log.infoln("Device Room:        '" + Preference.get_board_room() + "'");
 
+#ifdef HAS_BACKUP_WIFI
+  xTaskCreatePinnedToCore(wifi_backup_task_code,
+                          "wifi_backup_task",
+                          WIFI_BACKUP_TASK_STACK_SIZE,
+                          nullptr,
+                          WIFI_BACKUP_TASK_PRIORITY,
+                          &wifi_backup_task_handler,
+                          WIFI_BACKUP_TASK_CORE);
+#endif  // HAS_BACKUP_WIFI
+
   Log.infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
   Log.infoln("SSID:               '" + String(WIFI_SSID) + "'");
   // Connecto to WiFi network
@@ -76,16 +86,6 @@ void setup() {
                           MEASURE_TASK_PRIORITY,
                           &measure_task_handler,
                           MEASURE_TASK_CORE);
-
-#ifdef HAS_BACKUP_WIFI
-  xTaskCreatePinnedToCore(wifi_backup_task,
-                          "wifi_backup_task",
-                          WIFI_BACKUP_TASK_STACK_SIZE,
-                          nullptr,
-                          WIFI_BACKUP_TASK_PRIORITY,
-                          &wifi_backup_task_handler,
-                          WIFI_BACKUP_TASK_CORE);
-#endif  // HAS_BACKUP_WIFI
 }
 
 void loop() {}
