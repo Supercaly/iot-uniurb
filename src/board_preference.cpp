@@ -32,6 +32,7 @@ bool BoardPreference::clear() {
   _board_host_name = "";
   _board_location = "";
   _board_room = "";
+  _spoofed_mac_addr = "";
   return write_preferences();
 }
 
@@ -92,12 +93,20 @@ bool BoardPreference::read_preferences() {
   Log.traceln("BoardPreference::read_preferences: _available_sensors_bytes: 0x" + String(_available_sensors_bytes, HEX));
   _board_host_name = EEPROM.readString(addr);
   addr += _board_host_name.length() + 1;
-  Log.traceln("BoardPreference::read_preferences: _board_host_name: '" + _board_host_name + "'");
+  Log.traceln("BoardPreference::read_preferences: _board_host_name: '"
+              + _board_host_name + "'");
   _board_location = EEPROM.readString(addr);
   addr += _board_location.length() + 1;
-  Log.traceln("BoardPreference::read_preferences: _board_location: '" + _board_location + "'");
+  Log.traceln("BoardPreference::read_preferences: _board_location: '"
+              + _board_location + "'");
   _board_room = EEPROM.readString(addr);
-  Log.traceln("BoardPreference::read_preferences: _board_room: '" + _board_room + "'");
+  addr += _board_room.length() + 1;
+  Log.traceln("BoardPreference::read_preferences: _board_room: '"
+              + _board_room + "'");
+  _spoofed_mac_addr = EEPROM.readString(addr);
+  addr += _spoofed_mac_addr.length() + 1;
+  Log.traceln("BoardPreference::read_preferences: _spoofed_mac_addr: '"
+              + _spoofed_mac_addr + "'");
 
   return true;
 }
@@ -107,7 +116,8 @@ bool BoardPreference::write_preferences() {
   Log.traceln("BoardPreference::write_preferences: _available_sensors_bytes: '0x" + String(_available_sensors_bytes, HEX) + "', "
               + "_board_host_name: '" + _board_host_name + "', "
               + "_board_location: '" + _board_location + "', "
-              + "_board_room: '" + _board_room + "'");
+              + "_board_room: '" + _board_room + "'"
+              + "_spoofed_mac_addr: '" + _spoofed_mac_addr + "'");
 
   int addr = 0;
   // Write header magic number
@@ -121,6 +131,9 @@ bool BoardPreference::write_preferences() {
   EEPROM.writeString(addr, _board_location);
   addr += _board_location.length() + 1;
   EEPROM.writeString(addr, _board_room);
+  addr += _board_room.length() + 1;
+  EEPROM.writeString(addr, _spoofed_mac_addr);
+  addr += _spoofed_mac_addr.length() + 1;
 
   if (!EEPROM.commit()) {
     Log.errorln("BoardPreference::write_preferences: error writing preferences to EEPROM");

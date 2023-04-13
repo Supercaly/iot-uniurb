@@ -56,6 +56,12 @@ bool wifi_connect(const char *ssid, const char *pwd,
 
   // Enable WiFi
   WiFi.mode(WIFI_STA);
+
+  // If board has MAC address spoofing set it
+  if (Preference.has_spoofed_mac()) {
+    set_mac_address(Preference.get_spoofed_mac());
+  }
+
   WiFi.begin(ssid, pwd);
   Log.debug("wifi_connect: connecing to WiFi");
 
