@@ -171,11 +171,15 @@ static void cmd_mac_address(String mac_addr) {
   if (mac_addr.isEmpty()) {
     Log.traceln("cmd_mac_address: wanto to get current MAC address");
     telnet.println(wifi_get_mac_address());
-  } else if (mac_addr == "off") {
+    return;
+  }
+
+  if (mac_addr == "off") {
     Log.traceln("cmd_mac_address: wants to disable MAC address spoofing");
     if (!Preference.set_spoofed_mac("")) {
       Log.errorln("cmd_mac_address: error disabling MAC address spoofing");
       telnet.println("cannot disable MAC spoofing");
+      return;
     }
   } else {
     Log.traceln("cmd_mac_address: want to set MAC address to: '"
@@ -183,11 +187,12 @@ static void cmd_mac_address(String mac_addr) {
 
     if (!Preference.set_spoofed_mac(mac_addr)) {
       telnet.println("cannot set MAC address");
+      return;
     }
-    telnet.println("rebooting board to apply the changes... you will be disconnected");
-    telnet.disconnectClient();
-    reboot_board(BOARD_REBOOT_DELAY_NOW);
   }
+  telnet.println("rebooting board to apply the changes... you will be disconnected");
+  telnet.disconnectClient();
+  reboot_board(BOARD_REBOOT_DELAY_NOW);
 }
 
 static void cmd_ping(String _) {
