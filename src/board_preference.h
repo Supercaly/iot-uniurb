@@ -125,6 +125,41 @@ public:
     return write_preferences();
   }
 
+  /*
+   * Returns true if the board has enabled
+   * MAC address spoofing, false otherwise.
+   */
+  bool has_spoofed_mac() const {
+    return !_spoofed_mac_addr.isEmpty();
+  }
+
+  /*
+   * Returns the MAC address used for spoofing as
+   * a String of six hexidecimal values separated
+   * by column.
+   *
+   * In case MAC address spoofing is not enabled
+   * this function returns an empry String.
+   */
+  String get_spoofed_mac() const {
+    return _spoofed_mac_addr;
+  }
+
+  /*
+   * Set the MAC address used for spoofing.
+   *
+   * The address is passed as a String of six
+   * hexidecimal values separated by column.
+   *
+   * If the given address is empty the MAC address
+   * spoofing will be disabled and the connection
+   * will use the default one.
+   */
+  bool set_spoofed_mac(String mac) {
+    _spoofed_mac_addr = mac;
+    return write_preferences();
+  }
+
 private:
   /*
    * Available sensors are represented by 2 bytes (uint16_t)
@@ -137,6 +172,7 @@ private:
   String _board_host_name;
   String _board_location;
   String _board_room;
+  String _spoofed_mac_addr;
 
   bool read_preferences();
   bool write_preferences();

@@ -1,10 +1,11 @@
 #include "telnet.h"
+#include "wifi.h"
 #include "../sensor/DHT11_sensor.h"
 #include "../sensor/SGP30_sensor.h"
 #include "../sensor/SPS30_sensor.h"
 #include "../sensor/MHZ19_sensor.h"
 
-#include "ESPTelnet.h"
+#include <ESPTelnet.h>
 
 static String string_divide_by(String *s, char delim) {
   size_t i = 0;
@@ -32,6 +33,7 @@ static void cmd_sensors_rm(String);
 static void cmd_board_host(String);
 static void cmd_board_location(String);
 static void cmd_board_room(String);
+static void cmd_mac_address(String);
 static void cmd_ping(String);
 static void cmd_reboot(String);
 static void cmd_version(String);
@@ -46,6 +48,7 @@ static const Cmd commands[] = {
   { "board-host", cmd_board_host, "get or set board's host name" },
   { "board-location", cmd_board_location, "get or set board's location" },
   { "board-room", cmd_board_room, "get or set board's room" },
+  { "mac", cmd_mac_address, "get or set MAC address (off to use default)" },
   { "ping", cmd_ping, "ping the board" },
   { "reboot", cmd_reboot, "reboot the board" },
   { "version", cmd_version, "show current firmware version" },
@@ -161,6 +164,35 @@ static void cmd_board_room(String new_room) {
     Log.traceln("cmd_board_room: wanto to set the board room to '" + new_room + "'");
     Preference.set_board_room(new_room);
   }
+}
+
+static void cmd_mac_address(String mac_addr) {
+  mac_addr.trim();
+  if (mac_addr.isEmpty()) {
+    Log.traceln("cmd_mac_address: wanto to get current MAC address");
+    telnet.println(wifi_get_mac_address());
+    return;
+  }
+
+  if (mac_addr == "off") {
+    Log.traceln("cmd_mac_address: wants to disable MAC address spoofing");
+    if (!Preference.set_spoofed_mac("")) {
+      Log.errorln("cmd_mac_address: error disabling MAC address spoofing");
+      telnet.println("cannot disable MAC spoofing");
+      return;
+    }
+  } else {
+    Log.traceln("cmd_mac_address: want to set MAC address to: '"
+                + mac_addr + "'");
+
+    if (!Preference.set_spoofed_mac(mac_addr)) {
+      telnet.println("cannot set MAC address");
+      return;
+    }
+  }
+  telnet.println("rebooting board to apply the changes... you will be disconnected");
+  telnet.disconnectClient();
+  reboot_board(BOARD_REBOOT_DELAY_NOW);
 }
 
 static void cmd_ping(String _) {
