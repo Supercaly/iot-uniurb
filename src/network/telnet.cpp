@@ -18,7 +18,7 @@ static String string_divide_by(String *s, char delim) {
 }
 
 typedef void (*cmd_on_run)(String cmd);
-struct Cmd {
+struct TelnetCommand {
   String name;
   cmd_on_run run;
   String help;
@@ -42,7 +42,7 @@ static void cmd_version(String);
 static void cmd_quit(String);
 static void cmd_help(String);
 
-static const Cmd commands[] = {
+static const TelnetCommand commands[] = {
   { "info", cmd_info, "retrieve the values from all available sensors" },
   { "sensors", cmd_sensors_list, "list the available sensors" },
   { "sensors-add", cmd_sensors_add, "mark a sensor as available" },
