@@ -35,6 +35,7 @@ static void cmd_board_location(String);
 static void cmd_board_room(String);
 static void cmd_mac_address(String);
 static void cmd_temp_offset(String);
+static void cmd_uptime(String);
 static void cmd_ping(String);
 static void cmd_reboot(String);
 static void cmd_version(String);
@@ -51,6 +52,7 @@ static const Cmd commands[] = {
   { "board-room", cmd_board_room, "get or set board's room" },
   { "mac", cmd_mac_address, "get or set MAC address (off to use default)" },
   { "tmp-offset", cmd_temp_offset, "get or set offset subtracted by each temperature value" },
+  { "uptime", cmd_uptime, "get the time elapsed since the board's boot" },
   { "ping", cmd_ping, "ping the board" },
   { "reboot", cmd_reboot, "reboot the board" },
   { "version", cmd_version, "show current firmware version" },
@@ -209,6 +211,10 @@ static void cmd_temp_offset(String temp_str) {
       telnet.println("error setting temperature offset");
     }
   }
+}
+
+static void cmd_uptime(String _) {
+  telnet.println(board_uptime());
 }
 
 static void cmd_ping(String _) {

@@ -44,4 +44,11 @@ constexpr size_t size_of_array(A (&)[N]) {
  */
 void reboot_board(int wait_ms = BOARD_REBOOT_DELAY_MS);
 
+/*
+ * Returns a string representing the time in days,
+ * hours, minutes and seconds elapsed since the board's
+ * has booted.
+ */
+String board_uptime();
+
 #endif  // UTILS_H
