@@ -31,6 +31,27 @@ bool measure_all_available_sensors() {
   return has_errors;
 }
 
+void print_available_sensors_info(void (*print)(String)) {
+  if (Preference.has_sensor(SensorType::SENSOR_DHT11)) {
+    print("DHT11 Temperature: " + String(DHT11Sensor.get_temperature()));
+    print("DHT11 Humidity: " + String(DHT11Sensor.get_humidity()));
+  }
+  if (Preference.has_sensor(SensorType::SENSOR_SGP30)) {
+    print("SGP30 TVOC: " + String(SGP30Sensor.get_TVOC()));
+    print("SGP30 eCO2: " + String(SGP30Sensor.get_eCO2()));
+  }
+  if (Preference.has_sensor(SensorType::SENSOR_SPS30)) {
+    print("SPS30 MC 1.0: " + String(SPS30Sensor.get_mc_1p0()));
+    print("SPS30 MC 2.5: " + String(SPS30Sensor.get_mc_2p5()));
+    print("SPS30 MC 4.0: " + String(SPS30Sensor.get_mc_4p0()));
+    print("SPS30 MC 10.0: " + String(SPS30Sensor.get_mc_10p0()));
+    print("SPS30 Particle Size: " + String(SPS30Sensor.get_particle_size()));
+  }
+  if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
+    print("MHZ19 CO2: " + String(MHZ19Sensor.get_co2()));
+  }
+}
+
 void measure_and_send_task_code(void *args) {
   TickType_t last_measure_time = xTaskGetTickCount();
   for (;;) {
