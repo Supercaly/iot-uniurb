@@ -72,7 +72,6 @@ void setup() {
 
   if (!influxdb_init()) {
     Log.fatalln("something went wrong initializing InfluxDB");
-    reboot_board();
   }
 #endif  // HAS_INFLUXDB
 
