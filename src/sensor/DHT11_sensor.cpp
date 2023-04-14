@@ -67,6 +67,13 @@ bool DHT11_Sensor::measure() {
   _temperature /= (SENSOR_AVG_WINDOW - 2);
   _humidity /= (SENSOR_AVG_WINDOW - 2);
 
+  // Remove temperature offset from data
+  Log.traceln("DHT11_Sensor::measure: using offset of "
+              + String(Preference.get_temperature_offset())
+              + " for real temperature of "
+              + String(_temperature));
+  _temperature -= Preference.get_temperature_offset();
+
 #ifdef PRINT_SENSORS_ON_READ
   Log.debugln("DHT11 temperature: " + String(_temperature));
   Log.debugln("DHT11 humidity: " + String(_humidity));

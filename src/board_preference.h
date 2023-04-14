@@ -160,6 +160,15 @@ public:
     return write_preferences();
   }
 
+  int8_t get_temperature_offset() const {
+    return _temperature_offset;
+  }
+
+  bool set_temperatue_offset(int offset) {
+    _temperature_offset = (uint8_t)offset;
+    return write_preferences();
+  }
+
 private:
   /*
    * Available sensors are represented by 2 bytes (uint16_t)
@@ -173,6 +182,7 @@ private:
   String _board_location;
   String _board_room;
   String _spoofed_mac_addr;
+  uint8_t _temperature_offset = 0;
 
   bool read_preferences();
   bool write_preferences();

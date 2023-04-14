@@ -34,6 +34,7 @@ static void cmd_board_host(String);
 static void cmd_board_location(String);
 static void cmd_board_room(String);
 static void cmd_mac_address(String);
+static void cmd_temp_offset(String);
 static void cmd_ping(String);
 static void cmd_reboot(String);
 static void cmd_version(String);
@@ -49,6 +50,7 @@ static const Cmd commands[] = {
   { "board-location", cmd_board_location, "get or set board's location" },
   { "board-room", cmd_board_room, "get or set board's room" },
   { "mac", cmd_mac_address, "get or set MAC address (off to use default)" },
+  { "tmp-offset", cmd_temp_offset, "get or set offset subtracted by each temperature value" },
   { "ping", cmd_ping, "ping the board" },
   { "reboot", cmd_reboot, "reboot the board" },
   { "version", cmd_version, "show current firmware version" },
@@ -169,7 +171,7 @@ static void cmd_board_room(String new_room) {
 static void cmd_mac_address(String mac_addr) {
   mac_addr.trim();
   if (mac_addr.isEmpty()) {
-    Log.traceln("cmd_mac_address: wanto to get current MAC address");
+    Log.traceln("cmd_mac_address: wants to get current MAC address");
     telnet.println(wifi_get_mac_address());
     return;
   }
@@ -193,6 +195,20 @@ static void cmd_mac_address(String mac_addr) {
   telnet.println("rebooting board to apply the changes... you will be disconnected");
   telnet.disconnectClient();
   reboot_board(BOARD_REBOOT_DELAY_NOW);
+}
+
+static void cmd_temp_offset(String temp_str) {
+  temp_str.trim();
+  if (temp_str.isEmpty()) {
+    Log.traceln("cmd_temp_offset: wants to get current temperature offset");
+    telnet.println(String(Preference.get_temperature_offset()));
+  } else {
+    Log.traceln("cmd_temp_offset: wants to set temperature offset");
+    int temp_offset = (int)temp_str.toInt();
+    if (!Preference.set_temperatue_offset(temp_offset)) {
+      telnet.println("error setting temperature offset");
+    }
+  }
 }
 
 static void cmd_ping(String _) {
