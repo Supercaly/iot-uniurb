@@ -54,6 +54,16 @@ bool init_all_available_sensors();
 bool measure_all_available_sensors();
 
 /*
+ * Helper method to print automatically info about each
+ * available sensor.
+ *
+ * This function takes as input a callback method to abstract
+ * the task of producing the info text from the function
+ * that displays it.
+ */
+void print_available_sensors_info(void (*print)(String));
+
+/*
  * Function representing a task executing inside the board
  * with the purpose of measuring data from all the available
  * sensors and sending it to InfluxDB.

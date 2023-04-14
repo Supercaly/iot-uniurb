@@ -1,9 +1,6 @@
 #include "telnet.h"
 #include "wifi.h"
-#include "../sensor/DHT11_sensor.h"
-#include "../sensor/SGP30_sensor.h"
-#include "../sensor/SPS30_sensor.h"
-#include "../sensor/MHZ19_sensor.h"
+#include "../sensor_helper.h"
 
 #include <ESPTelnet.h>
 
@@ -18,7 +15,7 @@ static String string_divide_by(String *s, char delim) {
 }
 
 typedef void (*cmd_on_run)(String cmd);
-struct Cmd {
+struct TelnetCommand {
   String name;
   cmd_on_run run;
   String help;
@@ -42,7 +39,7 @@ static void cmd_version(String);
 static void cmd_quit(String);
 static void cmd_help(String);
 
-static const Cmd commands[] = {
+static const TelnetCommand commands[] = {
   { "info", cmd_info, "retrieve the values from all available sensors" },
   { "sensors", cmd_sensors_list, "list the available sensors" },
   { "sensors-add", cmd_sensors_add, "mark a sensor as available" },
@@ -62,27 +59,9 @@ static const Cmd commands[] = {
 
 static void cmd_info(String _) {
   telnet.println("Values from available sensors:");
-  // TODO: Remove all this sensor-checking code inside telnet.
-  if (Preference.has_sensor(SensorType::SENSOR_DHT11)) {
-    telnet.println("DHT11 Temperature: " + String(DHT11Sensor.get_temperature()));
-    telnet.println("DHT11 Humidity: " + String(DHT11Sensor.get_humidity()));
-  }
-  if (Preference.has_sensor(SensorType::SENSOR_SGP30)) {
-    telnet.println("SGP30 TVOC: " + String(SGP30Sensor.get_TVOC()));
-    telnet.println("SGP30 eCO2: " + String(SGP30Sensor.get_eCO2()));
-  }
-  if (Preference.has_sensor(SensorType::SENSOR_SPS30)) {
-    Log.traceln("influxdb_write_sensors: sending SPS30 values");
-    telnet.println("SPS30 MC 1.0: " + String(SPS30Sensor.get_mc_1p0()));
-    telnet.println("SPS30 MC 2.5: " + String(SPS30Sensor.get_mc_2p5()));
-    telnet.println("SPS30 MC 4.0: " + String(SPS30Sensor.get_mc_4p0()));
-    telnet.println("SPS30 MC 10.0: " + String(SPS30Sensor.get_mc_10p0()));
-    telnet.println("SPS30 Particle Size: " + String(SPS30Sensor.get_particle_size()));
-  }
-  if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
-    Log.traceln("influxdb_write_sensors: sending MHZ19 values");
-    telnet.println("MHZ19 CO2: " + String(MHZ19Sensor.get_co2()));
-  }
+  print_available_sensors_info([](String line) {
+    telnet.println(line);
+  });
 }
 
 static void cmd_sensors_list(String _) {
