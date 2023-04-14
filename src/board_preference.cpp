@@ -33,6 +33,7 @@ bool BoardPreference::clear() {
   _board_location = "";
   _board_room = "";
   _spoofed_mac_addr = "";
+  _temperature_offset = 0;
   return write_preferences();
 }
 
@@ -107,6 +108,10 @@ bool BoardPreference::read_preferences() {
   addr += _spoofed_mac_addr.length() + 1;
   Log.traceln("BoardPreference::read_preferences: _spoofed_mac_addr: '"
               + _spoofed_mac_addr + "'");
+  _temperature_offset = EEPROM.readByte(addr);
+  addr += sizeof(uint8_t);
+  Log.traceln("BoardPreference::read_preferences: _temperature_offset: "
+              + String(_temperature_offset));
 
   return true;
 }
@@ -134,6 +139,8 @@ bool BoardPreference::write_preferences() {
   addr += _board_room.length() + 1;
   EEPROM.writeString(addr, _spoofed_mac_addr);
   addr += _spoofed_mac_addr.length() + 1;
+  EEPROM.writeByte(addr, _temperature_offset);
+  addr += sizeof(uint8_t);
 
   if (!EEPROM.commit()) {
     Log.errorln("BoardPreference::write_preferences: error writing preferences to EEPROM");
