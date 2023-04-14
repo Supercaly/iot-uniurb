@@ -108,9 +108,6 @@ static void cmd_sensors_add(String sensor_str) {
   if (!Preference.add_sensor(type)) {
     telnet.println("error adding sensor '" + sensor_str + "'");
   }
-  telnet.println("rebooting board to apply the changes... you will be disconnected");
-  telnet.disconnectClient();
-  reboot_board(BOARD_REBOOT_DELAY_NOW);
 }
 
 static void cmd_sensors_rm(String sensor_str) {
@@ -132,9 +129,6 @@ static void cmd_sensors_rm(String sensor_str) {
   if (!Preference.remove_sensor(type)) {
     telnet.println("error removing sensor '" + sensor_str + "'");
   }
-  telnet.println("rebooting board to apply the changes... you will be disconnected");
-  telnet.disconnectClient();
-  reboot_board(BOARD_REBOOT_DELAY_NOW);
 }
 
 static void cmd_board_host(String new_name) {
@@ -183,20 +177,15 @@ static void cmd_mac_address(String mac_addr) {
     if (!Preference.set_spoofed_mac("")) {
       Log.errorln("cmd_mac_address: error disabling MAC address spoofing");
       telnet.println("cannot disable MAC spoofing");
-      return;
     }
-  } else {
-    Log.traceln("cmd_mac_address: want to set MAC address to: '"
-                + mac_addr + "'");
-
-    if (!Preference.set_spoofed_mac(mac_addr)) {
-      telnet.println("cannot set MAC address");
-      return;
-    }
+    return;
   }
-  telnet.println("rebooting board to apply the changes... you will be disconnected");
-  telnet.disconnectClient();
-  reboot_board(BOARD_REBOOT_DELAY_NOW);
+
+  Log.traceln("cmd_mac_address: want to set MAC address to: '"
+              + mac_addr + "'");
+  if (!Preference.set_spoofed_mac(mac_addr)) {
+    telnet.println("cannot set MAC address");
+  }
 }
 
 static void cmd_temp_offset(String temp_str) {
