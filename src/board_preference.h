@@ -13,12 +13,9 @@
 #define DEFAULT_BOARD_LOCATION  "default_location"
 #define DEFAULT_BOARD_ROOM      "default_room"
 
-#define _PREF_HAS_SENSOR_BIT(bytes, idx) \
-  (((bytes >> (uint16_t)idx)) & (uint16_t)0x01)
-#define _PREF_SET_SENSOR_BIT(bytes, idx) \
-  bytes |= ((uint16_t)0x01 << (uint16_t)idx)
-#define _PREF_UNSET_SENSOR_BIT(bytes, idx) \
-  bytes &= ~((uint16_t)0x01 << (uint16_t)idx)
+#define _PREF_HAS_SENSOR_BIT(bytes, idx)   (((bytes >> (uint16_t)idx)) & (uint16_t)0x01)
+#define _PREF_SET_SENSOR_BIT(bytes, idx)   bytes |= ((uint16_t)0x01 << (uint16_t)idx)
+#define _PREF_UNSET_SENSOR_BIT(bytes, idx) bytes &= ~((uint16_t)0x01 << (uint16_t)idx)
 
 /*
  * Class representing board's global preferences.
@@ -192,9 +189,7 @@ class BoardPreference {
   /*
    * Returns the offset used for temperature calibration.
    */
-  int8_t get_temperature_offset() const {
-    return _temperature_offset;
-  }
+  int8_t get_temperature_offset() const { return _temperature_offset; }
 
   /*
    * Set the offset used for temperature calibration.
@@ -220,8 +215,8 @@ class BoardPreference {
   uint8_t  _temperature_offset = 0;
 
   // Checksum internal buffer.
-  uint8_t *_checksum_buffer = nullptr;
-  size_t _checksum_buffer_sz = 0;
+  uint8_t *_checksum_buffer    = nullptr;
+  size_t   _checksum_buffer_sz = 0;
 
   bool read_preferences();
   bool write_preferences();
@@ -235,7 +230,7 @@ class BoardPreference {
    * Returns the computed checksum as a 16bit unsigned int.
    */
   uint16_t checksum();
-  void create_checksum_prefs_buffer();
+  void     create_checksum_prefs_buffer();
 };
 
 /*
