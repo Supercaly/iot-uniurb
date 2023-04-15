@@ -36,42 +36,6 @@ bool BoardPreference::clear() {
   return write_preferences();
 }
 
-bool BoardPreference::has_sensor(SensorType s) {
-  assert(s < SensorType::COUNT_SENSORS);
-  return (bool)_PREF_HAS_SENSOR_BIT(_available_sensors_bytes, s);
-}
-
-bool BoardPreference::add_sensor(SensorType s) {
-  assert(s < SensorType::COUNT_SENSORS);
-  Log.traceln("BoardPreference::add_sensor: " + SensorType_to_String(s));
-  _PREF_SET_SENSOR_BIT(_available_sensors_bytes, s);
-  return write_preferences();
-}
-
-bool BoardPreference::remove_sensor(SensorType s) {
-  assert(s < SensorType::COUNT_SENSORS);
-  Log.traceln("BoardPreference::remove_sensor: " + SensorType_to_String(s));
-  _PREF_UNSET_SENSOR_BIT(_available_sensors_bytes, s);
-  return write_preferences();
-}
-
-String BoardPreference::available_sensors_to_String() {
-  String ret = "[";
-
-  bool is_first = true;
-  for (int i = 0; i < SensorType::COUNT_SENSORS; ++i) {
-    if (has_sensor((SensorType)i)) {
-      if (!is_first) {
-        ret += ", ";
-      }
-      ret += SensorType_to_String((SensorType)i);
-      is_first = false;
-    }
-  }
-  ret += "]";
-  return ret;
-}
-
 bool BoardPreference::read_preferences() {
   Log.traceln("BoardPreference::read_preferences: reading board preferences "
               "form EEPROM");

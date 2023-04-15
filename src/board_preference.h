@@ -13,6 +13,13 @@
 #define DEFAULT_BOARD_LOCATION  "default_location"
 #define DEFAULT_BOARD_ROOM      "default_room"
 
+#define _PREF_HAS_SENSOR_BIT(bytes, idx) \
+  (((bytes >> (uint16_t)idx)) & (uint16_t)0x01)
+#define _PREF_SET_SENSOR_BIT(bytes, idx) \
+  bytes |= ((uint16_t)0x01 << (uint16_t)idx)
+#define _PREF_UNSET_SENSOR_BIT(bytes, idx) \
+  bytes &= ~((uint16_t)0x01 << (uint16_t)idx)
+
 /*
  * Class representing board's global preferences.
  *
@@ -40,14 +47,34 @@ class BoardPreference {
    * false otherwise.
    */
   // TODO: Replace has_sensor with a method returning a list of sensors
-  bool has_sensor(SensorType s);
+  bool has_sensor(SensorType s) {
+    if (s >= SensorType::COUNT_SENSORS) {
+      return false;
+    }
+    return (bool)_PREF_HAS_SENSOR_BIT(_available_sensors_bytes, s);
+  }
 
   /*
    * Returns the available sensors in a human-readable
    * format for printing.
    */
   // TODO: When we replace has_sensor we will no longer need this
-  String available_sensors_to_String();
+  String available_sensors_to_String() {
+    String ret = "[";
+
+    bool is_first = true;
+    for (int i = 0; i < SensorType::COUNT_SENSORS; ++i) {
+      if (has_sensor((SensorType)i)) {
+        if (!is_first) {
+          ret += ", ";
+        }
+        ret += SensorType_to_String((SensorType)i);
+        is_first = false;
+      }
+    }
+    ret += "]";
+    return ret;
+  }
 
   /*
    * Mark the given sensor as available.
@@ -55,7 +82,14 @@ class BoardPreference {
    * Returns flase if the change cannot be applied
    * and leaves the values unchanged.
    */
-  bool add_sensor(SensorType s);
+  bool add_sensor(SensorType s) {
+    if (s >= SensorType::COUNT_SENSORS) {
+      return false;
+    }
+    Log.traceln("BoardPreference::add_sensor: " + SensorType_to_String(s));
+    _PREF_SET_SENSOR_BIT(_available_sensors_bytes, s);
+    return write_preferences();
+  }
 
   /*
    * Mark the given sensor as no longer available.
@@ -63,7 +97,14 @@ class BoardPreference {
    * Returns flase if the change cannot be applied
    * and leaves the values unchanged.
    */
-  bool remove_sensor(SensorType s);
+  bool remove_sensor(SensorType s) {
+    if (s >= SensorType::COUNT_SENSORS) {
+      return false;
+    }
+    Log.traceln("BoardPreference::remove_sensor: " + SensorType_to_String(s));
+    _PREF_UNSET_SENSOR_BIT(_available_sensors_bytes, s);
+    return write_preferences();
+  }
 
   /*
    * Returns the board's host name.
@@ -148,8 +189,16 @@ class BoardPreference {
     return write_preferences();
   }
 
-  int8_t get_temperature_offset() const { return _temperature_offset; }
+  /*
+   * Returns the offset used for temperature calibration.
+   */
+  int8_t get_temperature_offset() const {
+    return _temperature_offset;
+  }
 
+  /*
+   * Set the offset used for temperature calibration.
+   */
   bool set_temperatue_offset(int offset) {
     _temperature_offset = (uint8_t)offset;
     return write_preferences();
