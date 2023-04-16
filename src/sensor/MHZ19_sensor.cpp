@@ -3,31 +3,19 @@
 
 MHZ19_Sensor MHZ19Sensor;
 
-bool MHZ19_Sensor::init() {
-  if (p_is_init) {
-    Log.traceln("MHZ19_Sensor::init: sensor already initialized");
-    return true;
-  }
-
+bool MHZ19_Sensor::on_init() {
   MHZ19_SERIAL.begin(MHZ19_BAUD_RATE, SERIAL_8N1, MHZ19_RX, MHZ19_TX);
   _mhz.begin(&MHZ19_SERIAL);
 
   delay(MHZ19_INIT_DELAY_MS);
   Log.traceln("MHZ19_Sensor::init: sensor initialized");
-
-  p_is_init = true;
   return true;
 }
 
-bool MHZ19_Sensor::measure() {
+bool MHZ19_Sensor::on_measure() {
   int currentCo2 = 0,
       minCo2 = 0,
       maxCo2 = 0;
-
-  if (!p_is_init) {
-    Log.errorln("MHZ19_Sensor::measure: sensor not initialized");
-    return false;
-  }
 
   Log.traceln("MHZ19_Sensor::measure: reading sensor values");
   for (int i = 0; i < SENSOR_AVG_WINDOW; ++i) {

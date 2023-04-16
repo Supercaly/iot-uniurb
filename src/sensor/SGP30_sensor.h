@@ -12,8 +12,8 @@
 
 class SGP30_Sensor : public AbstractSensor {
 public:
-  bool init() override;
-  bool measure() override;
+  bool on_init() override;
+  bool on_measure() override;
 
   /*
    * Return the last measured Total Volatile Organic

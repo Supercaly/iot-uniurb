@@ -10,8 +10,8 @@
 
 class MHZ19_Sensor : public AbstractSensor {
 public:
-  bool init() override;
-  bool measure() override;
+  bool on_init() override;
+  bool on_measure() override;
 
   /*
    * Returns the last measured CO2.

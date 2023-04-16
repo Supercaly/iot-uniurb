@@ -14,8 +14,8 @@
 
 class SPS30_Sensor : public AbstractSensor {
 public:
-  bool init() override;
-  bool measure() override;
+  bool on_init() override;
+  bool on_measure() override;
 
   /*
    * Returns the last measured MC 1.0

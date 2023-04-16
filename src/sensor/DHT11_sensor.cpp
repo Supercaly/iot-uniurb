@@ -8,32 +8,20 @@ DHT11_Sensor::DHT11_Sensor()
     _temperature(0.0),
     _humidity(0.0) {}
 
-bool DHT11_Sensor::init() {
-  if (p_is_init) {
-    Log.traceln("DHT11_Sensor::init: sensor already initialized");
-    return true;
-  }
-
+bool DHT11_Sensor::on_init() {
   _dht.begin();
   delay(DHT11_INIT_DELAY_MS);
   Log.traceln("DHT11_Sensor::init: sensor initialized");
-
-  p_is_init = true;
   return true;
 }
 
-bool DHT11_Sensor::measure() {
+bool DHT11_Sensor::on_measure() {
   float currentT = 0.0,
         currentH = 0.0,
         maxT = 0.0,
         minT = 0.0,
         maxH = 0.0,
         minH = 0.0;
-
-  if (!p_is_init) {
-    Log.errorln("DHT11_Sensor::measure: sensor not initialized");
-    return false;
-  }
 
   Log.traceln("DHT11_Sensor::measure: reading sensor values");
   _temperature = 0.0;
