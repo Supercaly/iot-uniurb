@@ -12,8 +12,8 @@ class DHT11_Sensor : public AbstractSensor {
 public:
   DHT11_Sensor();
 
-  bool init() override;
-  bool measure() override;
+  bool on_init() override;
+  bool on_measure() override;
 
   /*
    * Return the last measured temperature.

@@ -5,13 +5,8 @@
 
 SPS30_Sensor SPS30Sensor;
 
-bool SPS30_Sensor::init() {
+bool SPS30_Sensor::on_init() {
   int16_t ret;
-
-  if (p_is_init) {
-    Log.traceln("SPS30_Sensor::init: sensor already initialized");
-    return true;
-  }
 
   sensirion_i2c_init();
 
@@ -44,19 +39,12 @@ bool SPS30_Sensor::init() {
 
   delay(SPS30_INIT_DELAY_MS);
   Log.traceln("SPS30_Sensor::init: sensor initialized");
-
-  p_is_init = true;
   return true;
 }
 
-bool SPS30_Sensor::measure() {
+bool SPS30_Sensor::on_measure() {
   int16_t ret;
   uint16_t data_ready;
-
-  if (!p_is_init) {
-    Log.infoln("SPS30_Sensor::init: sensor not initialized");
-    return false;
-  }
 
   Log.traceln("SPS30_Sensor::measure: reading sensor values");
   delay(1000);

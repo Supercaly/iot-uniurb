@@ -6,35 +6,23 @@
 
 SGP30_Sensor SGP30Sensor;
 
-bool SGP30_Sensor::init() {
-  if (p_is_init) {
-    Log.traceln("SGP30_Sensor::init: sensor already initialized");
-    return true;
-  }
-
+bool SGP30_Sensor::on_init() {
   if (!_sgp.begin()) {
     Log.errorln("SGP30_Sensor::init: sensor not found");
     return false;
   }
   delay(SGP30_INIT_DELAY_MS);
   Log.traceln("SGP30_Sensor::init: sensor initialized");
-
-  p_is_init = true;
   return true;
 }
 
-bool SGP30_Sensor::measure() {
+bool SGP30_Sensor::on_measure() {
   uint16_t currentTvoc = 0.0,
            currentEco2 = 0.0,
            minTvoc = 0.0,
            maxTvoc = 0.0,
            minEco2 = 0.0,
            maxEco2 = 0.0;
-
-  if (!p_is_init) {
-    Log.infoln("SGP30_Sensor::measure: sensor not initialized");
-    return false;
-  }
 
   Log.traceln("SGP30_Sensor::measure: reading sensor values");
   if (DHT11Sensor.get_temperature() > 0) {

@@ -16,7 +16,7 @@ public:
    * Returns true if the initialization is
    * successful, false otherwise.
    */
-  virtual bool init() = 0;
+  bool init();
 
   /*
    * Measure the values from the sensor.
@@ -24,13 +24,25 @@ public:
    * Returns true if the measure is successful,
    * false otherwise.
    */
-  virtual bool measure() = 0;
+  bool measure();
 
 protected:
   /*
    * Variable stating if the sensor is already initialized.
    */
   bool p_is_init = false;
+
+  /*
+   * Interface method implemented by the child class
+   * to perform the init of his sensor.
+   */
+  virtual bool on_init() = 0;
+
+  /*
+   * Interface method implemented by the child class
+   * to perform a measure of his sensor.
+   */
+  virtual bool on_measure() = 0;
 };
 
 #endif  // ABSTRACT_SENSOR_H
