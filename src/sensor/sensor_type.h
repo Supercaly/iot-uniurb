@@ -2,7 +2,8 @@
 #define SENSOR_TYPE_H
 
 #include <assert.h>
-#include <Arduino.h>
+
+#include "../common.h"
 
 /*
  * Enum representing the type of
@@ -16,6 +17,7 @@ enum SensorType {
 
   COUNT_SENSORS
 };
+
 static_assert(COUNT_SENSORS == 4,
               "The number of Sensor Types have changed. "
               "You probably have added or removed a sensor. "
@@ -31,4 +33,4 @@ String SensorType_to_String(SensorType t);
  */
 bool SensorType_by_name(String s, SensorType *t);
 
-#endif  // SENSOR_TYPE_H
+#endif // SENSOR_TYPE_H

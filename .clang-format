@@ -1,7 +1,7 @@
 BasedOnStyle: LLVM
 TabWidth: 4
-IndentWidth: 4
-UseTab: Always
+IndentWidth: 2
+UseTab: Never
 ColumnLimit: 100
 
 ---
@@ -92,16 +92,16 @@ IncludeBlocks:   Regroup
 IncludeCategories:
   # Headers in <> without extension.
   - Regex:           '<([A-Za-z0-9\Q/-_\E])+>'
-    Priority:        4
+    Priority:        1
   # Headers in <> from specific external libraries.
   - Regex:           '<(catch2|boost)\/'
-    Priority:        3
+    Priority:        2
   # Headers in <> with extension.
   - Regex:           '<([A-Za-z0-9.\Q/-_\E])+>'
-    Priority:        2
+    Priority:        3
   # Headers in "" with extension.
   - Regex:           '"([A-Za-z0-9.\Q/-_\E])+"'
-    Priority:        1
+    Priority:        4
 IncludeIsMainRegex: '(_test)?$'
 IncludeIsMainSourceRegex: ''
 

@@ -1,15 +1,13 @@
 #include "board_preference.h"
+
+#include <EEPROM.h>
+#include <assert.h>
+
 #include "log.h"
 
-#include <assert.h>
-#include <EEPROM.h>
-
-#define _PREF_HAS_SENSOR_BIT(bytes, idx) \
-  (((bytes >> (uint16_t)idx)) & (uint16_t)0x01)
-#define _PREF_SET_SENSOR_BIT(bytes, idx) \
-  bytes |= ((uint16_t)0x01 << (uint16_t)idx)
-#define _PREF_UNSET_SENSOR_BIT(bytes, idx) \
-  bytes &= ~((uint16_t)0x01 << (uint16_t)idx)
+#define _PREF_HAS_SENSOR_BIT(bytes, idx)   (((bytes >> (uint16_t)idx)) & (uint16_t)0x01)
+#define _PREF_SET_SENSOR_BIT(bytes, idx)   bytes |= ((uint16_t)0x01 << (uint16_t)idx)
+#define _PREF_UNSET_SENSOR_BIT(bytes, idx) bytes &= ~((uint16_t)0x01 << (uint16_t)idx)
 
 BoardPreference Preference;
 
@@ -20,7 +18,8 @@ bool BoardPreference::init() {
     return false;
   }
   if (!read_preferences()) {
-    Log.debugln("BoardPreference::init: EEPROM memory is malformed and will be restored to default state");
+    Log.debugln("BoardPreference::init: EEPROM memory is malformed and will be "
+                "restored to default state");
     return clear();
   }
   return true;
@@ -29,11 +28,11 @@ bool BoardPreference::init() {
 bool BoardPreference::clear() {
   Log.traceln("BoardPreference::clear: restoring preferences to default state");
   _available_sensors_bytes = 0x0;
-  _board_host_name = "";
-  _board_location = "";
-  _board_room = "";
-  _spoofed_mac_addr = "";
-  _temperature_offset = 0;
+  _board_host_name         = "";
+  _board_location          = "";
+  _board_room              = "";
+  _spoofed_mac_addr        = "";
+  _temperature_offset      = 0;
   return write_preferences();
 }
 
@@ -74,7 +73,8 @@ String BoardPreference::available_sensors_to_String() {
 }
 
 bool BoardPreference::read_preferences() {
-  Log.traceln("BoardPreference::read_preferences: reading board preferences form EEPROM");
+  Log.traceln("BoardPreference::read_preferences: reading board preferences "
+              "form EEPROM");
 
   int addr = 0;
   // Read header magic number and perform sanity check
@@ -84,30 +84,26 @@ bool BoardPreference::read_preferences() {
   if (magic != PREFERENCES_HEADER_MAGIC) {
     Log.errorln("BoardPreference::read_preferences: error reading preferences; "
                 "expecting header magic number: 0x"
-                + String(PREFERENCES_HEADER_MAGIC, HEX)
-                + " but got: 0x" + String(magic, HEX));
+                + String(PREFERENCES_HEADER_MAGIC, HEX) + " but got: 0x" + String(magic, HEX));
     return false;
   }
   // Read other preferences
   _available_sensors_bytes = EEPROM.readUShort(addr);
   addr += sizeof(uint16_t);
-  Log.traceln("BoardPreference::read_preferences: _available_sensors_bytes: 0x" + String(_available_sensors_bytes, HEX));
+  Log.traceln("BoardPreference::read_preferences: _available_sensors_bytes: 0x"
+              + String(_available_sensors_bytes, HEX));
   _board_host_name = EEPROM.readString(addr);
   addr += _board_host_name.length() + 1;
-  Log.traceln("BoardPreference::read_preferences: _board_host_name: '"
-              + _board_host_name + "'");
+  Log.traceln("BoardPreference::read_preferences: _board_host_name: '" + _board_host_name + "'");
   _board_location = EEPROM.readString(addr);
   addr += _board_location.length() + 1;
-  Log.traceln("BoardPreference::read_preferences: _board_location: '"
-              + _board_location + "'");
+  Log.traceln("BoardPreference::read_preferences: _board_location: '" + _board_location + "'");
   _board_room = EEPROM.readString(addr);
   addr += _board_room.length() + 1;
-  Log.traceln("BoardPreference::read_preferences: _board_room: '"
-              + _board_room + "'");
+  Log.traceln("BoardPreference::read_preferences: _board_room: '" + _board_room + "'");
   _spoofed_mac_addr = EEPROM.readString(addr);
   addr += _spoofed_mac_addr.length() + 1;
-  Log.traceln("BoardPreference::read_preferences: _spoofed_mac_addr: '"
-              + _spoofed_mac_addr + "'");
+  Log.traceln("BoardPreference::read_preferences: _spoofed_mac_addr: '" + _spoofed_mac_addr + "'");
   _temperature_offset = EEPROM.readByte(addr);
   addr += sizeof(uint8_t);
   Log.traceln("BoardPreference::read_preferences: _temperature_offset: "
@@ -117,12 +113,13 @@ bool BoardPreference::read_preferences() {
 }
 
 bool BoardPreference::write_preferences() {
-  Log.traceln("BoardPreference::write_preferences: writing board preferences to EEPROM");
-  Log.traceln("BoardPreference::write_preferences: _available_sensors_bytes: '0x" + String(_available_sensors_bytes, HEX) + "', "
-              + "_board_host_name: '" + _board_host_name + "', "
-              + "_board_location: '" + _board_location + "', "
-              + "_board_room: '" + _board_room + "'"
-              + "_spoofed_mac_addr: '" + _spoofed_mac_addr + "'");
+  Log.traceln("BoardPreference::write_preferences: writing board preferences "
+              "to EEPROM");
+  Log.traceln("BoardPreference::write_preferences: _available_sensors_bytes: '0x"
+              + String(_available_sensors_bytes, HEX) + "', " + "_board_host_name: '"
+              + _board_host_name + "', " + "_board_location: '" + _board_location + "', "
+              + "_board_room: '" + _board_room + "'" + "_spoofed_mac_addr: '" + _spoofed_mac_addr
+              + "'");
 
   int addr = 0;
   // Write header magic number
@@ -143,7 +140,8 @@ bool BoardPreference::write_preferences() {
   addr += sizeof(uint8_t);
 
   if (!EEPROM.commit()) {
-    Log.errorln("BoardPreference::write_preferences: error writing preferences to EEPROM");
+    Log.errorln("BoardPreference::write_preferences: error writing preferences "
+                "to EEPROM");
     return false;
   }
   return true;

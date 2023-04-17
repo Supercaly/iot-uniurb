@@ -4,26 +4,19 @@
 Logger Log(LogLevel::TRACE);
 #else
 Logger Log(LogLevel::INFO);
-#endif  // IS_DEBUG
+#endif // IS_DEBUG
 
-static const String log_level_string[] = {
-  "[TRACE]  ",
-  "[DEBUG]  ",
-  "[INFO]   ",
-  "[ERROR]  ",
-  "[FATAL]  ",
-  "[SILENT] "
-};
+static const String log_level_string[]
+    = {"[TRACE]  ", "[DEBUG]  ", "[INFO]   ", "[ERROR]  ", "[FATAL]  ", "[SILENT] "};
 
-Logger::Logger(LogLevel level)
-  : _level(level),
-    _cr_done(true) {}
+Logger::Logger(LogLevel level) : _level(level), _cr_done(true) {}
 
 void Logger::init(int speed) {
   LOGGER_SERIAL.begin(speed);
   delay(200);
   LOGGER_SERIAL.println();
 }
+
 void Logger::trace(const String &s) {
   print(LogLevel::TRACE, s);
 }
@@ -85,11 +78,13 @@ void Logger::fatalln(const String &s) {
 }
 
 void Logger::print(LogLevel level, const String &s) {
-  if (level < _level)
+  if (level < _level) {
     return;
+  }
 
-  if (_cr_done)
+  if (_cr_done) {
     LOGGER_SERIAL.print(log_level_string[level]);
+  }
   LOGGER_SERIAL.print(s);
   _cr_done = false;
 }

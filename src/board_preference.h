@@ -1,17 +1,17 @@
 #ifndef BOARD_PREFERENCE_H
 #define BOARD_PREFERENCE_H
 
-#include "sensor/sensor_type.h"
-
 #include <Arduino.h>
+
+#include "sensor/sensor_type.h"
 
 // Header magic number for the preferences.
 #define PREFERENCES_HEADER_MAGIC 0x494F5420
 
 // Default values for preferences.
 #define DEFAULT_BOARD_HOST_NAME "default_host"
-#define DEFAULT_BOARD_LOCATION "default_location"
-#define DEFAULT_BOARD_ROOM "default_room"
+#define DEFAULT_BOARD_LOCATION  "default_location"
+#define DEFAULT_BOARD_ROOM      "default_room"
 
 /*
  * Class representing board's global preferences.
@@ -20,7 +20,7 @@
  * EEPROM and are read and write each time they are updated.
  */
 class BoardPreference {
-public:
+  public:
   /*
    * Init the global preferences.
    */
@@ -69,9 +69,7 @@ public:
    * Returns the board's host name.
    */
   String get_board_host_name() const {
-    return _board_host_name.isEmpty()
-             ? DEFAULT_BOARD_HOST_NAME
-             : _board_host_name;
+    return _board_host_name.isEmpty() ? DEFAULT_BOARD_HOST_NAME : _board_host_name;
   }
 
   /*
@@ -89,9 +87,7 @@ public:
    * Returns the board's location.
    */
   String get_board_location() const {
-    return _board_location.isEmpty()
-             ? DEFAULT_BOARD_LOCATION
-             : _board_location;
+    return _board_location.isEmpty() ? DEFAULT_BOARD_LOCATION : _board_location;
   }
 
   /*
@@ -108,11 +104,7 @@ public:
   /*
    * Returns the bord's room.
    */
-  String get_board_room() const {
-    return _board_room.isEmpty()
-             ? DEFAULT_BOARD_ROOM
-             : _board_room;
-  }
+  String get_board_room() const { return _board_room.isEmpty() ? DEFAULT_BOARD_ROOM : _board_room; }
 
   /*
    * Set the board's room.
@@ -129,9 +121,7 @@ public:
    * Returns true if the board has enabled
    * MAC address spoofing, false otherwise.
    */
-  bool has_spoofed_mac() const {
-    return !_spoofed_mac_addr.isEmpty();
-  }
+  bool has_spoofed_mac() const { return !_spoofed_mac_addr.isEmpty(); }
 
   /*
    * Returns the MAC address used for spoofing as
@@ -141,9 +131,7 @@ public:
    * In case MAC address spoofing is not enabled
    * this function returns an empry String.
    */
-  String get_spoofed_mac() const {
-    return _spoofed_mac_addr;
-  }
+  String get_spoofed_mac() const { return _spoofed_mac_addr; }
 
   /*
    * Set the MAC address used for spoofing.
@@ -160,16 +148,14 @@ public:
     return write_preferences();
   }
 
-  int8_t get_temperature_offset() const {
-    return _temperature_offset;
-  }
+  int8_t get_temperature_offset() const { return _temperature_offset; }
 
   bool set_temperatue_offset(int offset) {
     _temperature_offset = (uint8_t)offset;
     return write_preferences();
   }
 
-private:
+  private:
   /*
    * Available sensors are represented by 2 bytes (uint16_t)
    * so we can have a total of 16 different sensors.
@@ -178,11 +164,11 @@ private:
    * and if the bit is set it means that the sensor is present.
    */
   uint16_t _available_sensors_bytes = 0;
-  String _board_host_name;
-  String _board_location;
-  String _board_room;
-  String _spoofed_mac_addr;
-  uint8_t _temperature_offset = 0;
+  String   _board_host_name;
+  String   _board_location;
+  String   _board_room;
+  String   _spoofed_mac_addr;
+  uint8_t  _temperature_offset = 0;
 
   bool read_preferences();
   bool write_preferences();
@@ -193,4 +179,4 @@ private:
  */
 extern BoardPreference Preference;
 
-#endif  // BOARD_PREFERENCE_H
+#endif // BOARD_PREFERENCE_H

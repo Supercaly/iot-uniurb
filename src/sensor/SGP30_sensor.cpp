@@ -1,8 +1,9 @@
 #include "SGP30_sensor.h"
+
+#include <Adafruit_SGP30.h>
+
 #include "../common.h"
 #include "DHT11_sensor.h"
-
-#include "Adafruit_SGP30.h"
 
 SGP30_Sensor SGP30Sensor;
 
@@ -17,19 +18,18 @@ bool SGP30_Sensor::on_init() {
 }
 
 bool SGP30_Sensor::on_measure() {
-  uint16_t currentTvoc = 0.0,
-           currentEco2 = 0.0,
-           minTvoc = 0.0,
-           maxTvoc = 0.0,
-           minEco2 = 0.0,
+  uint16_t currentTvoc = 0.0, currentEco2 = 0.0, minTvoc = 0.0, maxTvoc = 0.0, minEco2 = 0.0,
            maxEco2 = 0.0;
 
   Log.traceln("SGP30_Sensor::measure: reading sensor values");
   if (DHT11Sensor.get_temperature() > 0) {
-    Log.traceln("SGP30_Sensor::measure: compute absolute humidity with real temperature and humidity");
-    _sgp.setHumidity(get_absolute_humidity(DHT11Sensor.get_temperature(), DHT11Sensor.get_humidity()));
+    Log.traceln(
+        "SGP30_Sensor::measure: compute absolute humidity with real temperature and humidity");
+    _sgp.setHumidity(
+        get_absolute_humidity(DHT11Sensor.get_temperature(), DHT11Sensor.get_humidity()));
   } else {
-    Log.traceln("SGP30_Sensor::measure: compute absolute humidity with default temperature and humidity");
+    Log.traceln("SGP30_Sensor::measure: compute absolute humidity with default temperature and "
+                "humidity");
     _sgp.setHumidity(get_absolute_humidity(22.1, 45.2));
   }
 
@@ -66,13 +66,16 @@ bool SGP30_Sensor::on_measure() {
 #ifdef PRINT_SENSORS_ON_READ
   Log.debugln("SGP30 TVOC: " + String(_tvoc));
   Log.debugln("SGP30 eCO2: " + String(_eco2));
-#endif  // PRINT_SENSORS_ON_READ
+#endif // PRINT_SENSORS_ON_READ
 
   return true;
 }
 
 uint32_t SGP30_Sensor::get_absolute_humidity(float temperature, float humidity) {
-  const float absoluteHumidity = 216.7f * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature)) / (273.15f + temperature));
+  const float absoluteHumidity
+      = 216.7f
+        * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature))
+           / (273.15f + temperature));
   const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity);
   return absoluteHumidityScaled;
 }

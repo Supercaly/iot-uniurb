@@ -1,4 +1,5 @@
 #include "MHZ19_sensor.h"
+
 #include "../common.h"
 
 MHZ19_Sensor MHZ19Sensor;
@@ -13,9 +14,7 @@ bool MHZ19_Sensor::on_init() {
 }
 
 bool MHZ19_Sensor::on_measure() {
-  int currentCo2 = 0,
-      minCo2 = 0,
-      maxCo2 = 0;
+  int currentCo2 = 0, minCo2 = 0, maxCo2 = 0;
 
   Log.traceln("MHZ19_Sensor::measure: reading sensor values");
   for (int i = 0; i < SENSOR_AVG_WINDOW; ++i) {
@@ -37,7 +36,7 @@ bool MHZ19_Sensor::on_measure() {
 
 #ifdef PRINT_SENSORS_ON_READ
   Log.debugln("MHZ19 Co2: " + String(_co2));
-#endif  // PRINT_SENSORS_ON_READ
+#endif // PRINT_SENSORS_ON_READ
 
   return true;
 }

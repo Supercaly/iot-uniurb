@@ -1,14 +1,14 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "config.h"
-
 #include <Arduino.h>
+
+#include "config.h"
 
 /*
  * Compute the size of an array at compile time.
  */
-template<class A, size_t N>
+template <class A, size_t N>
 constexpr size_t size_of_array(A (&)[N]) {
   return N;
 }
@@ -19,18 +19,18 @@ constexpr size_t size_of_array(A (&)[N]) {
 /*
  * Macro to turn on a LED.
  */
-#define LED_ON(led) \
-  do { \
-    pinMode(led, OUTPUT); \
+#define LED_ON(led)          \
+  do {                       \
+    pinMode(led, OUTPUT);    \
     digitalWrite(led, HIGH); \
   } while (0)
 
 /*
  * Macro to turn off a LED.
  */
-#define LED_OFF(led) \
-  do { \
-    pinMode(led, OUTPUT); \
+#define LED_OFF(led)        \
+  do {                      \
+    pinMode(led, OUTPUT);   \
     digitalWrite(led, LOW); \
   } while (0)
 
@@ -51,4 +51,4 @@ void reboot_board(int wait_ms = BOARD_REBOOT_DELAY_MS);
  */
 String board_uptime();
 
-#endif  // UTILS_H
+#endif // UTILS_H
