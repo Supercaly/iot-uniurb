@@ -20,4 +20,4 @@ jobs:
         with:
           source: '. src'
           extensions: 'h,cpp,ino'
-          clangFormatVersion: 15
+          clangFormatVersion: 15.0.2
