@@ -1,4 +1,4 @@
-name: Check Format
+name: Lint
 on:
   push:
     branches:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    name: Check code base format
+    name: Check code base Format
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -20,4 +20,4 @@ jobs:
         with:
           source: '. src'
           extensions: 'h,cpp,ino'
-          clangFormatVersion: 16
+          clangFormatVersion: 15
