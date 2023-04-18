@@ -174,7 +174,7 @@ static void cmd_temp_offset(String temp_str) {
   } else {
     Log.traceln("cmd_temp_offset: wants to set temperature offset");
     int temp_offset = (int)temp_str.toInt();
-    if (!Preference.set_temperatue_offset(temp_offset)) {
+    if (!Preference.set_temperature_offset(temp_offset)) {
       telnet.println("error setting temperature offset");
     }
   }

@@ -72,6 +72,31 @@ String BoardPreference::available_sensors_to_String() {
   return ret;
 }
 
+bool BoardPreference::set_board_host_name(String name) {
+  _board_host_name = name;
+  return write_preferences();
+}
+
+bool BoardPreference::set_board_location(String location) {
+  _board_location = location;
+  return write_preferences();
+}
+
+bool BoardPreference::set_board_room(String room) {
+  _board_room = room;
+  return write_preferences();
+}
+
+bool BoardPreference::set_spoofed_mac(String mac) {
+  _spoofed_mac_addr = mac;
+  return write_preferences();
+}
+
+bool BoardPreference::set_temperature_offset(int offset) {
+  _temperature_offset = (uint8_t)offset;
+  return write_preferences();
+}
+
 bool BoardPreference::read_preferences() {
   Log.traceln("BoardPreference::read_preferences: reading board preferences "
               "form EEPROM");
