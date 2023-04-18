@@ -1,9 +1,8 @@
 #ifndef SENSOR_TYPE_H
 #define SENSOR_TYPE_H
 
+#include <Arduino.h>
 #include <assert.h>
-
-#include "../common.h"
 
 /*
  * Enum representing the type of
