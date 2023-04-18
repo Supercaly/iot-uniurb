@@ -14,12 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Install clang-format
-        run: >-
-          sudo apt-get update &&
-          sudo apt-get install --no-install-recommends -y clang-format-16 &&
-          sudo mv /usr/bin/clang-format-16 /usr/bin/clang-format
       - uses: actions/checkout@v3
-      - name: Run clang-format style check for all codebase
-        run: >-
-          clang-format --dry-run --Werror **/*.h **/*.cpp **/*.ino
+      - uses: Ballen7/clang-format-lint-action@clang-format-16
+        with:
+          source: '. src'
+          extensions: 'h,cpp,ino'
+          clangFormatVersion: 16
