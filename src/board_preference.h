@@ -170,8 +170,24 @@ class BoardPreference {
   String   _spoofed_mac_addr;
   uint8_t  _temperature_offset = 0;
 
+  // Checksum internal buffer.
+  uint8_t *_checksum_buffer    = nullptr;
+  size_t   _checksum_buffer_sz = 0;
+
   bool read_preferences();
   bool write_preferences();
+
+  /*
+   * Compute the checksum from all the preferences
+   * stored inside the board's EEPROM.
+   *
+   * This checksum function implements a 16bit version
+   * of the Adler-32 algorithm.
+   *
+   * Returns the computed checksum as a 16bit unsigned int.
+   */
+  uint16_t checksum();
+  void     create_checksum_prefs_buffer();
 };
 
 /*
