@@ -1,8 +1,9 @@
 #include "telnet.h"
-#include "wifi.h"
-#include "../sensor_helper.h"
 
 #include <ESPTelnet.h>
+
+#include "../sensor_helper.h"
+#include "wifi.h"
 
 static String string_divide_by(String *s, char delim) {
   size_t i = 0;
@@ -10,15 +11,16 @@ static String string_divide_by(String *s, char delim) {
     i++;
   }
   String result = s->substring(0, i);
-  *s = s->substring(i);
+  *s            = s->substring(i);
   return result;
 }
 
 typedef void (*cmd_on_run)(String cmd);
+
 struct TelnetCommand {
-  String name;
+  String     name;
   cmd_on_run run;
-  String help;
+  String     help;
 };
 
 static ESPTelnet telnet;
@@ -40,28 +42,26 @@ static void cmd_quit(String);
 static void cmd_help(String);
 
 static const TelnetCommand commands[] = {
-  { "info", cmd_info, "retrieve the values from all available sensors" },
-  { "sensors", cmd_sensors_list, "list the available sensors" },
-  { "sensors-add", cmd_sensors_add, "mark a sensor as available" },
-  { "sensors-rm", cmd_sensors_rm, "mark a sensor as no longer available" },
-  { "board-host", cmd_board_host, "get or set board's host name" },
-  { "board-location", cmd_board_location, "get or set board's location" },
-  { "board-room", cmd_board_room, "get or set board's room" },
-  { "mac", cmd_mac_address, "get or set MAC address (off to use default)" },
-  { "tmp-offset", cmd_temp_offset, "get or set offset subtracted by each temperature value" },
-  { "uptime", cmd_uptime, "get the time elapsed since the board's boot" },
-  { "ping", cmd_ping, "ping the board" },
-  { "reboot", cmd_reboot, "reboot the board" },
-  { "version", cmd_version, "show current firmware version" },
-  { "quit", cmd_quit, "exit" },
-  { "help", cmd_help, "show this help message" },
+    {"info",           cmd_info,           "retrieve the values from all available sensors"        },
+    {"sensors",        cmd_sensors_list,   "list the available sensors"                            },
+    {"sensors-add",    cmd_sensors_add,    "mark a sensor as available"                            },
+    {"sensors-rm",     cmd_sensors_rm,     "mark a sensor as no longer available"                  },
+    {"board-host",     cmd_board_host,     "get or set board's host name"                          },
+    {"board-location", cmd_board_location, "get or set board's location"                           },
+    {"board-room",     cmd_board_room,     "get or set board's room"                               },
+    {"mac",            cmd_mac_address,    "get or set MAC address (off to use default)"           },
+    {"tmp-offset",     cmd_temp_offset,    "get or set offset subtracted by each temperature value"},
+    {"uptime",         cmd_uptime,         "get the time elapsed since the board's boot"           },
+    {"ping",           cmd_ping,           "ping the board"                                        },
+    {"reboot",         cmd_reboot,         "reboot the board"                                      },
+    {"version",        cmd_version,        "show current firmware version"                         },
+    {"quit",           cmd_quit,           "exit"                                                  },
+    {"help",           cmd_help,           "show this help message"                                },
 };
 
 static void cmd_info(String _) {
   telnet.println("Values from available sensors:");
-  print_available_sensors_info([](String line) {
-    telnet.println(line);
-  });
+  print_available_sensors_info([](String line) { telnet.println(line); });
 }
 
 static void cmd_sensors_list(String _) {
@@ -160,8 +160,7 @@ static void cmd_mac_address(String mac_addr) {
     return;
   }
 
-  Log.traceln("cmd_mac_address: want to set MAC address to: '"
-              + mac_addr + "'");
+  Log.traceln("cmd_mac_address: want to set MAC address to: '" + mac_addr + "'");
   if (!Preference.set_spoofed_mac(mac_addr)) {
     telnet.println("cannot set MAC address");
   }
@@ -283,8 +282,7 @@ bool telnet_init(int port) {
 void telnet_task_code(void *args) {
   TickType_t last_loop_time = xTaskGetTickCount();
   for (;;) {
-    xTaskDelayUntil(&last_loop_time,
-                    pdMS_TO_TICKS(TELNET_LOOP_DELAY_MS));
+    xTaskDelayUntil(&last_loop_time, pdMS_TO_TICKS(TELNET_LOOP_DELAY_MS));
 
     telnet.loop();
   }

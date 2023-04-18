@@ -1,35 +1,35 @@
 #ifndef SENSOR_HELPER_H
 #define SENSOR_HELPER_H
 
+#include <assert.h>
+
 #include "common.h"
-#include "sensor/sensor_type.h"
-#include "sensor/abstract_sensor.h"
 #include "sensor/DHT11_sensor.h"
+#include "sensor/MHZ19_sensor.h"
 #include "sensor/SGP30_sensor.h"
 #include "sensor/SPS30_sensor.h"
-#include "sensor/MHZ19_sensor.h"
-
-#include <assert.h>
+#include "sensor/abstract_sensor.h"
+#include "sensor/sensor_type.h"
 
 // Measure task config.
 #define MEASURE_TASK_STACK_SIZE 4096
-#define MEASURE_TASK_PRIORITY 8
-#define MEASURE_TASK_CORE tskNO_AFFINITY
+#define MEASURE_TASK_PRIORITY   8
+#define MEASURE_TASK_CORE       tskNO_AFFINITY
 
 /*
  * Struct that maps SensorType to objects
  * implementing AbstractSensor.
  */
 struct SensorTypeToImplPair {
-  SensorType type;
+  SensorType      type;
   AbstractSensor *sensor;
 };
 
 static const SensorTypeToImplPair type_to_sensor_map[] = {
-  { SensorType::SENSOR_DHT11, &DHT11Sensor },
-  { SensorType::SENSOR_SGP30, &SGP30Sensor },
-  { SensorType::SENSOR_MHZ19, &MHZ19Sensor },
-  { SensorType::SENSOR_SPS30, &SPS30Sensor },
+    {SensorType::SENSOR_DHT11, &DHT11Sensor},
+    {SensorType::SENSOR_SGP30, &SGP30Sensor},
+    {SensorType::SENSOR_MHZ19, &MHZ19Sensor},
+    {SensorType::SENSOR_SPS30, &SPS30Sensor},
 };
 static_assert(size_of_array(type_to_sensor_map) == SensorType::COUNT_SENSORS,
               "The number of elements of type_to_sensor_map have changed. "
@@ -70,4 +70,4 @@ void print_available_sensors_info(void (*print)(String));
  */
 void measure_and_send_task_code(void *args);
 
-#endif  // SENSOR_HELPER_H
+#endif // SENSOR_HELPER_H

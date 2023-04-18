@@ -1,12 +1,12 @@
 #include "wifi.h"
 
-#include <esp_wifi.h>
+#include <IPAddress.h>
 #include <WiFi.h>
-#include "IPAddress.h"
+#include <esp_wifi.h>
 
 #ifdef HAS_BACKUP_WIFI
 static int old_backup_state = HIGH;
-#endif  // HAS_BACKUP_WIFI
+#endif // HAS_BACKUP_WIFI
 
 // TODO: Make function set_mac_address publicly available.
 //  Currently we call WiFi.mode(WIFI_STA) inside wifi_connect, so the WiFi
@@ -17,13 +17,18 @@ static int old_backup_state = HIGH;
 //  network, but, in case we implement the access piont we can let the user
 //  change the MAC.
 static void set_mac_address(String mac) {
-  int mac_val[6];
+  int     mac_val[6];
   uint8_t mac_bytes[6];
 
   // Parse MAC address string to bytes
-  int sz = sscanf(mac.c_str(), "%x:%x:%x:%x:%x:%x%*c",
-                  &mac_val[0], &mac_val[1], &mac_val[2],
-                  &mac_val[3], &mac_val[4], &mac_val[5]);
+  int sz = sscanf(mac.c_str(),
+                  "%x:%x:%x:%x:%x:%x%*c",
+                  &mac_val[0],
+                  &mac_val[1],
+                  &mac_val[2],
+                  &mac_val[3],
+                  &mac_val[4],
+                  &mac_val[5]);
   if (sz != 6) {
     Log.errorln("set_mac_address: invalid MAC address: '" + mac + "'");
     return;
@@ -34,20 +39,15 @@ static void set_mac_address(String mac) {
   }
   esp_err_t err = esp_wifi_set_mac(WIFI_IF_STA, mac_bytes);
   if (err == ESP_OK) {
-    Log.debugln("set_mac_address: new MAC address: "
-                + wifi_get_mac_address());
+    Log.debugln("set_mac_address: new MAC address: " + wifi_get_mac_address());
   } else {
-    Log.traceln("set_mac_address: error setting MAC: "
-                + String(esp_err_to_name(err)));
+    Log.traceln("set_mac_address: error setting MAC: " + String(esp_err_to_name(err)));
   }
 }
 
-bool wifi_connect(const char *ssid, const char *pwd,
-                  int max_retry, int pause) {
-  Log.traceln("wifi_connect: connecting to SSID: '" + String(ssid)
-              + "' with pwd: '" + String(pwd)
-              + "' attempts: " + String(max_retry)
-              + " delay: " + String(pause));
+bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
+  Log.traceln("wifi_connect: connecting to SSID: '" + String(ssid) + "' with pwd: '" + String(pwd)
+              + "' attempts: " + String(max_retry) + " delay: " + String(pause));
 
   LED_ON(SIGNAL_LED_PIN);
 
@@ -119,4 +119,4 @@ void wifi_backup_task_code(void *args) {
     old_backup_state = backup_state;
   }
 }
-#endif  //HAS_BACKUP_WIFI
+#endif // HAS_BACKUP_WIFI

@@ -6,7 +6,7 @@ bool AbstractSensor::init() {
   }
 
   bool init_res = on_init();
-  p_is_init = init_res;
+  p_is_init     = init_res;
   return init_res;
 }
 

@@ -1,7 +1,8 @@
 #include "SPS30_sensor.h"
-#include "../common.h"
 
 #include <sps30.h>
+
+#include "../common.h"
 
 SPS30_Sensor SPS30Sensor;
 
@@ -23,7 +24,8 @@ bool SPS30_Sensor::on_init() {
     return false;
   }
 
-  Log.traceln("SPS30_Sensor::init: set fan auto-cleaning days to " + String(SPS30_FAN_AUTO_CLEAN_DAYS));
+  Log.traceln("SPS30_Sensor::init: set fan auto-cleaning days to "
+              + String(SPS30_FAN_AUTO_CLEAN_DAYS));
   ret = sps30_set_fan_auto_cleaning_interval_days(SPS30_FAN_AUTO_CLEAN_DAYS);
   if (ret) {
     Log.errorln("SPS30_Sensor::init: error setting auto-cleaning interval: " + String(ret));
@@ -43,7 +45,7 @@ bool SPS30_Sensor::on_init() {
 }
 
 bool SPS30_Sensor::on_measure() {
-  int16_t ret;
+  int16_t  ret;
   uint16_t data_ready;
 
   Log.traceln("SPS30_Sensor::measure: reading sensor values");
@@ -68,7 +70,7 @@ bool SPS30_Sensor::on_measure() {
   Log.debugln("SPS30 PM 2.5: " + String(_sps_meas.mc_2p5));
   Log.debugln("SPS30 PM 4.0: " + String(_sps_meas.mc_4p0));
   Log.debugln("SPS30 PM 10.0: " + String(_sps_meas.mc_10p0));
-#endif  // PRINT_SENSORS_ON_READ
+#endif // PRINT_SENSORS_ON_READ
 
   return true;
 }

@@ -1,0 +1,22 @@
+name: Lint
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  lint:
+    name: Check code base Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: DoozyX/clang-format-lint-action@v0.15
+        with:
+          source: '. src'
+          extensions: 'h,cpp,ino'
+          clangFormatVersion: 15.0.2

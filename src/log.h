@@ -1,9 +1,9 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include "config.h"
-
 #include <Arduino.h>
+
+#include "config.h"
 
 /*
  * Enum representing the log level.
@@ -21,7 +21,7 @@ enum LogLevel {
  * Class implementing a logger.
  */
 class Logger {
-public:
+  public:
   Logger(LogLevel level);
 
   void init(int speed = BAUD_RATE);
@@ -44,9 +44,9 @@ public:
   void errorln(const String &s);
   void fatalln(const String &s);
 
-private:
+  private:
   LogLevel _level;
-  bool _cr_done;
+  bool     _cr_done;
 
   void print(LogLevel level, const String &s);
   void println(LogLevel level, const String &s);
@@ -55,4 +55,4 @@ private:
 // Global Logger instance.
 extern Logger Log;
 
-#endif  // LOG_H
+#endif // LOG_H

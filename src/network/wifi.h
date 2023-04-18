@@ -11,11 +11,11 @@
 // Backup WiFi task config.
 #ifdef HAS_BACKUP_WIFI
 // TODO: Reduce stack size used by wifi backup task
-#define WIFI_BACKUP_TASK_STACK_SIZE 4096
-#define WIFI_BACKUP_TASK_PRIORITY 5
-#define WIFI_BACKUP_TASK_CORE tskNO_AFFINITY
-#define WIFI_BACKUP_TASK_DELAY_MS 1000
-#endif  // HAS_BACKUP_WIFI
+#  define WIFI_BACKUP_TASK_STACK_SIZE 4096
+#  define WIFI_BACKUP_TASK_PRIORITY   5
+#  define WIFI_BACKUP_TASK_CORE       tskNO_AFFINITY
+#  define WIFI_BACKUP_TASK_DELAY_MS   1000
+#endif // HAS_BACKUP_WIFI
 /*
  * Returns true if the device is connected to a WiFi network,
  * false otherwise.
@@ -28,9 +28,10 @@ bool wifi_is_connected();
  * Return true if the connection is successful,
  * false in case of errors.
  */
-bool wifi_connect(const char *ssid, const char *pwd,
-                  int max_retry = WIFI_MAX_CONN_RETRY,
-                  int pause = WIFI_RETRY_PAUSE_MS);
+bool wifi_connect(const char *ssid,
+                  const char *pwd,
+                  int         max_retry = WIFI_MAX_CONN_RETRY,
+                  int         pause     = WIFI_RETRY_PAUSE_MS);
 
 /*
  * Returns the current IP address as String if the device
@@ -62,6 +63,6 @@ String wifi_get_mac_address();
  */
 #ifdef HAS_BACKUP_WIFI
 void wifi_backup_task_code(void *args);
-#endif  // HAS_BACKUP_WIFI
+#endif // HAS_BACKUP_WIFI
 
-#endif  // WIFI_H
+#endif // WIFI_H

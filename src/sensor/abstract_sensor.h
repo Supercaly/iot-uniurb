@@ -9,7 +9,7 @@
  * sensor and measure his data.
  */
 class AbstractSensor {
-public:
+  public:
   /*
    * Initialize the sensor.
    *
@@ -26,7 +26,7 @@ public:
    */
   bool measure();
 
-protected:
+  protected:
   /*
    * Variable stating if the sensor is already initialized.
    */
@@ -45,4 +45,4 @@ protected:
   virtual bool on_measure() = 0;
 };
 
-#endif  // ABSTRACT_SENSOR_H
+#endif // ABSTRACT_SENSOR_H

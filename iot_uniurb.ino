@@ -1,20 +1,20 @@
 #include "src/common.h"
 #include "src/network/wifi.h"
 #ifdef HAS_INFLUXDB
-#include "src/network/influxdb.h"
-#endif  // HAS_INFLUXDB
+#  include "src/network/influxdb.h"
+#endif // HAS_INFLUXDB
 #ifdef HAS_TELNET
-#include "src/network/telnet.h"
-#endif  // HAS_TELNET
+#  include "src/network/telnet.h"
+#endif // HAS_TELNET
 #include "src/sensor_helper.h"
 
 TaskHandle_t measure_task_handler;
 #ifdef HAS_BACKUP_WIFI
 TaskHandle_t wifi_backup_task_handler;
-#endif  // HAS_BACKUP_WIFI
+#endif // HAS_BACKUP_WIFI
 #ifdef HAS_TELNET
 TaskHandle_t telnet_task_handler;
-#endif  // HAS_TELNET
+#endif // HAS_TELNET
 
 void setup() {
   // Init logger
@@ -38,7 +38,7 @@ void setup() {
                           WIFI_BACKUP_TASK_PRIORITY,
                           &wifi_backup_task_handler,
                           WIFI_BACKUP_TASK_CORE);
-#endif  // HAS_BACKUP_WIFI
+#endif // HAS_BACKUP_WIFI
 
   Log.infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
   Log.infoln("SSID:               '" + String(WIFI_SSID) + "'");
@@ -62,7 +62,7 @@ void setup() {
   } else {
     Log.errorln("something went wrong initializing Telnet");
   }
-#endif  // HAS_TELNET
+#endif // HAS_TELNET
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB
@@ -73,7 +73,7 @@ void setup() {
   if (!influxdb_init()) {
     Log.fatalln("something went wrong initializing InfluxDB");
   }
-#endif  // HAS_INFLUXDB
+#endif // HAS_INFLUXDB
 
   // Init available sensors
   init_all_available_sensors();
