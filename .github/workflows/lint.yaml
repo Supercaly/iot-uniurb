@@ -13,16 +13,13 @@ jobs:
     name: Check code base Format
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    strategy:
-      matrix:
-        path:
-          - check: '.'
-          - check: 'src'
     steps:
-    - uses: actions/checkout@v3
-    - name: Run clang-format style check for all codebase
-      uses: jidicula/clang-format-action@v4.11.0
-      with:
-        clang-format-version: '16'
-        check-path: ${{ matrix.path['check'] }}
-        exclude-regex: ${{ matrix.path['exclude'] }}
+      - name: Install clang-format
+        run: >-
+          apt-get update &&
+          apt-get install --no-install-recommends -y clang-format-16 &&
+          mv /usr/bin/clang-format-16 /usr/bin/clang-format
+      - uses: actions/checkout@v3
+      - name: Run clang-format style check for all codebase
+        run: >-
+          clang-format --dry-run --Werror **/*.h **/*.cpp **/*.ino
