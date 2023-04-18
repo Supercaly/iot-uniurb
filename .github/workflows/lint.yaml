@@ -16,9 +16,9 @@ jobs:
     steps:
       - name: Install clang-format
         run: >-
-          apt-get update &&
-          apt-get install --no-install-recommends -y clang-format-16 &&
-          mv /usr/bin/clang-format-16 /usr/bin/clang-format
+          sudo apt-get update &&
+          sudo apt-get install --no-install-recommends -y clang-format-16 &&
+          sudo mv /usr/bin/clang-format-16 /usr/bin/clang-format
       - uses: actions/checkout@v3
       - name: Run clang-format style check for all codebase
         run: >-
