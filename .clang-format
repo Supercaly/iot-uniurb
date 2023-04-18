@@ -18,9 +18,9 @@ AlignConsecutiveMacros: Consecutive
 
 AlignEscapedNewlines: Left
 AlignOperands: Align
-AlignTrailingComments:
-  Kind: Always
-  OverEmptyLines:  0
+AlignTrailingComments: true
+#  Kind: Always
+#  OverEmptyLines:  0
 
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
@@ -58,12 +58,12 @@ BraceWrapping:
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
-BreakAfterAttributes: Never
-BreakArrays: true
+#BreakAfterAttributes: Never
+#BreakArrays: true
 BreakBeforeBinaryOperators: All
 BreakBeforeConceptDeclarations: Always
 BreakBeforeBraces: Custom
-BreakBeforeInlineASMColon: OnlyMultiline
+#BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: BeforeColon
 BreakInheritanceList: AfterComma
@@ -114,19 +114,19 @@ IndentPPDirectives: AfterHash
 IndentRequiresClause: true
 IndentWrappedFunctionNames: true
 InsertBraces: true
-InsertNewlineAtEOF: true
+#InsertNewlineAtEOF: true
 InsertTrailingCommas: None
-IntegerLiteralSeparator:
-  Binary:          0
-  BinaryMinDigits: 0
-  Decimal:         0
-  DecimalMinDigits: 0
-  Hex:             0
-  HexMinDigits:    0
+#IntegerLiteralSeparator:
+#  Binary:          0
+#  BinaryMinDigits: 0
+#  Decimal:         0
+#  DecimalMinDigits: 0
+#  Hex:             0
+#  HexMinDigits:    0
 
 KeepEmptyLinesAtTheStartOfBlocks: false
 LambdaBodyIndentation: Signature
-LineEnding:      LF
+#LineEnding:      LF
 MacroBlockBegin: ''
 MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 1
@@ -152,10 +152,10 @@ ReferenceAlignment: Pointer
 
 ReflowComments:  true
 RemoveBracesLLVM: false
-RemoveSemicolon: false
+#RemoveSemicolon: false
 
 RequiresClausePosition: OwnLine
-RequiresExpressionIndentation: OuterScope
+#RequiresExpressionIndentation: OuterScope
 
 SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 1

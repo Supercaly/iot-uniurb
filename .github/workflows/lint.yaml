@@ -15,8 +15,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
-      - uses: Ballen7/clang-format-lint-action@clang-format-16
+      - uses: DoozyX/clang-format-lint-action@v0.15
         with:
           source: '. src'
           extensions: 'h,cpp,ino'
-          clangFormatVersion: 16
+          clangFormatVersion: 15.0.2
