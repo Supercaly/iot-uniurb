@@ -161,7 +161,6 @@ SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 1
 
 SortIncludes:    CaseSensitive
-SortUsingDeclarations: LexicographicNumeric
 
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
