@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <Arduino.h>
+#include <WString.h>
 
 #include "config.h"
 

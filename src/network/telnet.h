@@ -1,7 +1,9 @@
 #ifndef TELNET_H
 #define TELNET_H
 
-#include "../common.h"
+#include <Arduino.h>
+
+#include "../config.h"
 
 // Default telnet port
 #define TELNET_PORT 23

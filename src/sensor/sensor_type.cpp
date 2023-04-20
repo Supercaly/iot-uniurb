@@ -1,5 +1,7 @@
 #include "sensor_type.h"
 
+#include <assert.h>
+
 String SensorType_to_String(SensorType t) {
   switch (t) {
   case SENSOR_DHT11:

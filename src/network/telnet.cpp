@@ -1,8 +1,14 @@
 #include "telnet.h"
 
+#include <Arduino.h>
 #include <ESPTelnet.h>
+#include <WString.h>
 
+#include "../board_preference.h"
+#include "../log.h"
 #include "../sensor_helper.h"
+#include "../utils.h"
+#include "../version.h"
 #include "wifi.h"
 
 static String string_divide_by(String *s, char delim) {
@@ -283,7 +289,6 @@ void telnet_task_code(void *args) {
   TickType_t last_loop_time = xTaskGetTickCount();
   for (;;) {
     xTaskDelayUntil(&last_loop_time, pdMS_TO_TICKS(TELNET_LOOP_DELAY_MS));
-
     telnet.loop();
   }
 }

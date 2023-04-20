@@ -1,6 +1,10 @@
 #include "MHZ19_sensor.h"
 
-#include "../common.h"
+#include <Arduino.h>
+#include <WString.h>
+
+#include "../config.h"
+#include "../log.h"
 
 MHZ19_Sensor MHZ19Sensor;
 

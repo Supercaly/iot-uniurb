@@ -1,8 +1,17 @@
 #include "wifi.h"
 
+#include <Arduino.h>
 #include <IPAddress.h>
+#include <WString.h>
 #include <WiFi.h>
 #include <esp_wifi.h>
+#include <stdint.h>
+#include <stdio.h>
+
+#include "../board_preference.h"
+#include "../config.h"
+#include "../log.h"
+#include "../utils.h"
 
 #ifdef HAS_BACKUP_WIFI
 static int old_backup_state = HIGH;
@@ -63,7 +72,7 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   }
 
   WiFi.begin(ssid, pwd);
-  Log.debug("wifi_connect: connecing to WiFi");
+  Log.debug("wifi_connect: connecting to WiFi");
 
   // Test the connection for some times
   int conn_attempt = 0;

@@ -1,8 +1,12 @@
 #include "board_preference.h"
 
 #include <EEPROM.h>
+#include <WString.h>
+#include <stdint.h>
+#include <string.h>
 
 #include "log.h"
+#include "sensor/sensor_type.h"
 
 #define _PREF_HAS_SENSOR_BIT(bytes, idx)   (((bytes >> (uint16_t)idx)) & (uint16_t)0x01)
 #define _PREF_SET_SENSOR_BIT(bytes, idx)   bytes |= ((uint16_t)0x01 << (uint16_t)idx)

@@ -1,6 +1,17 @@
 #include "sensor_helper.h"
 
+#include <Arduino.h>
+#include <WString.h>
+
+#include "board_preference.h"
+#include "log.h"
 #include "network/influxdb.h"
+#include "sensor/DHT11_sensor.h"
+#include "sensor/MHZ19_sensor.h"
+#include "sensor/SGP30_sensor.h"
+#include "sensor/SPS30_sensor.h"
+#include "sensor/sensor_type.h"
+#include "utils.h"
 
 bool init_all_available_sensors() {
   bool has_errors = false;

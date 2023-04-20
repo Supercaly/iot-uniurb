@@ -1,8 +1,13 @@
 #include "SPS30_sensor.h"
 
+#include <Arduino.h>
+#include <MHZCO2.h>
+#include <WString.h>
 #include <sps30.h>
+#include <stdint.h>
 
-#include "../common.h"
+#include "../config.h"
+#include "../log.h"
 
 SPS30_Sensor SPS30Sensor;
 

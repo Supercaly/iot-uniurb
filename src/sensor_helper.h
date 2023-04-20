@@ -1,9 +1,10 @@
 #ifndef SENSOR_HELPER_H
 #define SENSOR_HELPER_H
 
+#include <Arduino.h>
+#include <WString.h>
 #include <assert.h>
 
-#include "common.h"
 #include "sensor/DHT11_sensor.h"
 #include "sensor/MHZ19_sensor.h"
 #include "sensor/SGP30_sensor.h"

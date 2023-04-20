@@ -1,5 +1,9 @@
 #include "log.h"
 
+#include <WString.h>
+
+#include "config.h"
+
 #ifdef IS_DEBUG
 Logger Log(LogLevel::TRACE);
 #else
