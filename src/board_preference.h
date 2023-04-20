@@ -30,7 +30,7 @@ class BoardPreference {
    * Clear all the preferences stored inside the board
    * restoring them to their default values.
    *
-   * Returns flase if the change cannot be applied
+   * Returns false if the change cannot be applied
    * and leaves the values unchanged.
    */
   bool clear();
@@ -52,7 +52,7 @@ class BoardPreference {
   /*
    * Mark the given sensor as available.
    *
-   * Returns flase if the change cannot be applied
+   * Returns false if the change cannot be applied
    * and leaves the values unchanged.
    */
   bool add_sensor(SensorType s);
@@ -60,7 +60,7 @@ class BoardPreference {
   /*
    * Mark the given sensor as no longer available.
    *
-   * Returns flase if the change cannot be applied
+   * Returns false if the change cannot be applied
    * and leaves the values unchanged.
    */
   bool remove_sensor(SensorType s);
@@ -75,13 +75,10 @@ class BoardPreference {
   /*
    * Set the board's host name.
    *
-   * Returns flase if the change cannot be applied
+   * Returns false if the change cannot be applied
    * and leaves the values unchanged.
    */
-  bool set_board_host_name(String name) {
-    _board_host_name = name;
-    return write_preferences();
-  }
+  bool set_board_host_name(String name);
 
   /*
    * Returns the board's location.
@@ -93,29 +90,23 @@ class BoardPreference {
   /*
    * Set the board's location.
    *
-   * Returns flase if the change cannot be applied
+   * Returns false if the change cannot be applied
    * and leaves the values unchanged.
    */
-  bool set_board_location(String location) {
-    _board_location = location;
-    return write_preferences();
-  }
+  bool set_board_location(String location);
 
   /*
-   * Returns the bord's room.
+   * Returns the board's room.
    */
   String get_board_room() const { return _board_room.isEmpty() ? DEFAULT_BOARD_ROOM : _board_room; }
 
   /*
    * Set the board's room.
    *
-   * Returns flase if the change cannot be applied
+   * Returns false if the change cannot be applied
    * and leaves the values unchanged.
    */
-  bool set_board_room(String room) {
-    _board_room = room;
-    return write_preferences();
-  }
+  bool set_board_room(String room);
 
   /*
    * Returns true if the board has enabled
@@ -129,7 +120,7 @@ class BoardPreference {
    * by column.
    *
    * In case MAC address spoofing is not enabled
-   * this function returns an empry String.
+   * this function returns an empty String.
    */
   String get_spoofed_mac() const { return _spoofed_mac_addr; }
 
@@ -143,17 +134,20 @@ class BoardPreference {
    * spoofing will be disabled and the connection
    * will use the default one.
    */
-  bool set_spoofed_mac(String mac) {
-    _spoofed_mac_addr = mac;
-    return write_preferences();
-  }
+  bool set_spoofed_mac(String mac);
 
+  /*
+   * Return the temperature offset.
+   */
   int8_t get_temperature_offset() const { return _temperature_offset; }
 
-  bool set_temperatue_offset(int offset) {
-    _temperature_offset = (uint8_t)offset;
-    return write_preferences();
-  }
+  /*
+   * Set the temperature offset.
+   *
+   * Returns false is the change cannot be applied
+   * and leaves the values unchanged.
+   */
+  bool set_temperature_offset(int offset);
 
   private:
   /*
@@ -170,8 +164,24 @@ class BoardPreference {
   String   _spoofed_mac_addr;
   uint8_t  _temperature_offset = 0;
 
+  // Checksum internal buffer.
+  uint8_t *_checksum_buffer    = nullptr;
+  size_t   _checksum_buffer_sz = 0;
+
   bool read_preferences();
   bool write_preferences();
+
+  /*
+   * Compute the checksum from all the preferences
+   * stored inside the board's EEPROM.
+   *
+   * This checksum function implements a 16bit version
+   * of the Adler-32 algorithm.
+   *
+   * Returns the computed checksum as a 16bit unsigned int.
+   */
+  uint16_t checksum();
+  void     create_checksum_prefs_buffer();
 };
 
 /*
