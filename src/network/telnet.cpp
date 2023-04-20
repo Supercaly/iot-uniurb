@@ -75,7 +75,7 @@ static void cmd_sensors_list(String _) {
 }
 
 static void cmd_sensors_add(String sensor_str) {
-  Log.traceln("cmd_sensors_add: enable sensor '" + sensor_str + "'");
+  LOG_TRACELN("cmd_sensors_add: enable sensor '" + sensor_str + "'");
 
   sensor_str.trim();
   sensor_str.toUpperCase();
@@ -96,7 +96,7 @@ static void cmd_sensors_add(String sensor_str) {
 }
 
 static void cmd_sensors_rm(String sensor_str) {
-  Log.traceln("cmd_sensors_rm: disable sensor '" + sensor_str + "'");
+  LOG_TRACELN("cmd_sensors_rm: disable sensor '" + sensor_str + "'");
 
   sensor_str.trim();
   sensor_str.toUpperCase();
@@ -119,10 +119,10 @@ static void cmd_sensors_rm(String sensor_str) {
 static void cmd_board_host(String new_name) {
   new_name.trim();
   if (new_name.isEmpty()) {
-    Log.traceln("cmd_board_host: want to get the board host name");
+    LOG_TRACELN("cmd_board_host: want to get the board host name");
     telnet.println(Preference.get_board_host_name());
   } else {
-    Log.traceln("cmd_board_host: wanto to set the board host name to: '" + new_name + "'");
+    LOG_TRACELN("cmd_board_host: wanto to set the board host name to: '" + new_name + "'");
     Preference.set_board_host_name(new_name);
   }
 }
@@ -130,10 +130,10 @@ static void cmd_board_host(String new_name) {
 static void cmd_board_location(String new_loc) {
   new_loc.trim();
   if (new_loc.isEmpty()) {
-    Log.traceln("cmd_board_location: wanto to get the board location");
+    LOG_TRACELN("cmd_board_location: wanto to get the board location");
     telnet.println(Preference.get_board_location());
   } else {
-    Log.traceln("cmd_board_location: wanto to set the board location to '" + new_loc + "'");
+    LOG_TRACELN("cmd_board_location: wanto to set the board location to '" + new_loc + "'");
     Preference.set_board_location(new_loc);
   }
 }
@@ -141,10 +141,10 @@ static void cmd_board_location(String new_loc) {
 static void cmd_board_room(String new_room) {
   new_room.trim();
   if (new_room.isEmpty()) {
-    Log.traceln("cmd_board_room: wanto to get the board room");
+    LOG_TRACELN("cmd_board_room: wanto to get the board room");
     telnet.println(Preference.get_board_room());
   } else {
-    Log.traceln("cmd_board_room: wanto to set the board room to '" + new_room + "'");
+    LOG_TRACELN("cmd_board_room: wanto to set the board room to '" + new_room + "'");
     Preference.set_board_room(new_room);
   }
 }
@@ -152,21 +152,21 @@ static void cmd_board_room(String new_room) {
 static void cmd_mac_address(String mac_addr) {
   mac_addr.trim();
   if (mac_addr.isEmpty()) {
-    Log.traceln("cmd_mac_address: wants to get current MAC address");
+    LOG_TRACELN("cmd_mac_address: wants to get current MAC address");
     telnet.println(wifi_get_mac_address());
     return;
   }
 
   if (mac_addr == "off") {
-    Log.traceln("cmd_mac_address: wants to disable MAC address spoofing");
+    LOG_TRACELN("cmd_mac_address: wants to disable MAC address spoofing");
     if (!Preference.set_spoofed_mac("")) {
-      Log.errorln("cmd_mac_address: error disabling MAC address spoofing");
+      LOG_ERRORLN("cmd_mac_address: error disabling MAC address spoofing");
       telnet.println("cannot disable MAC spoofing");
     }
     return;
   }
 
-  Log.traceln("cmd_mac_address: want to set MAC address to: '" + mac_addr + "'");
+  LOG_TRACELN("cmd_mac_address: want to set MAC address to: '" + mac_addr + "'");
   if (!Preference.set_spoofed_mac(mac_addr)) {
     telnet.println("cannot set MAC address");
   }
@@ -175,10 +175,10 @@ static void cmd_mac_address(String mac_addr) {
 static void cmd_temp_offset(String temp_str) {
   temp_str.trim();
   if (temp_str.isEmpty()) {
-    Log.traceln("cmd_temp_offset: wants to get current temperature offset");
+    LOG_TRACELN("cmd_temp_offset: wants to get current temperature offset");
     telnet.println(String(Preference.get_temperature_offset()));
   } else {
-    Log.traceln("cmd_temp_offset: wants to set temperature offset");
+    LOG_TRACELN("cmd_temp_offset: wants to set temperature offset");
     int temp_offset = (int)temp_str.toInt();
     if (!Preference.set_temperature_offset(temp_offset)) {
       telnet.println("error setting temperature offset");
@@ -226,28 +226,28 @@ static void cmd_help(String cmd) {
 }
 
 static void telnet_on_connect_cb(String ip) {
-  Log.debugln("Telnet: IP '" + ip + "' connected");
+  LOG_DEBUGLN("Telnet: IP '" + ip + "' connected");
   telnet.println("\nWelcome to IoT UniUrb " + telnet.getIP());
   telnet.println("Use help for all commands, quit to disconnect.");
   telnet.print("> ");
 }
 
 static void telnet_on_connection_attempt_cb(String ip) {
-  Log.debugln("Telnet: IP '" + ip + "' is trying to connect");
+  LOG_DEBUGLN("Telnet: IP '" + ip + "' is trying to connect");
 }
 
 static void telnet_on_reconnect_cb(String ip) {
-  Log.debugln("Telnet: IP '" + ip + "' reconnected");
+  LOG_DEBUGLN("Telnet: IP '" + ip + "' reconnected");
 }
 
 static void telnet_on_disconnect_cb(String ip) {
-  Log.debugln("Telnet: IP '" + ip + "' disconnected");
+  LOG_DEBUGLN("Telnet: IP '" + ip + "' disconnected");
 }
 
 static void telnet_on_input_received_cb(String input) {
   String cmd;
 
-  Log.debugln("Telnet: new input '" + input + "'");
+  LOG_DEBUGLN("Telnet: new input '" + input + "'");
   // Parse command
   input.trim();
   if (input.isEmpty()) {
@@ -268,7 +268,7 @@ telnet_parse_input_defer:
 }
 
 bool telnet_init(int port) {
-  Log.traceln("telnet_init: init telnet server on port " + String(port));
+  LOG_TRACELN("telnet_init: init telnet server on port " + String(port));
 
   telnet.onConnect(telnet_on_connect_cb);
   telnet.onConnectionAttempt(telnet_on_connection_attempt_cb);
@@ -277,11 +277,11 @@ bool telnet_init(int port) {
   telnet.onInputReceived(telnet_on_input_received_cb);
 
   if (!telnet.begin(port)) {
-    Log.errorln("telnet_init: init error");
+    LOG_ERRORLN("telnet_init: init error");
     return false;
   }
 
-  Log.debugln("telnet_init: running");
+  LOG_DEBUGLN("telnet_init: running");
   return true;
 }
 

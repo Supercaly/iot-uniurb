@@ -23,17 +23,17 @@ TaskHandle_t telnet_task_handler;
 
 void setup() {
   // Init logger
-  Log.init(BAUD_RATE);
+  logger_init();
 
   // Init preferences
   if (!Preference.init()) {
-    Log.errorln("something went wrong initializing board preferences");
+    LOG_ERRORLN("something went wrong initializing board preferences");
   }
 
-  Log.infoln("Available Sensors:   " + Preference.available_sensors_to_String());
-  Log.infoln("Device Host Name:   '" + Preference.get_board_host_name() + "'");
-  Log.infoln("Device Location:    '" + Preference.get_board_location() + "'");
-  Log.infoln("Device Room:        '" + Preference.get_board_room() + "'");
+  LOG_INFOLN("Available Sensors:   " + Preference.available_sensors_to_String());
+  LOG_INFOLN("Device Host Name:   '" + Preference.get_board_host_name() + "'");
+  LOG_INFOLN("Device Location:    '" + Preference.get_board_location() + "'");
+  LOG_INFOLN("Device Room:        '" + Preference.get_board_room() + "'");
 
 #ifdef HAS_BACKUP_WIFI
   xTaskCreatePinnedToCore(wifi_backup_task_code,
@@ -45,14 +45,14 @@ void setup() {
                           WIFI_BACKUP_TASK_CORE);
 #endif // HAS_BACKUP_WIFI
 
-  Log.infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
-  Log.infoln("SSID:               '" + String(WIFI_SSID) + "'");
+  LOG_INFOLN("MAC Address:        '" + wifi_get_mac_address() + "'");
+  LOG_INFOLN("SSID:               '" + String(WIFI_SSID) + "'");
   // Connecto to WiFi network
   if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
-    Log.fatalln("something went wrong connecting to WiFi");
+    LOG_FATALLN("something went wrong connecting to WiFi");
     reboot_board();
   }
-  Log.infoln("Device IP:          '" + wifi_get_ip() + "'");
+  LOG_INFOLN("Device IP:          '" + wifi_get_ip() + "'");
 
 #ifdef HAS_TELNET
   // Init telnet
@@ -65,18 +65,18 @@ void setup() {
                             &telnet_task_handler,
                             TELNET_TASK_CORE);
   } else {
-    Log.errorln("something went wrong initializing Telnet");
+    LOG_ERRORLN("something went wrong initializing Telnet");
   }
 #endif // HAS_TELNET
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB
-  Log.infoln("InfluxDB url:       '" INFLUXDB_URL "'");
-  Log.infoln("InfluxDB org:       '" INFLUXDB_ORG "'");
-  Log.infoln("InfluxDB bucket:    '" INFLUXDB_BUCKET "'");
+  LOG_INFOLN("InfluxDB url:       '" INFLUXDB_URL "'");
+  LOG_INFOLN("InfluxDB org:       '" INFLUXDB_ORG "'");
+  LOG_INFOLN("InfluxDB bucket:    '" INFLUXDB_BUCKET "'");
 
   if (!influxdb_init()) {
-    Log.fatalln("something went wrong initializing InfluxDB");
+    LOG_FATALLN("something went wrong initializing InfluxDB");
   }
 #endif // HAS_INFLUXDB
 

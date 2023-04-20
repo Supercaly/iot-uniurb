@@ -15,14 +15,14 @@ DHT11_Sensor::DHT11_Sensor() : _dht(DHT11_PIN, DHT11), _temperature(0.0), _humid
 bool DHT11_Sensor::on_init() {
   _dht.begin();
   delay(DHT11_INIT_DELAY_MS);
-  Log.traceln("DHT11_Sensor::init: sensor initialized");
+  LOG_TRACELN("DHT11_Sensor::init: sensor initialized");
   return true;
 }
 
 bool DHT11_Sensor::on_measure() {
   float currentT = 0.0, currentH = 0.0, maxT = 0.0, minT = 0.0, maxH = 0.0, minH = 0.0;
 
-  Log.traceln("DHT11_Sensor::measure: reading sensor values");
+  LOG_TRACELN("DHT11_Sensor::measure: reading sensor values");
   _temperature = 0.0;
   _humidity    = 0.0;
   for (int i = 0; i < SENSOR_AVG_WINDOW; ++i) {
@@ -55,14 +55,14 @@ bool DHT11_Sensor::on_measure() {
   _humidity /= (SENSOR_AVG_WINDOW - 2);
 
   // Remove temperature offset from data
-  Log.traceln("DHT11_Sensor::measure: using offset of "
+  LOG_TRACELN("DHT11_Sensor::measure: using offset of "
               + String(Preference.get_temperature_offset()) + " for real temperature of "
               + String(_temperature));
   _temperature -= Preference.get_temperature_offset();
 
 #ifdef PRINT_SENSORS_ON_READ
-  Log.debugln("DHT11 temperature: " + String(_temperature));
-  Log.debugln("DHT11 humidity: " + String(_humidity));
+  LOG_DEBUGLN("DHT11 temperature: " + String(_temperature));
+  LOG_DEBUGLN("DHT11 humidity: " + String(_humidity));
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
