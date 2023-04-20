@@ -1,12 +1,17 @@
-#include "src/common.h"
+#include <Arduino.h>
+#include <WString.h>
+
+#include "src/board_preference.h"
+#include "src/config.h"
+#include "src/log.h"
 #include "src/network/wifi.h"
+#include "src/sensor_helper.h"
 #ifdef HAS_INFLUXDB
 #  include "src/network/influxdb.h"
 #endif // HAS_INFLUXDB
 #ifdef HAS_TELNET
 #  include "src/network/telnet.h"
 #endif // HAS_TELNET
-#include "src/sensor_helper.h"
 
 TaskHandle_t measure_task_handler;
 #ifdef HAS_BACKUP_WIFI

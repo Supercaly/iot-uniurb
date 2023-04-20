@@ -1,7 +1,8 @@
 #ifndef BOARD_PREFERENCE_H
 #define BOARD_PREFERENCE_H
 
-#include <Arduino.h>
+#include <WString.h>
+#include <stdint.h>
 
 #include "sensor/sensor_type.h"
 

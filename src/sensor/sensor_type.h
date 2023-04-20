@@ -1,7 +1,7 @@
 #ifndef SENSOR_TYPE_H
 #define SENSOR_TYPE_H
 
-#include <Arduino.h>
+#include <WString.h>
 #include <assert.h>
 
 /*

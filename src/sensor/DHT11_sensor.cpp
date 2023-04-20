@@ -1,6 +1,12 @@
 #include "DHT11_sensor.h"
 
-#include "../common.h"
+#include <Arduino.h>
+#include <DHT.h>
+#include <WString.h>
+
+#include "../board_preference.h"
+#include "../config.h"
+#include "../log.h"
 
 DHT11_Sensor DHT11Sensor;
 

@@ -2,6 +2,7 @@
 #define SGP30_SENSOR_H
 
 #include <Adafruit_SGP30.h>
+#include <stdint.h>
 
 #include "abstract_sensor.h"
 

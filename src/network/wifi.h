@@ -1,7 +1,10 @@
 #ifndef WIFI_H
 #define WIFI_H
 
-#include "../common.h"
+#include <Arduino.h>
+#include <WString.h>
+
+#include "../config.h"
 
 // Maximum number of retry when connecting to WiFi.
 #define WIFI_MAX_CONN_RETRY 10

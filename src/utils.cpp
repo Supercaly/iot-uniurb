@@ -1,6 +1,9 @@
 #include "utils.h"
 
+#include <Arduino.h>
+#include <WString.h>
 #include <esp_timer.h>
+#include <stdint.h>
 
 #include "log.h"
 

@@ -1,8 +1,12 @@
 #include "SGP30_sensor.h"
 
 #include <Adafruit_SGP30.h>
+#include <Arduino.h>
+#include <WString.h>
+#include <stdint.h>
 
-#include "../common.h"
+#include "../config.h"
+#include "../log.h"
 #include "DHT11_sensor.h"
 
 SGP30_Sensor SGP30Sensor;

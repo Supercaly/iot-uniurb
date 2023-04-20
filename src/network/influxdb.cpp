@@ -3,7 +3,9 @@
 #include <InfluxDbClient.h>
 #include <InfluxDbCloud.h>
 
-#include "../common.h"
+#include "../board_preference.h"
+#include "../config.h"
+#include "../log.h"
 #include "../sensor/DHT11_sensor.h"
 #include "../sensor/MHZ19_sensor.h"
 #include "../sensor/SGP30_sensor.h"
