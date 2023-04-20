@@ -1,7 +1,6 @@
 #include "board_preference.h"
 
 #include <EEPROM.h>
-#include <assert.h>
 
 #include "log.h"
 
@@ -37,19 +36,25 @@ bool BoardPreference::clear() {
 }
 
 bool BoardPreference::has_sensor(SensorType s) {
-  assert(s < SensorType::COUNT_SENSORS);
+  if (s >= SensorType::COUNT_SENSORS) {
+    return false;
+  }
   return (bool)_PREF_HAS_SENSOR_BIT(_available_sensors_bytes, s);
 }
 
 bool BoardPreference::add_sensor(SensorType s) {
-  assert(s < SensorType::COUNT_SENSORS);
+  if (s >= SensorType::COUNT_SENSORS) {
+    return false;
+  }
   Log.traceln("BoardPreference::add_sensor: " + SensorType_to_String(s));
   _PREF_SET_SENSOR_BIT(_available_sensors_bytes, s);
   return write_preferences();
 }
 
 bool BoardPreference::remove_sensor(SensorType s) {
-  assert(s < SensorType::COUNT_SENSORS);
+  if (s >= SensorType::COUNT_SENSORS) {
+    return false;
+  }
   Log.traceln("BoardPreference::remove_sensor: " + SensorType_to_String(s));
   _PREF_UNSET_SENSOR_BIT(_available_sensors_bytes, s);
   return write_preferences();
