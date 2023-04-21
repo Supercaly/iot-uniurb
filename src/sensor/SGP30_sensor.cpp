@@ -68,8 +68,8 @@ bool SGP30_Sensor::on_measure() {
   _eco2 /= (SENSOR_AVG_WINDOW - 2);
 
 #ifdef PRINT_SENSORS_ON_READ
-  LOG_DEBUGLN("SGP30 TVOC: " + String(_tvoc));
-  LOG_DEBUGLN("SGP30 eCO2: " + String(_eco2));
+  LOG_INFOLN("SGP30 TVOC: " + String(_tvoc));
+  LOG_INFOLN("SGP30 eCO2: " + String(_eco2));
 #endif // PRINT_SENSORS_ON_READ
 
   return true;

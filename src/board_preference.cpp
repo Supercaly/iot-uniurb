@@ -25,6 +25,13 @@ bool BoardPreference::init() {
                 "restored to default state");
     return clear();
   }
+  LOG_INFOLN("Available Sensors:   " + available_sensors_to_String());
+  LOG_INFOLN("Device Host Name:   '" + get_board_host_name() + "'");
+  LOG_INFOLN("Device Location:    '" + get_board_location() + "'");
+  LOG_INFOLN("Device Room:        '" + get_board_room() + "'");
+  LOG_INFOLN("Spoofed MAC:        '" + get_spoofed_mac() + "'");
+  LOG_INFOLN("Temp Offset:        '" + String(get_temperature_offset()) + "'");
+
   return true;
 }
 

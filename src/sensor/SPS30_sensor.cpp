@@ -71,10 +71,10 @@ bool SPS30_Sensor::on_measure() {
   }
 
 #ifdef PRINT_SENSORS_ON_READ
-  LOG_DEBUGLN("SPS30 PM 1.0: " + String(_sps_meas.mc_1p0));
-  LOG_DEBUGLN("SPS30 PM 2.5: " + String(_sps_meas.mc_2p5));
-  LOG_DEBUGLN("SPS30 PM 4.0: " + String(_sps_meas.mc_4p0));
-  LOG_DEBUGLN("SPS30 PM 10.0: " + String(_sps_meas.mc_10p0));
+  LOG_INFOLN("SPS30 PM 1.0: " + String(_sps_meas.mc_1p0));
+  LOG_INFOLN("SPS30 PM 2.5: " + String(_sps_meas.mc_2p5));
+  LOG_INFOLN("SPS30 PM 4.0: " + String(_sps_meas.mc_4p0));
+  LOG_INFOLN("SPS30 PM 10.0: " + String(_sps_meas.mc_10p0));
 #endif // PRINT_SENSORS_ON_READ
 
   return true;

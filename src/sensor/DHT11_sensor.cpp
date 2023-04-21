@@ -61,8 +61,8 @@ bool DHT11_Sensor::on_measure() {
   _temperature -= Preference.get_temperature_offset();
 
 #ifdef PRINT_SENSORS_ON_READ
-  LOG_DEBUGLN("DHT11 temperature: " + String(_temperature));
-  LOG_DEBUGLN("DHT11 humidity: " + String(_humidity));
+  LOG_INFOLN("DHT11 temperature: " + String(_temperature));
+  LOG_INFOLN("DHT11 humidity: " + String(_humidity));
 #endif // PRINT_SENSORS_ON_READ
 
   return true;

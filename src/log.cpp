@@ -14,10 +14,6 @@ static_assert(size_of_array(s_log_level_string) == (LOG_LEVEL_SILENT + 1),
               "You probably have added or removed a LOG_LEVEL. "
               "Please update the definitions above accordingly");
 
-static void lock() {}
-
-static void unlock() {}
-
 void logger_init(int speed) {
   LOGGER_SERIAL.begin(speed);
   delay(200);
@@ -26,8 +22,6 @@ void logger_init(int speed) {
 
 void logger_log(int level, bool line, const String &msg) {
   // TODO: Figure out if \n is compatible with all terminals or we need \r\n.
-  lock();
-
   String str = emptyString;
   if (s_cr_done) {
     str += s_log_level_string[level];
@@ -38,6 +32,4 @@ void logger_log(int level, bool line, const String &msg) {
   }
   LOGGER_SERIAL.print(str);
   s_cr_done = line;
-
-  unlock();
 }

@@ -20,6 +20,10 @@ bool influxdb_init() {
               "org: '" INFLUXDB_ORG "', "
               "bucket: '" INFLUXDB_BUCKET "'");
 
+  LOG_INFOLN("InfluxDB url:       '" INFLUXDB_URL "'");
+  LOG_INFOLN("InfluxDB org:       '" INFLUXDB_ORG "'");
+  LOG_INFOLN("InfluxDB bucket:    '" INFLUXDB_BUCKET "'");
+
   influxdb_client.setConnectionParams(
       INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
 
@@ -83,6 +87,6 @@ bool influxdb_write_sensors() {
     return false;
   }
 
-  LOG_TRACELN("influxdb_write_sensors: write complete");
+  LOG_INFOLN("influxdb_write_sensors: write complete");
   return true;
 }

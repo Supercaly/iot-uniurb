@@ -39,7 +39,7 @@ bool MHZ19_Sensor::on_measure() {
   _co2 /= (SENSOR_AVG_WINDOW - 2);
 
 #ifdef PRINT_SENSORS_ON_READ
-  LOG_DEBUGLN("MHZ19 Co2: " + String(_co2));
+  LOG_INFOLN("MHZ19 Co2: " + String(_co2));
 #endif // PRINT_SENSORS_ON_READ
 
   return true;

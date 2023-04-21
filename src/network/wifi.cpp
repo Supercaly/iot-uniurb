@@ -23,7 +23,7 @@ static int old_backup_state = HIGH;
 //  Using a public method to set the MAC address before connecting will always
 //  result in errors since the WiFi interface is never initialize.
 //  At the moment it's good setting the MAC privately only when connecting to a
-//  network, but, in case we implement the access piont we can let the user
+//  network, but, in case we implement the access point we can let the user
 //  change the MAC.
 static void set_mac_address(String mac) {
   int     mac_val[6];
@@ -50,13 +50,16 @@ static void set_mac_address(String mac) {
   if (err == ESP_OK) {
     LOG_DEBUGLN("set_mac_address: new MAC address: " + wifi_get_mac_address());
   } else {
-    LOG_TRACELN("set_mac_address: error setting MAC: " + String(esp_err_to_name(err)));
+    LOG_ERRORLN("set_mac_address: error setting MAC: " + String(esp_err_to_name(err)));
   }
 }
 
 bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   LOG_TRACELN("wifi_connect: connecting to SSID: '" + String(ssid) + "' with pwd: '" + String(pwd)
               + "' attempts: " + String(max_retry) + " delay: " + String(pause));
+
+  LOG_INFOLN("SSID:               '" + String(WIFI_SSID) + "'");
+  LOG_INFOLN("MAC Address:        '" + wifi_get_mac_address() + "'");
 
   LED_ON(SIGNAL_LED_PIN);
 
@@ -72,7 +75,7 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   }
 
   WiFi.begin(ssid, pwd);
-  LOG_DEBUG("wifi_connect: connecing to WiFi");
+  LOG_DEBUG("wifi_connect: connecting to WiFi");
 
   // Test the connection for some times
   int conn_attempt = 0;
@@ -92,6 +95,8 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
   LOG_DEBUGLN("done");
+
+  LOG_INFOLN("Device IP:          '" + wifi_get_ip() + "'");
 
   LED_OFF(SIGNAL_LED_PIN);
   return true;

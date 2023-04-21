@@ -281,7 +281,7 @@ bool telnet_init(int port) {
     return false;
   }
 
-  LOG_DEBUGLN("telnet_init: running");
+  LOG_INFOLN("telnet_init: running");
   return true;
 }
 

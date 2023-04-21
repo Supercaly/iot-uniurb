@@ -27,13 +27,8 @@ void setup() {
 
   // Init preferences
   if (!Preference.init()) {
-    LOG_ERRORLN("something went wrong initializing board preferences");
+    LOG_FATALLN("something went wrong initializing board preferences");
   }
-
-  LOG_INFOLN("Available Sensors:   " + Preference.available_sensors_to_String());
-  LOG_INFOLN("Device Host Name:   '" + Preference.get_board_host_name() + "'");
-  LOG_INFOLN("Device Location:    '" + Preference.get_board_location() + "'");
-  LOG_INFOLN("Device Room:        '" + Preference.get_board_room() + "'");
 
 #ifdef HAS_BACKUP_WIFI
   xTaskCreatePinnedToCore(wifi_backup_task_code,
@@ -45,14 +40,11 @@ void setup() {
                           WIFI_BACKUP_TASK_CORE);
 #endif // HAS_BACKUP_WIFI
 
-  LOG_INFOLN("MAC Address:        '" + wifi_get_mac_address() + "'");
-  LOG_INFOLN("SSID:               '" + String(WIFI_SSID) + "'");
   // Connecto to WiFi network
   if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
     LOG_FATALLN("something went wrong connecting to WiFi");
     reboot_board();
   }
-  LOG_INFOLN("Device IP:          '" + wifi_get_ip() + "'");
 
 #ifdef HAS_TELNET
   // Init telnet
@@ -71,10 +63,6 @@ void setup() {
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB
-  LOG_INFOLN("InfluxDB url:       '" INFLUXDB_URL "'");
-  LOG_INFOLN("InfluxDB org:       '" INFLUXDB_ORG "'");
-  LOG_INFOLN("InfluxDB bucket:    '" INFLUXDB_BUCKET "'");
-
   if (!influxdb_init()) {
     LOG_FATALLN("something went wrong initializing InfluxDB");
   }
