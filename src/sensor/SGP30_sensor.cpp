@@ -13,11 +13,11 @@ SGP30_Sensor SGP30Sensor;
 
 bool SGP30_Sensor::on_init() {
   if (!_sgp.begin()) {
-    Log.errorln("SGP30_Sensor::init: sensor not found");
+    LOG_ERRORLN("SGP30_Sensor::init: sensor not found");
     return false;
   }
   delay(SGP30_INIT_DELAY_MS);
-  Log.traceln("SGP30_Sensor::init: sensor initialized");
+  LOG_TRACELN("SGP30_Sensor::init: sensor initialized");
   return true;
 }
 
@@ -25,14 +25,14 @@ bool SGP30_Sensor::on_measure() {
   uint16_t currentTvoc = 0.0, currentEco2 = 0.0, minTvoc = 0.0, maxTvoc = 0.0, minEco2 = 0.0,
            maxEco2 = 0.0;
 
-  Log.traceln("SGP30_Sensor::measure: reading sensor values");
+  LOG_TRACELN("SGP30_Sensor::measure: reading sensor values");
   if (DHT11Sensor.get_temperature() > 0) {
-    Log.traceln(
+    LOG_TRACELN(
         "SGP30_Sensor::measure: compute absolute humidity with real temperature and humidity");
     _sgp.setHumidity(
         get_absolute_humidity(DHT11Sensor.get_temperature(), DHT11Sensor.get_humidity()));
   } else {
-    Log.traceln("SGP30_Sensor::measure: compute absolute humidity with default temperature and "
+    LOG_TRACELN("SGP30_Sensor::measure: compute absolute humidity with default temperature and "
                 "humidity");
     _sgp.setHumidity(get_absolute_humidity(22.1, 45.2));
   }
@@ -68,8 +68,8 @@ bool SGP30_Sensor::on_measure() {
   _eco2 /= (SENSOR_AVG_WINDOW - 2);
 
 #ifdef PRINT_SENSORS_ON_READ
-  Log.debugln("SGP30 TVOC: " + String(_tvoc));
-  Log.debugln("SGP30 eCO2: " + String(_eco2));
+  LOG_INFOLN("SGP30 TVOC: " + String(_tvoc));
+  LOG_INFOLN("SGP30 eCO2: " + String(_eco2));
 #endif // PRINT_SENSORS_ON_READ
 
   return true;

@@ -19,7 +19,7 @@ bool init_all_available_sensors() {
     SensorTypeToImplPair p = type_to_sensor_map[i];
     if (Preference.has_sensor(p.type)) {
       if (p.sensor == nullptr || !p.sensor->init()) {
-        Log.errorln("something went wrong initializing " + SensorType_to_String(p.type));
+        LOG_ERRORLN("something went wrong initializing " + SensorType_to_String(p.type));
         has_errors = true;
       }
     }
@@ -33,7 +33,7 @@ bool measure_all_available_sensors() {
     SensorTypeToImplPair p = type_to_sensor_map[i];
     if (Preference.has_sensor(p.type)) {
       if (p.sensor == nullptr || !p.sensor->measure()) {
-        Log.errorln("something went wrong measuring " + SensorType_to_String(p.type));
+        LOG_ERRORLN("something went wrong measuring " + SensorType_to_String(p.type));
         has_errors = true;
       }
     }
@@ -71,7 +71,7 @@ void measure_and_send_task_code(void *args) {
 #ifdef HAS_INFLUXDB
     // Send sensor values to InfluxDB
     if (!influxdb_write_sensors()) {
-      Log.fatalln("something went wrong writing to InfluxDB");
+      LOG_FATALLN("something went wrong writing to InfluxDB");
       reboot_board();
     }
 #endif // HAS_INFLUXDB

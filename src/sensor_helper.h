@@ -11,6 +11,7 @@
 #include "sensor/SPS30_sensor.h"
 #include "sensor/abstract_sensor.h"
 #include "sensor/sensor_type.h"
+#include "utils.h"
 
 // Measure task config.
 #define MEASURE_TASK_STACK_SIZE 4096
