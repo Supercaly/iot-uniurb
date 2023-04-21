@@ -31,10 +31,10 @@ struct TelnetCommand {
 
 static ESPTelnet telnet;
 
-static void cmd_info(String);
-static void cmd_sensors_list(String);
-static void cmd_sensors_add(String);
-static void cmd_sensors_rm(String);
+static void cmd_sensor_info(String);
+static void cmd_sensor_list(String);
+static void cmd_sensor_add(String);
+static void cmd_sensor_rm(String);
 static void cmd_board_host(String);
 static void cmd_board_location(String);
 static void cmd_board_room(String);
@@ -48,15 +48,15 @@ static void cmd_quit(String);
 static void cmd_help(String);
 
 static const TelnetCommand commands[] = {
-    {"info",           cmd_info,           "retrieve the values from all available sensors"        },
-    {"sensors",        cmd_sensors_list,   "list the available sensors"                            },
-    {"sensors-add",    cmd_sensors_add,    "mark a sensor as available"                            },
-    {"sensors-rm",     cmd_sensors_rm,     "mark a sensor as no longer available"                  },
+    {"sensor-info",    cmd_sensor_info,    "retrieve the values from all available sensors"        },
+    {"sensor-list",    cmd_sensor_list,    "list the available sensors"                            },
+    {"sensor-add",     cmd_sensor_add,     "mark a sensor as available"                            },
+    {"sensor-rm",      cmd_sensor_rm,      "mark a sensor as no longer available"                  },
     {"board-host",     cmd_board_host,     "get or set board's host name"                          },
     {"board-location", cmd_board_location, "get or set board's location"                           },
     {"board-room",     cmd_board_room,     "get or set board's room"                               },
-    {"mac",            cmd_mac_address,    "get or set MAC address (off to use default)"           },
-    {"tmp-offset",     cmd_temp_offset,    "get or set offset subtracted by each temperature value"},
+    {"board-mac",      cmd_mac_address,    "get or set MAC address (off to use default)"           },
+    {"temp-offset",    cmd_temp_offset,    "get or set offset subtracted by each temperature value"},
     {"uptime",         cmd_uptime,         "get the time elapsed since the board's boot"           },
     {"ping",           cmd_ping,           "ping the board"                                        },
     {"reboot",         cmd_reboot,         "reboot the board"                                      },
@@ -65,17 +65,17 @@ static const TelnetCommand commands[] = {
     {"help",           cmd_help,           "show this help message"                                },
 };
 
-static void cmd_info(String _) {
+static void cmd_sensor_info(String _) {
   telnet.println("Values from available sensors:");
   print_available_sensors_info([](String line) { telnet.println(line); });
 }
 
-static void cmd_sensors_list(String _) {
+static void cmd_sensor_list(String _) {
   telnet.println(Preference.available_sensors_to_String());
 }
 
-static void cmd_sensors_add(String sensor_str) {
-  LOG_TRACELN("cmd_sensors_add: enable sensor '" + sensor_str + "'");
+static void cmd_sensor_add(String sensor_str) {
+  LOG_TRACELN("cmd_sensor_add: enable sensor '" + sensor_str + "'");
 
   sensor_str.trim();
   sensor_str.toUpperCase();
@@ -95,8 +95,8 @@ static void cmd_sensors_add(String sensor_str) {
   }
 }
 
-static void cmd_sensors_rm(String sensor_str) {
-  LOG_TRACELN("cmd_sensors_rm: disable sensor '" + sensor_str + "'");
+static void cmd_sensor_rm(String sensor_str) {
+  LOG_TRACELN("cmd_sensor_rm: disable sensor '" + sensor_str + "'");
 
   sensor_str.trim();
   sensor_str.toUpperCase();
