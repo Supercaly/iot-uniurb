@@ -75,7 +75,7 @@ void measure_and_send_task_code(void *args) {
       app_fatalln("something went wrong writing to InfluxDB");
       reboot_board();
     }
-    xTaskDelayUntil(&last_measure_time, pdMS_TO_TICKS(SENSOR_READING_DELAY_MS));
 #endif // HAS_INFLUXDB
+    xTaskDelayUntil(&last_measure_time, pdMS_TO_TICKS(SENSOR_READING_DELAY_MS));
   }
 }
