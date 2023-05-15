@@ -13,14 +13,14 @@ bool MHZ19_Sensor::on_init() {
   _mhz.begin(&MHZ19_SERIAL);
 
   delay(MHZ19_INIT_DELAY_MS);
-  LOG_TRACELN("MHZ19_Sensor::init: sensor initialized");
+  app_traceln("MHZ19_Sensor::init: sensor initialized");
   return true;
 }
 
 bool MHZ19_Sensor::on_measure() {
   int currentCo2 = 0, minCo2 = 0, maxCo2 = 0;
 
-  LOG_TRACELN("MHZ19_Sensor::measure: reading sensor values");
+  app_traceln("MHZ19_Sensor::measure: reading sensor values");
   for (int i = 0; i < SENSOR_AVG_WINDOW; ++i) {
     _mhz.measure();
     currentCo2 = _mhz.getCO2();
@@ -39,7 +39,7 @@ bool MHZ19_Sensor::on_measure() {
   _co2 /= (SENSOR_AVG_WINDOW - 2);
 
 #ifdef PRINT_SENSORS_ON_READ
-  LOG_INFOLN("MHZ19 Co2: " + String(_co2));
+  app_infoln("MHZ19 Co2: " + String(_co2));
 #endif // PRINT_SENSORS_ON_READ
 
   return true;

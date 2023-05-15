@@ -19,7 +19,7 @@ bool init_all_available_sensors() {
     SensorTypeToImplPair p = type_to_sensor_map[i];
     if (Preference.has_sensor(p.type)) {
       if (p.sensor == nullptr || !p.sensor->init()) {
-        LOG_ERRORLN("something went wrong initializing " + SensorType_to_String(p.type));
+        app_errorln("something went wrong initializing " + SensorType_to_String(p.type));
         has_errors = true;
       }
     }
@@ -33,7 +33,7 @@ bool measure_all_available_sensors() {
     SensorTypeToImplPair p = type_to_sensor_map[i];
     if (Preference.has_sensor(p.type)) {
       if (p.sensor == nullptr || !p.sensor->measure()) {
-        LOG_ERRORLN("something went wrong measuring " + SensorType_to_String(p.type));
+        app_errorln("something went wrong measuring " + SensorType_to_String(p.type));
         has_errors = true;
       }
     }
@@ -60,20 +60,22 @@ void print_available_sensors_info(void (*print)(String)) {
   if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
     print("MHZ19 CO2: " + String(MHZ19Sensor.get_co2()));
   }
+  if (Preference.has_sensor(SensorType::SENSOR_BLESCAN)) {
+    print("BLESCAN count: " + String(BLEScanner.get_devices()));
+  }
 }
 
 void measure_and_send_task_code(void *args) {
   TickType_t last_measure_time = xTaskGetTickCount();
   for (;;) {
-    xTaskDelayUntil(&last_measure_time, pdMS_TO_TICKS(SENSOR_READING_DELAY_MS));
-
     measure_all_available_sensors();
 #ifdef HAS_INFLUXDB
     // Send sensor values to InfluxDB
     if (!influxdb_write_sensors()) {
-      LOG_FATALLN("something went wrong writing to InfluxDB");
+      app_fatalln("something went wrong writing to InfluxDB");
       reboot_board();
     }
+    xTaskDelayUntil(&last_measure_time, pdMS_TO_TICKS(SENSOR_READING_DELAY_MS));
 #endif // HAS_INFLUXDB
   }
 }

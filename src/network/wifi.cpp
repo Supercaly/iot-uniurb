@@ -39,7 +39,7 @@ static void set_mac_address(String mac) {
                   &mac_val[4],
                   &mac_val[5]);
   if (sz != 6) {
-    LOG_ERRORLN("set_mac_address: invalid MAC address: '" + mac + "'");
+    app_errorln("set_mac_address: invalid MAC address: '" + mac + "'");
     return;
   }
 
@@ -48,18 +48,18 @@ static void set_mac_address(String mac) {
   }
   esp_err_t err = esp_wifi_set_mac(WIFI_IF_STA, mac_bytes);
   if (err == ESP_OK) {
-    LOG_DEBUGLN("set_mac_address: new MAC address: " + wifi_get_mac_address());
+    app_debugln("set_mac_address: new MAC address: " + wifi_get_mac_address());
   } else {
-    LOG_ERRORLN("set_mac_address: error setting MAC: " + String(esp_err_to_name(err)));
+    app_errorln("set_mac_address: error setting MAC: " + String(esp_err_to_name(err)));
   }
 }
 
 bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
-  LOG_TRACELN("wifi_connect: connecting to SSID: '" + String(ssid) + "' with pwd: '" + String(pwd)
+  app_traceln("wifi_connect: connecting to SSID: '" + String(ssid) + "' with pwd: '" + String(pwd)
               + "' attempts: " + String(max_retry) + " delay: " + String(pause));
 
-  LOG_INFOLN("SSID:               '" + String(WIFI_SSID) + "'");
-  LOG_INFOLN("MAC Address:        '" + wifi_get_mac_address() + "'");
+  app_infoln("SSID:               '" + String(WIFI_SSID) + "'");
+  app_infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
 
   LED_ON(SIGNAL_LED_PIN);
 
@@ -75,28 +75,28 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   }
 
   WiFi.begin(ssid, pwd);
-  LOG_DEBUG("wifi_connect: connecting to WiFi");
+  app_debug("wifi_connect: connecting to WiFi");
 
   // Test the connection for some times
   int conn_attempt = 0;
   while (!wifi_is_connected() && conn_attempt < max_retry) {
-    LOG_DEBUG(".");
+    app_debug(".");
     delay(pause);
     conn_attempt++;
   }
 
   // If we are not connected return failure
   if (conn_attempt >= max_retry) {
-    LOG_DEBUGLN("failed");
+    app_debugln("failed");
     return false;
   }
 
   // Connection done
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
-  LOG_DEBUGLN("done");
+  app_debugln("done");
 
-  LOG_INFOLN("Device IP:          '" + wifi_get_ip() + "'");
+  app_infoln("Device IP:          '" + wifi_get_ip() + "'");
 
   LED_OFF(SIGNAL_LED_PIN);
   return true;
@@ -126,7 +126,7 @@ void wifi_backup_task_code(void *args) {
     // TODO: Switch the WiFi connection back once the jumper is unset.
     if (old_backup_state != backup_state && backup_state == LOW) {
       if (!wifi_connect(WIFI_BACKUP_SSID, WIFI_BACKUP_PWD)) {
-        LOG_ERRORLN("wifi_backup_task: error connecting to backup WiFi");
+        app_errorln("wifi_backup_task: error connecting to backup WiFi");
         backup_state = HIGH;
       }
     }

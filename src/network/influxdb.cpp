@@ -15,14 +15,14 @@ static InfluxDBClient influxdb_client;
 static Point          influxdb_point(INFLUXDB_POINT_NAME);
 
 bool influxdb_init() {
-  LOG_DEBUGLN("influxdb_init: init influxDB with following parameters: "
+  app_debugln("influxdb_init: init influxDB with following parameters: "
               "url: '" INFLUXDB_URL "', "
               "org: '" INFLUXDB_ORG "', "
               "bucket: '" INFLUXDB_BUCKET "'");
 
-  LOG_INFOLN("InfluxDB url:       '" INFLUXDB_URL "'");
-  LOG_INFOLN("InfluxDB org:       '" INFLUXDB_ORG "'");
-  LOG_INFOLN("InfluxDB bucket:    '" INFLUXDB_BUCKET "'");
+  app_infoln("InfluxDB url:       '" INFLUXDB_URL "'");
+  app_infoln("InfluxDB org:       '" INFLUXDB_ORG "'");
+  app_infoln("InfluxDB bucket:    '" INFLUXDB_BUCKET "'");
 
   influxdb_client.setConnectionParams(
       INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
@@ -31,38 +31,38 @@ bool influxdb_init() {
   influxdb_point.addTag("location", Preference.get_board_location());
   influxdb_point.addTag("room", Preference.get_board_room());
 
-  LOG_TRACELN("influxdb_init: added tags: host: '" + Preference.get_board_host_name()
+  app_traceln("influxdb_init: added tags: host: '" + Preference.get_board_host_name()
               + "', location: '" + Preference.get_board_location() + "', room: '"
               + Preference.get_board_room() + "'");
 
   if (!influxdb_client.validateConnection()) {
-    LOG_ERRORLN("influxdb_init: connection error: " + influxdb_client.getLastErrorMessage());
+    app_errorln("influxdb_init: connection error: " + influxdb_client.getLastErrorMessage());
     return false;
   }
 
-  LOG_DEBUGLN("influxdb_init: connected");
+  app_debugln("influxdb_init: connected");
   return true;
 }
 
 bool influxdb_write_sensors() {
-  LOG_TRACELN("influxdb_write_sensors: sending data to influxdb...");
+  app_traceln("influxdb_write_sensors: sending data to influxdb...");
 
   influxdb_point.clearFields();
 
   // Add available sensors
   // TODO: Remove all this sensor-checking code inside InfluxDB.
   if (Preference.has_sensor(SensorType::SENSOR_DHT11)) {
-    LOG_TRACELN("influxdb_write_sensors: sending DHT11 values");
+    app_traceln("influxdb_write_sensors: sending DHT11 values");
     influxdb_point.addField(INFLUXDB_FIELD_DHT11_TEMPERATURE, DHT11Sensor.get_temperature());
     influxdb_point.addField(INFLUXDB_FIELD_DHT11_HUMIDITY, DHT11Sensor.get_humidity());
   }
   if (Preference.has_sensor(SensorType::SENSOR_SGP30)) {
-    LOG_TRACELN("influxdb_write_sensors: sending SGP30 values");
+    app_traceln("influxdb_write_sensors: sending SGP30 values");
     influxdb_point.addField(INFLUXDB_FIELD_SGP30_TVOC, SGP30Sensor.get_TVOC());
     influxdb_point.addField(INFLUXDB_FIELD_SGP30_ECO2, SGP30Sensor.get_eCO2());
   }
   if (Preference.has_sensor(SensorType::SENSOR_SPS30)) {
-    LOG_TRACELN("influxdb_write_sensors: sending SPS30 values");
+    app_traceln("influxdb_write_sensors: sending SPS30 values");
     influxdb_point.addField(INFLUXDB_FIELD_SPS30_MC_1p0, SPS30Sensor.get_mc_1p0());
     influxdb_point.addField(INFLUXDB_FIELD_SPS30_MC_2p5, SPS30Sensor.get_mc_2p5());
     influxdb_point.addField(INFLUXDB_FIELD_SPS30_MC_4p0, SPS30Sensor.get_mc_4p0());
@@ -70,23 +70,23 @@ bool influxdb_write_sensors() {
     influxdb_point.addField(INFLUXDB_FIELD_SPS30_PARTICLE_SIZE, SPS30Sensor.get_particle_size());
   }
   if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
-    LOG_TRACELN("influxdb_write_sensors: sending MHZ19 values");
+    app_traceln("influxdb_write_sensors: sending MHZ19 values");
     influxdb_point.addField(INFLUXDB_FIELD_MHZ19_CO2, MHZ19Sensor.get_co2());
   }
 
   // If the point to write does not have fields it means no sensor is available
   // and we can exit without writing to the server.
   if (!influxdb_point.hasFields()) {
-    LOG_DEBUGLN("influxdb_write_sensors: no sensor data to write");
+    app_debugln("influxdb_write_sensors: no sensor data to write");
     return true;
   }
 
-  LOG_DEBUGLN("influxdb_write_sensors: writing data: " + influxdb_point.toLineProtocol());
+  app_debugln("influxdb_write_sensors: writing data: " + influxdb_point.toLineProtocol());
   if (!influxdb_client.writePoint(influxdb_point)) {
-    LOG_ERRORLN("influxdb_write_sensors: write failed: " + influxdb_client.getLastErrorMessage());
+    app_errorln("influxdb_write_sensors: write failed: " + influxdb_client.getLastErrorMessage());
     return false;
   }
 
-  LOG_INFOLN("influxdb_write_sensors: write complete");
+  app_infoln("influxdb_write_sensors: write complete");
   return true;
 }

@@ -27,7 +27,7 @@ void setup() {
 
   // Init preferences
   if (!Preference.init()) {
-    LOG_FATALLN("something went wrong initializing board preferences");
+    app_fatalln("something went wrong initializing board preferences");
   }
 
 #ifdef HAS_BACKUP_WIFI
@@ -42,7 +42,7 @@ void setup() {
 
   // Connecto to WiFi network
   if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
-    LOG_FATALLN("something went wrong connecting to WiFi");
+    app_fatalln("something went wrong connecting to WiFi");
     reboot_board();
   }
 
@@ -57,14 +57,14 @@ void setup() {
                             &telnet_task_handler,
                             TELNET_TASK_CORE);
   } else {
-    LOG_ERRORLN("something went wrong initializing Telnet");
+    app_errorln("something went wrong initializing Telnet");
   }
 #endif // HAS_TELNET
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB
   if (!influxdb_init()) {
-    LOG_FATALLN("something went wrong initializing InfluxDB");
+    app_fatalln("something went wrong initializing InfluxDB");
   }
 #endif // HAS_INFLUXDB
 

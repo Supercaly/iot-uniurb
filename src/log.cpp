@@ -9,7 +9,7 @@
 static bool         s_cr_done = true;
 static const String s_log_level_string[]
     = {"[TRACE]  ", "[DEBUG]  ", "[INFO]   ", "[ERROR]  ", "[FATAL]  ", "[SILENT] "};
-static_assert(size_of_array(s_log_level_string) == (LOG_LEVEL_SILENT + 1),
+static_assert(size_of_array(s_log_level_string) == (APP_LOG_LEVEL_SILENT + 1),
               "The size of s_log_level_string has changed. "
               "You probably have added or removed a LOG_LEVEL. "
               "Please update the definitions above accordingly");

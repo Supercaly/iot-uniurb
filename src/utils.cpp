@@ -8,9 +8,9 @@
 #include "log.h"
 
 void reboot_board(int wait_ms) {
-  LOG_INFOLN("rebooting the board after " + String(wait_ms) + "ms");
+  app_infoln("rebooting the board after " + String(wait_ms) + "ms");
   delay(wait_ms);
-  LOG_DEBUGLN("rebooting the board...");
+  app_debugln("rebooting the board...");
   ESP.restart();
 }
 

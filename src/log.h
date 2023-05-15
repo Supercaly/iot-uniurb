@@ -6,57 +6,57 @@
 #include "config.h"
 
 // Log levels.
-#define LOG_LEVEL_TRACE  0
-#define LOG_LEVEL_DEBUG  1
-#define LOG_LEVEL_INFO   2
-#define LOG_LEVEL_ERROR  3
-#define LOG_LEVEL_FATAL  4
-#define LOG_LEVEL_SILENT 5
+#define APP_LOG_LEVEL_TRACE  0
+#define APP_LOG_LEVEL_DEBUG  1
+#define APP_LOG_LEVEL_INFO   2
+#define APP_LOG_LEVEL_ERROR  3
+#define APP_LOG_LEVEL_FATAL  4
+#define APP_LOG_LEVEL_SILENT 5
 
 #ifdef IS_DEBUG
-#  define CURRENT_LOG_LEVEL LOG_LEVEL_DEBUG
+#  define APP_CURRENT_LOG_LEVEL APP_LOG_LEVEL_DEBUG
 #else
-#  define CURRENT_LOG_LEVEL LOG_LEVEL_INFO
+#  define APP_CURRENT_LOG_LEVEL APP_LOG_LEVEL_INFO
 #endif
 
-#if CURRENT_LOG_LEVEL <= LOG_LEVEL_TRACE
-#  define LOG_TRACE(msg)   logger_log(LOG_LEVEL_TRACE, false, msg)
-#  define LOG_TRACELN(msg) logger_log(LOG_LEVEL_TRACE, true, msg)
+#if APP_CURRENT_LOG_LEVEL <= APP_LOG_LEVEL_TRACE
+#  define app_trace(msg)   logger_log(APP_LOG_LEVEL_TRACE, false, msg)
+#  define app_traceln(msg) logger_log(APP_LOG_LEVEL_TRACE, true, msg)
 #else
-#  define LOG_TRACE(msg)
-#  define LOG_TRACELN(msg)
+#  define app_trace(msg)
+#  define app_traceln(msg)
 #endif
 
-#if CURRENT_LOG_LEVEL <= LOG_LEVEL_DEBUG
-#  define LOG_DEBUG(msg)   logger_log(LOG_LEVEL_DEBUG, false, msg)
-#  define LOG_DEBUGLN(msg) logger_log(LOG_LEVEL_DEBUG, true, msg)
+#if APP_CURRENT_LOG_LEVEL <= APP_LOG_LEVEL_DEBUG
+#  define app_debug(msg)   logger_log(APP_LOG_LEVEL_DEBUG, false, msg)
+#  define app_debugln(msg) logger_log(APP_LOG_LEVEL_DEBUG, true, msg)
 #else
-#  define LOG_DEBUG(msg)
-#  define LOG_DEBUGLN(msg)
+#  define app_debug(msg)
+#  define app_debugln(msg)
 #endif
 
-#if CURRENT_LOG_LEVEL <= LOG_LEVEL_INFO
-#  define LOG_INFO(msg)   logger_log(LOG_LEVEL_INFO, false, msg)
-#  define LOG_INFOLN(msg) logger_log(LOG_LEVEL_INFO, true, msg)
+#if APP_CURRENT_LOG_LEVEL <= APP_LOG_LEVEL_INFO
+#  define app_info(msg)   logger_log(APP_LOG_LEVEL_INFO, false, msg)
+#  define app_infoln(msg) logger_log(APP_LOG_LEVEL_INFO, true, msg)
 #else
-#  define LOG_INFO(msg)
-#  define LOG_INFOLN(msg)
+#  define app_info(msg)
+#  define app_infoln(msg)
 #endif
 
-#if CURRENT_LOG_LEVEL <= LOG_LEVEL_ERROR
-#  define LOG_ERROR(msg)   logger_log(LOG_LEVEL_ERROR, false, msg)
-#  define LOG_ERRORLN(msg) logger_log(LOG_LEVEL_ERROR, true, msg)
+#if APP_CURRENT_LOG_LEVEL <= APP_LOG_LEVEL_ERROR
+#  define app_error(msg)   logger_log(APP_LOG_LEVEL_ERROR, false, msg)
+#  define app_errorln(msg) logger_log(APP_LOG_LEVEL_ERROR, true, msg)
 #else
-#  define LOG_ERROR(msg)
-#  define LOG_ERRORLN(msg)
+#  define app_error(msg)
+#  define app_errorln(msg)
 #endif
 
-#if CURRENT_LOG_LEVEL <= LOG_LEVEL_FATAL
-#  define LOG_FATAL(msg)   logger_log(LOG_LEVEL_FATAL, false, msg)
-#  define LOG_FATALLN(msg) logger_log(LOG_LEVEL_FATAL, true, msg)
+#if APP_CURRENT_LOG_LEVEL <= APP_LOG_LEVEL_FATAL
+#  define app_fatal(msg)   logger_log(APP_LOG_LEVEL_FATAL, false, msg)
+#  define app_fatalln(msg) logger_log(APP_LOG_LEVEL_FATAL, true, msg)
 #else
-#  define LOG_FATAL(msg)
-#  define LOG_FATALLN(msg)
+#  define app_fatal(msg)
+#  define app_fatalln(msg)
 #endif
 
 void logger_init(int speed = BAUD_RATE);
