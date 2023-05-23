@@ -6,6 +6,7 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
+#include "../sensor/BLE_scanner.h"
 #include "../sensor/DHT11_sensor.h"
 #include "../sensor/MHZ19_sensor.h"
 #include "../sensor/SGP30_sensor.h"
@@ -72,6 +73,10 @@ bool influxdb_write_sensors() {
   if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
     app_traceln("influxdb_write_sensors: sending MHZ19 values");
     influxdb_point.addField(INFLUXDB_FIELD_MHZ19_CO2, MHZ19Sensor.get_co2());
+  }
+  if (Preference.has_sensor(SensorType::SENSOR_BLESCAN)) {
+    app_traceln("influxdb_write_sensors: sending BLESCAN values");
+    influxdb_point.addField(INFLUXDB_FIELD_BLE_DEVICES, BLEScanner.get_devices());
   }
 
   // If the point to write does not have fields it means no sensor is available

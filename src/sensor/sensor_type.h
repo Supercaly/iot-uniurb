@@ -13,11 +13,12 @@ enum SensorType {
   SENSOR_SGP30,
   SENSOR_MHZ19,
   SENSOR_SPS30,
+  SENSOR_BLESCAN,
 
   COUNT_SENSORS
 };
 
-static_assert(COUNT_SENSORS == 4,
+static_assert(COUNT_SENSORS == 5,
               "The number of Sensor Types have changed. "
               "You probably have added or removed a sensor. "
               "Please update the definitions above accordingly");
