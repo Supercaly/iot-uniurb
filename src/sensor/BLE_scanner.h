@@ -6,7 +6,7 @@
 #include "abstract_sensor.h"
 
 #define BLE_SCANNER_DURATION_S 5
-#define BLE_SCANNER_MIN_RSSI -80
+#define BLE_SCANNER_MIN_RSSI   -80
 
 class BLE_scanner : public AbstractSensor {
   public:

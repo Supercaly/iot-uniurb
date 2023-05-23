@@ -5,12 +5,12 @@
 #include <WString.h>
 #include <assert.h>
 
+#include "sensor/BLE_scanner.h"
 #include "sensor/DHT11_sensor.h"
 #include "sensor/MHZ19_sensor.h"
 #include "sensor/SGP30_sensor.h"
 #include "sensor/SPS30_sensor.h"
 #include "sensor/abstract_sensor.h"
-#include "sensor/BLE_scanner.h"
 #include "sensor/sensor_type.h"
 #include "utils.h"
 
@@ -29,11 +29,11 @@ struct SensorTypeToImplPair {
 };
 
 static const SensorTypeToImplPair type_to_sensor_map[] = {
-    {SensorType::SENSOR_DHT11, &DHT11Sensor},
-    {SensorType::SENSOR_SGP30, &SGP30Sensor},
-    {SensorType::SENSOR_MHZ19, &MHZ19Sensor},
-    {SensorType::SENSOR_SPS30, &SPS30Sensor},
-    {SensorType::SENSOR_BLESCAN, &BLEScanner}
+    {SensorType::SENSOR_DHT11,   &DHT11Sensor},
+    {SensorType::SENSOR_SGP30,   &SGP30Sensor},
+    {SensorType::SENSOR_MHZ19,   &MHZ19Sensor},
+    {SensorType::SENSOR_SPS30,   &SPS30Sensor},
+    {SensorType::SENSOR_BLESCAN, &BLEScanner }
 };
 static_assert(size_of_array(type_to_sensor_map) == SensorType::COUNT_SENSORS,
               "The number of elements of type_to_sensor_map have changed. "
