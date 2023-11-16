@@ -2,9 +2,9 @@
 #define BUTTON_H
 
 #ifdef HAS_BUTTON
-#define BUTTON_TASK_STACK_SIZE 4096
-#define BUTTON_TASK_PRIORITY 5
-#define BUTTON_TASK_CORE tskNO_AFFINITY
+#  define BUTTON_TASK_STACK_SIZE 4096
+#  define BUTTON_TASK_PRIORITY   5
+#  define BUTTON_TASK_CORE       tskNO_AFFINITY
 
 /*
  * Function representing a task running on the board
