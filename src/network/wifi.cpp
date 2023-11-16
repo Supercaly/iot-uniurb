@@ -13,10 +13,6 @@
 #include "../log.h"
 #include "../utils.h"
 
-#ifdef HAS_BACKUP_WIFI
-static int old_backup_state = HIGH;
-#endif // HAS_BACKUP_WIFI
-
 // TODO: Make function set_mac_address publicly available.
 //  Currently we call WiFi.mode(WIFI_STA) inside wifi_connect, so the WiFi
 //  interface is not initialized until we try to connect to a network.
@@ -113,24 +109,3 @@ String wifi_get_ip() {
 String wifi_get_mac_address() {
   return WiFi.macAddress();
 }
-
-#ifdef HAS_BACKUP_WIFI
-void wifi_backup_task_code(void *args) {
-  pinMode(WIFI_BACKUP_JUMPER_PIN, INPUT_PULLUP);
-  digitalWrite(WIFI_BACKUP_JUMPER_PIN, HIGH);
-
-  TickType_t last_check = xTaskGetTickCount();
-  for (;;) {
-    xTaskDelayUntil(&last_check, pdMS_TO_TICKS(1000));
-    int backup_state = digitalRead(WIFI_BACKUP_JUMPER_PIN);
-    // TODO: Switch the WiFi connection back once the jumper is unset.
-    if (old_backup_state != backup_state && backup_state == LOW) {
-      if (!wifi_connect(WIFI_BACKUP_SSID, WIFI_BACKUP_PWD)) {
-        app_errorln("wifi_backup_task: error connecting to backup WiFi");
-        backup_state = HIGH;
-      }
-    }
-    old_backup_state = backup_state;
-  }
-}
-#endif // HAS_BACKUP_WIFI

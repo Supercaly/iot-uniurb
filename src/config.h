@@ -27,10 +27,8 @@
 #define WIFI_SSID SECRET_WIFI_SSID
 #define WIFI_PWD  SECRET_WIFI_PWD
 
-#define HAS_BACKUP_WIFI
-#define WIFI_BACKUP_SSID       SECRET_WIFI_BACKUP_SSID
-#define WIFI_BACKUP_PWD        SECRET_WIFI_BACKUP_PWD
-#define WIFI_BACKUP_JUMPER_PIN 26
+// #define HAS_BUTTON
+#define BUTTON_PIN 13
 
 // Delay in milliseconds after each sensor reading loop.
 #define SENSOR_READING_DELAY_MS 1000 * 60 * 5
@@ -51,7 +49,7 @@ static_assert(SENSOR_AVG_WINDOW > 2, "SENSOR_AVG_WINDOW must be > 2");
 #define SIGNAL_LED_PIN 4
 
 // PIN of the DHT11 sensor.
-#define DHT11_PIN 15
+#define DHT11_PIN 32
 
 // Serial for the MHZ19 sensor.
 #define MHZ19_SERIAL Serial2

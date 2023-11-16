@@ -14,9 +14,9 @@
 #endif // HAS_TELNET
 
 TaskHandle_t measure_task_handler;
-#ifdef HAS_BACKUP_WIFI
-TaskHandle_t wifi_backup_task_handler;
-#endif // HAS_BACKUP_WIFI
+#ifdef HAS_BUTTON
+TaskHandle_t button_task_handler;
+#endif // HAS_BUTTON
 #ifdef HAS_TELNET
 TaskHandle_t telnet_task_handler;
 #endif // HAS_TELNET
@@ -30,17 +30,17 @@ void setup() {
     app_fatalln("something went wrong initializing board preferences");
   }
 
-#ifdef HAS_BACKUP_WIFI
-  xTaskCreatePinnedToCore(wifi_backup_task_code,
-                          "wifi_backup_task",
-                          WIFI_BACKUP_TASK_STACK_SIZE,
+#ifdef HAS_BUTTON
+  xTaskCreatePinnedToCore(button_task_code,
+                          "button_task",
+                          BUTTON_TASK_STACK_SIZE,
                           nullptr,
-                          WIFI_BACKUP_TASK_PRIORITY,
-                          &wifi_backup_task_handler,
-                          WIFI_BACKUP_TASK_CORE);
-#endif // HAS_BACKUP_WIFI
+                          BUTTON_TASK_PRIORITY,
+                          &button_task_handler,
+                          BUTTON_TASK_CORE);
+#endif // HAS_BUTTON
 
-  // Connecto to WiFi network
+  // Connect to WiFi network
   if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
     app_fatalln("something went wrong connecting to WiFi");
     reboot_board();

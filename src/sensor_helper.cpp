@@ -60,9 +60,6 @@ void print_available_sensors_info(void (*print)(String)) {
   if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
     print("MHZ19 CO2: " + String(MHZ19Sensor.get_co2()));
   }
-  if (Preference.has_sensor(SensorType::SENSOR_BLESCAN)) {
-    print("BLESCAN count: " + String(BLEScanner.get_devices()));
-  }
 }
 
 void measure_and_send_task_code(void *args) {
