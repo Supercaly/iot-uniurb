@@ -150,6 +150,21 @@ class BoardPreference {
    */
   bool set_temperature_offset(int offset);
 
+  /*
+   * Return the number of reboots performed by the board.
+   */
+  uint16_t get_reboot_count() const { return _reboot_count; }
+
+  /*
+   * Increment the boards reboot count.
+   */
+  bool increment_reboot_count();
+
+  /*
+   * Clears the boards reboot count.
+   */
+  bool clear_reboot_count();
+
   private:
   /*
    * Available sensors are represented by 2 bytes (uint16_t)
@@ -164,6 +179,7 @@ class BoardPreference {
   String   _board_room;
   String   _spoofed_mac_addr;
   uint8_t  _temperature_offset = 0;
+  uint16_t _reboot_count       = 0;
 
   // Checksum internal buffer.
   uint8_t *_checksum_buffer    = nullptr;

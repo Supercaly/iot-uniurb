@@ -40,6 +40,8 @@ static void cmd_board_location(String);
 static void cmd_board_room(String);
 static void cmd_mac_address(String);
 static void cmd_temp_offset(String);
+static void cmd_get_reboot_count(String);
+static void cmd_clear_reboot_count(String);
 static void cmd_uptime(String);
 static void cmd_ping(String);
 static void cmd_reboot(String);
@@ -48,21 +50,23 @@ static void cmd_quit(String);
 static void cmd_help(String);
 
 static const TelnetCommand commands[] = {
-    {"sensor-info",    cmd_sensor_info,    "retrieve the values from all available sensors"        },
-    {"sensor-list",    cmd_sensor_list,    "list the available sensors"                            },
-    {"sensor-add",     cmd_sensor_add,     "mark a sensor as available"                            },
-    {"sensor-rm",      cmd_sensor_rm,      "mark a sensor as no longer available"                  },
-    {"board-host",     cmd_board_host,     "get or set board's host name"                          },
-    {"board-location", cmd_board_location, "get or set board's location"                           },
-    {"board-room",     cmd_board_room,     "get or set board's room"                               },
-    {"board-mac",      cmd_mac_address,    "get or set MAC address (off to use default)"           },
-    {"temp-offset",    cmd_temp_offset,    "get or set offset subtracted by each temperature value"},
-    {"uptime",         cmd_uptime,         "get the time elapsed since the board's boot"           },
-    {"ping",           cmd_ping,           "ping the board"                                        },
-    {"reboot",         cmd_reboot,         "reboot the board"                                      },
-    {"version",        cmd_version,        "show current firmware version"                         },
-    {"quit",           cmd_quit,           "exit"                                                  },
-    {"help",           cmd_help,           "show this help message"                                },
+    {"sensor-info",    cmd_sensor_info,        "retrieve the values from all available sensors"        },
+    {"sensor-list",    cmd_sensor_list,        "list the available sensors"                            },
+    {"sensor-add",     cmd_sensor_add,         "mark a sensor as available"                            },
+    {"sensor-rm",      cmd_sensor_rm,          "mark a sensor as no longer available"                  },
+    {"board-host",     cmd_board_host,         "get or set board's host name"                          },
+    {"board-location", cmd_board_location,     "get or set board's location"                           },
+    {"board-room",     cmd_board_room,         "get or set board's room"                               },
+    {"board-mac",      cmd_mac_address,        "get or set MAC address (off to use default)"           },
+    {"temp-offset",    cmd_temp_offset,        "get or set offset subtracted by each temperature value"},
+    {"get-reboot",     cmd_get_reboot_count,   "get count of reboots performed by the device"          },
+    {"clear-reboot",   cmd_clear_reboot_count, "clear count of reboots performed by the device"        },
+    {"uptime",         cmd_uptime,             "get the time elapsed since the board's boot"           },
+    {"ping",           cmd_ping,               "ping the board"                                        },
+    {"reboot",         cmd_reboot,             "reboot the board"                                      },
+    {"version",        cmd_version,            "show current firmware version"                         },
+    {"quit",           cmd_quit,               "exit"                                                  },
+    {"help",           cmd_help,               "show this help message"                                },
 };
 
 static void cmd_sensor_info(String _) {
@@ -122,7 +126,7 @@ static void cmd_board_host(String new_name) {
     app_traceln("cmd_board_host: want to get the board host name");
     telnet.println(Preference.get_board_host_name());
   } else {
-    app_traceln("cmd_board_host: wanto to set the board host name to: '" + new_name + "'");
+    app_traceln("cmd_board_host: want to set the board host name to: '" + new_name + "'");
     Preference.set_board_host_name(new_name);
   }
 }
@@ -130,10 +134,10 @@ static void cmd_board_host(String new_name) {
 static void cmd_board_location(String new_loc) {
   new_loc.trim();
   if (new_loc.isEmpty()) {
-    app_traceln("cmd_board_location: wanto to get the board location");
+    app_traceln("cmd_board_location: want to get the board location");
     telnet.println(Preference.get_board_location());
   } else {
-    app_traceln("cmd_board_location: wanto to set the board location to '" + new_loc + "'");
+    app_traceln("cmd_board_location: want to set the board location to '" + new_loc + "'");
     Preference.set_board_location(new_loc);
   }
 }
@@ -141,10 +145,10 @@ static void cmd_board_location(String new_loc) {
 static void cmd_board_room(String new_room) {
   new_room.trim();
   if (new_room.isEmpty()) {
-    app_traceln("cmd_board_room: wanto to get the board room");
+    app_traceln("cmd_board_room: want to get the board room");
     telnet.println(Preference.get_board_room());
   } else {
-    app_traceln("cmd_board_room: wanto to set the board room to '" + new_room + "'");
+    app_traceln("cmd_board_room: want to set the board room to '" + new_room + "'");
     Preference.set_board_room(new_room);
   }
 }
@@ -184,6 +188,16 @@ static void cmd_temp_offset(String temp_str) {
       telnet.println("error setting temperature offset");
     }
   }
+}
+
+static void cmd_get_reboot_count(String _) {
+  app_traceln("cmd_get_reboot_count: wants to get reboot count");
+  telnet.println(String(Preference.get_reboot_count()));
+}
+
+static void cmd_clear_reboot_count(String _) {
+  app_traceln("cmd_clear_reboot_count: wants to clear reboot count");
+  Preference.clear_reboot_count();
 }
 
 static void cmd_uptime(String _) {

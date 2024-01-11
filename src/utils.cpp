@@ -5,11 +5,15 @@
 #include <esp_timer.h>
 #include <stdint.h>
 
+#include "board_preference.h"
 #include "log.h"
 
 void reboot_board(int wait_ms) {
   app_infoln("rebooting the board after " + String(wait_ms) + "ms");
   delay(wait_ms);
+
+  Preference.increment_reboot_count();
+
   app_debugln("rebooting the board...");
   ESP.restart();
 }

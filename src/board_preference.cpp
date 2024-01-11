@@ -31,6 +31,7 @@ bool BoardPreference::init() {
   app_infoln("Device Room:        '" + get_board_room() + "'");
   app_infoln("Spoofed MAC:        '" + get_spoofed_mac() + "'");
   app_infoln("Temp Offset:        '" + String(get_temperature_offset()) + "'");
+  app_infoln("Reboot Count:       '" + String(get_reboot_count()) + "'");
 
   return true;
 }
@@ -43,6 +44,8 @@ bool BoardPreference::clear() {
   _board_room              = "";
   _spoofed_mac_addr        = "";
   _temperature_offset      = 0;
+  _reboot_count            = 0;
+
   return write_preferences();
 }
 
@@ -113,6 +116,16 @@ bool BoardPreference::set_temperature_offset(int offset) {
   return write_preferences();
 }
 
+bool BoardPreference::increment_reboot_count() {
+  _reboot_count++;
+  return write_preferences();
+}
+
+bool BoardPreference::clear_reboot_count() {
+  _reboot_count = 0;
+  return write_preferences();
+}
+
 bool BoardPreference::read_preferences() {
   app_traceln("BoardPreference::read_preferences: reading board preferences "
               "form EEPROM");
@@ -154,6 +167,9 @@ bool BoardPreference::read_preferences() {
   addr += sizeof(uint8_t);
   app_debugln("BoardPreference::read_preferences: _temperature_offset: "
               + String(_temperature_offset));
+  _reboot_count = EEPROM.readUShort(addr);
+  addr += sizeof(uint16_t);
+  app_debugln("BoardPreference::read_preferences: _reboot_count: " + String(_reboot_count));
 
   // Compute checksum of the parameter just read and check
   // if it's equal to the one stored in memory
@@ -175,7 +191,8 @@ bool BoardPreference::write_preferences() {
   app_trace("_board_location: '" + _board_location + "', ");
   app_trace("_board_room: '" + _board_room + "'");
   app_trace("_spoofed_mac_addr: '" + _spoofed_mac_addr + "'");
-  app_traceln("_temperature_offset: '" + String(_temperature_offset) + "'");
+  app_trace("_temperature_offset: '" + String(_temperature_offset) + "'");
+  app_traceln("_reboot_count: '" + String(_reboot_count) + "'");
 
   int addr = 0;
   // Write header magic number
@@ -197,6 +214,8 @@ bool BoardPreference::write_preferences() {
   addr += _spoofed_mac_addr.length() + 1;
   EEPROM.writeByte(addr, _temperature_offset);
   addr += sizeof(uint8_t);
+  EEPROM.writeUShort(addr, _reboot_count);
+  addr += sizeof(uint16_t);
 
   if (!EEPROM.commit()) {
     app_errorln("BoardPreference::write_preferences: error writing preferences "
@@ -214,6 +233,7 @@ void BoardPreference::create_checksum_prefs_buffer() {
   _checksum_buffer_sz += _board_room.length();
   _checksum_buffer_sz += _spoofed_mac_addr.length();
   _checksum_buffer_sz += sizeof(_temperature_offset);
+  _checksum_buffer_sz += sizeof(_reboot_count);
 
   if (_checksum_buffer != nullptr) {
     free(_checksum_buffer);
@@ -235,6 +255,8 @@ void BoardPreference::create_checksum_prefs_buffer() {
   address += _spoofed_mac_addr.length();
   memcpy((_checksum_buffer + address), &_temperature_offset, sizeof(_temperature_offset));
   address += sizeof(_temperature_offset);
+  memcpy((_checksum_buffer + address), &_reboot_count, sizeof(_reboot_count));
+  address += sizeof(_reboot_count);
 }
 
 uint16_t BoardPreference::checksum() {
