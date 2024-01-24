@@ -6,7 +6,14 @@
 #include "abstract_sensor.h"
 
 // Delay in milliseconds for the sensor init process.
-#define MHZ19_INIT_DELAY_MS 300
+#define MHZ19_INIT_DELAY_MS 1000 * 60 * 3
+// Delay in milliseconds after each sensor read.
+#define MHZ19_SAMPLING_MS 1100
+// Maximum value accepted for the CO2.
+#define MHZ19_MAX_CO2 5000
+// Number of iterations used to compute the mean CO2.
+#define MHZ19_AVG_NUM 10
+#define MHZ19_RANGE 5000
 
 class MHZ19_Sensor : public AbstractSensor {
   public:

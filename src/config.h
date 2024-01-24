@@ -36,15 +36,6 @@
 // Delay in milliseconds before the board reboots.
 #define BOARD_REBOOT_DELAY_MS 1000 * 60 * 5
 
-// Size of the Average Window for sensors.
-// NOTE: This value must be large than 2 since for each
-// average window we remove the max and min values.
-#define SENSOR_AVG_WINDOW 10
-static_assert(SENSOR_AVG_WINDOW > 2, "SENSOR_AVG_WINDOW must be > 2");
-// Time to wait before each sensor measurement when doing
-// an averaged measurement.
-#define SENSOR_AVG_DELAY_MS 300
-
 // PIN of the LED used to signal to the user.
 #define SIGNAL_LED_PIN 4
 

@@ -1,7 +1,7 @@
 #include "MHZ19_sensor.h"
 
 #include <Arduino.h>
-#include <WString.h>
+#include <MHZCO2.h>
 
 #include "../config.h"
 #include "../log.h"
@@ -19,34 +19,26 @@ bool MHZ19_Sensor::on_init() {
 }
 
 bool MHZ19_Sensor::on_measure() {
-  int currentCo2 = 0, minCo2 = 0, maxCo2 = 0;
+  int totalCo2 = 0;
+  int j        = 0;
 
   app_traceln("MHZ19_Sensor::measure: reading sensor values");
-  int i = 0, k = 0;
-  while (i < SENSOR_AVG_WINDOW && k < 100) {
-    // for (int i = 0; i < SENSOR_AVG_WINDOW; ++i) {
-    int err    = _mhz.measure();
-    currentCo2 = _mhz.getCO2();
+  for (int i = 0; i < MHZ19_AVG_NUM; i++) {
+    _mhz.measure();
+    int currentCo2 = _mhz.getCO2();
+    app_fatalln(String(currentCo2));
 
-    if (err == MHZCO2_OK && currentCo2 <= 5500) {
-      if (currentCo2 < minCo2) {
-        minCo2 = currentCo2;
-      }
-      if (currentCo2 > maxCo2) {
-        maxCo2 = currentCo2;
-      }
-      _co2 += currentCo2;
-      i++;
+    if (currentCo2 < MHZ19_MAX_CO2) {
+      totalCo2 += currentCo2;
+      j++;
     }
-    k++;
+    delay(MHZ19_SAMPLING_MS);
+  }
 
-    delay(SENSOR_AVG_DELAY_MS);
+  if (j > 0) {
+    totalCo2 /= j;
   }
-  if (i > 2) {
-    _co2 -= minCo2;
-    _co2 -= maxCo2;
-    _co2 /= (i - 2);
-  }
+  _co2 = totalCo2;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("MHZ19 Co2: " + String(_co2));
