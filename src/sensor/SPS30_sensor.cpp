@@ -1,10 +1,7 @@
 #include "SPS30_sensor.h"
 
 #include <Arduino.h>
-#include <MHZCO2.h>
-#include <WString.h>
 #include <sps30.h>
-#include <stdint.h>
 
 #include "../config.h"
 #include "../log.h"
@@ -54,14 +51,14 @@ bool SPS30_Sensor::on_measure() {
   uint16_t data_ready;
 
   app_traceln("SPS30_Sensor::measure: reading sensor values");
-  delay(1000);
+
   ret = sps30_read_data_ready(&data_ready);
   if (ret < 0) {
     app_errorln("SPS30_Sensor::measure: error reading data-ready flag");
     return false;
   }
   if (!data_ready) {
-    app_errorln("SPS30_Sensor::measure: no new measurement available for reading");
+    app_infoln("SPS30_Sensor::measure: no new measurement available for reading");
   }
 
   ret = sps30_read_measurement(&_sps_meas);
