@@ -3,11 +3,9 @@
 #include <Adafruit_SGP30.h>
 #include <Arduino.h>
 #include <WString.h>
-#include <stdint.h>
 
 #include "../config.h"
 #include "../log.h"
-#include "DHT11_sensor.h"
 
 SGP30_Sensor SGP30Sensor;
 
@@ -22,50 +20,35 @@ bool SGP30_Sensor::on_init() {
 }
 
 bool SGP30_Sensor::on_measure() {
-  uint16_t currentTvoc = 0.0, currentEco2 = 0.0, minTvoc = 0.0, maxTvoc = 0.0, minEco2 = 0.0,
-           maxEco2 = 0.0;
+  uint16_t totalEco2 = 0, totalTvoc = 0;
+  int      j = 0, k = 0;
 
   app_traceln("SGP30_Sensor::measure: reading sensor values");
-  if (DHT11Sensor.get_temperature() > 0) {
-    app_traceln(
-        "SGP30_Sensor::measure: compute absolute humidity with real temperature and humidity");
-    _sgp.setHumidity(
-        get_absolute_humidity(DHT11Sensor.get_temperature(), DHT11Sensor.get_humidity()));
-  } else {
-    app_traceln("SGP30_Sensor::measure: compute absolute humidity with default temperature and "
-                "humidity");
-    _sgp.setHumidity(get_absolute_humidity(22.1, 45.2));
-  }
-
-  for (int i = 0; i < SENSOR_AVG_WINDOW; ++i) {
+  for (int i = 0; i < SGP30_AVG_NUM; i++) {
     _sgp.IAQmeasure();
-    currentTvoc = _sgp.TVOC;
-    currentEco2 = _sgp.eCO2;
+    uint16_t currentTvoc = _sgp.TVOC;
+    uint16_t currentEco2 = _sgp.eCO2;
 
-    if (currentTvoc < minTvoc) {
-      minTvoc = currentTvoc;
-    }
-    if (currentTvoc > maxTvoc) {
-      maxTvoc = currentTvoc;
-    }
-    if (currentEco2 < minEco2) {
-      minEco2 = currentEco2;
-    }
-    if (currentEco2 > maxEco2) {
-      maxEco2 = currentEco2;
+    if (currentEco2 < SGP30_MAX_ECO2) {
+      totalEco2 += currentEco2;
+      j++;
     }
 
-    _tvoc += currentTvoc;
-    _eco2 += currentEco2;
-    delay(SGP30_MEASURE_DELAY_MS);
+    if (currentTvoc < SGP30_MAX_TVOC) {
+      totalTvoc += currentTvoc;
+      k++;
+    }
+    delay(SGP30_SAMPLING_MS);
   }
-  _tvoc -= minTvoc;
-  _tvoc -= maxTvoc;
-  _eco2 -= minEco2;
-  _eco2 -= maxEco2;
 
-  _tvoc /= (SENSOR_AVG_WINDOW - 2);
-  _eco2 /= (SENSOR_AVG_WINDOW - 2);
+  if (j > 0) {
+    totalEco2 /= j;
+  }
+  if (k > 0) {
+    totalTvoc /= k;
+  }
+  _tvoc = totalTvoc;
+  _eco2 = totalEco2;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("SGP30 TVOC: " + String(_tvoc));
@@ -73,13 +56,4 @@ bool SGP30_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
-}
-
-uint32_t SGP30_Sensor::get_absolute_humidity(float temperature, float humidity) {
-  const float absoluteHumidity
-      = 216.7f
-        * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature))
-           / (273.15f + temperature));
-  const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity);
-  return absoluteHumidityScaled;
 }
