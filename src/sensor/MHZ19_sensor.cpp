@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <MHZCO2.h>
 
+#include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
 
@@ -57,6 +58,12 @@ bool MHZ19_Sensor::on_measure() {
     totalCo2 /= j;
   }
   _co2 = totalCo2;
+
+  // Remove offset from data
+  int16_t co2_offset = Preference.get_co2_offset();
+  app_traceln("MHZ19_Sensor::measure: using offset of " + String(co2_offset) + " for real CO2 of "
+              + String(_co2));
+  _co2 += temp_offset;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("MHZ19 Co2: " + String(_co2));

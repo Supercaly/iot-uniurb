@@ -13,7 +13,7 @@
 #define MHZ19_MAX_CO2 5000
 // Number of iterations used to compute the mean CO2.
 #define MHZ19_AVG_NUM 10
-#define MHZ19_RANGE 5000
+#define MHZ19_RANGE   5000
 
 class MHZ19_Sensor : public AbstractSensor {
   public:
