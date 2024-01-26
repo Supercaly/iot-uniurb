@@ -140,7 +140,7 @@ class BoardPreference {
   /*
    * Return the temperature offset.
    */
-  int8_t get_temperature_offset() const { return _temperature_offset; }
+  int16_t get_temperature_offset() const { return _temperature_offset; }
 
   /*
    * Set the temperature offset.
@@ -148,7 +148,72 @@ class BoardPreference {
    * Returns false is the change cannot be applied
    * and leaves the values unchanged.
    */
-  bool set_temperature_offset(int offset);
+  bool set_temperature_offset(int16_t offset);
+
+  /*
+   * Return the humidity offset.
+   */
+  int16_t get_humidity_offset() const { return _humidity_offset; }
+
+  /*
+   * Set the humidity offset.
+   *
+   * Returns false is the change cannot be applied
+   * and leaves the values unchanged.
+   */
+  bool set_humidity_offset(int16_t offset);
+
+  /*
+   * Return the co2 offset.
+   */
+  int16_t get_co2_offset() const { return _co2_offset; }
+
+  /*
+   * Set the co2 offset.
+   *
+   * Returns false is the change cannot be applied
+   * and leaves the values unchanged.
+   */
+  bool set_co2_offset(int16_t offset);
+
+  /*
+   * Return the eco2 offset.
+   */
+  int16_t get_eco2_offset() const { return _eco2_offset; }
+
+  /*
+   * Set the eco2 offset.
+   *
+   * Returns false is the change cannot be applied
+   * and leaves the values unchanged.
+   */
+  bool set_eco2_offset(int16_t offset);
+
+  /*
+   * Return the tvoc offset.
+   */
+  int16_t get_tvoc_offset() const { return _tvoc_offset; }
+
+  /*
+   * Set the tvoc offset.
+   *
+   * Returns false is the change cannot be applied
+   * and leaves the values unchanged.
+   */
+  bool set_tvoc_offset(int16_t offset);
+
+  /*
+   * Return the pm10 offset.
+   */
+  int16_t get_pm10_offset() const { return _pm10_offset; }
+
+  /*
+   * Set the pm10 offset.
+   *
+   * Returns false is the change cannot be applied
+   * and leaves the values unchanged.
+   */
+  bool set_pm10_offset(int16_t offset);
 
   /*
    * Return the number of reboots performed by the board.
@@ -178,8 +243,13 @@ class BoardPreference {
   String   _board_location;
   String   _board_room;
   String   _spoofed_mac_addr;
-  uint8_t  _temperature_offset = 0;
   uint16_t _reboot_count       = 0;
+  int16_t  _temperature_offset = 0;
+  int16_t  _humidity_offset    = 0;
+  int16_t  _co2_offset         = 0;
+  int16_t  _eco2_offset        = 0;
+  int16_t  _tvoc_offset        = 0;
+  int16_t  _pm10_offset        = 0;
 
   // Checksum internal buffer.
   uint8_t *_checksum_buffer    = nullptr;

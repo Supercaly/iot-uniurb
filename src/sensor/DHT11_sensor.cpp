@@ -23,11 +23,15 @@ bool DHT11_Sensor::on_measure() {
   _temperature = _dht.readTemperature();
   _humidity    = _dht.readHumidity();
 
-  // Remove temperature offset from data
-  app_traceln("DHT11_Sensor::measure: using offset of "
-              + String(Preference.get_temperature_offset()) + " for real temperature of "
-              + String(_temperature));
-  _temperature -= Preference.get_temperature_offset();
+  // Remove offset from data
+  int16_t temp_offset = Preference.get_temperature_offset();
+  int16_t hum_offset  = Preference.get_humidity_offset();
+  app_traceln("DHT11_Sensor::measure: using offset of " + String(temp_offset)
+              + " for real temperature of " + String(_temperature));
+  _temperature += temp_offset;
+  app_traceln("DHT11_Sensor::measure: using offset of " + String(hum_offset)
+              + " for real humidity of " + String(_humidity));
+  _humidity += hum_offset;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("DHT11 temperature: " + String(_temperature));

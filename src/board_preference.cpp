@@ -31,6 +31,11 @@ bool BoardPreference::init() {
   app_infoln("Device Room:        '" + get_board_room() + "'");
   app_infoln("Spoofed MAC:        '" + get_spoofed_mac() + "'");
   app_infoln("Temp Offset:        '" + String(get_temperature_offset()) + "'");
+  app_infoln("Hum Offset:         '" + String(get_humidity_offset()) + "'");
+  app_infoln("CO2 Offset:         '" + String(get_co2_offset()) + "'");
+  app_infoln("eCO2 Offset:        '" + String(get_eco2_offset()) + "'");
+  app_infoln("TVOC Offset:        '" + String(get_tvoc_offset()) + "'");
+  app_infoln("PM 10 Offset:       '" + String(get_pm10_offset()) + "'");
   app_infoln("Reboot Count:       '" + String(get_reboot_count()) + "'");
 
   return true;
@@ -44,6 +49,11 @@ bool BoardPreference::clear() {
   _board_room              = "";
   _spoofed_mac_addr        = "";
   _temperature_offset      = 0;
+  _humidity_offset         = 0;
+  _co2_offset              = 0;
+  _eco2_offset             = 0;
+  _tvoc_offset             = 0;
+  _pm10_offset             = 0;
   _reboot_count            = 0;
 
   return write_preferences();
@@ -111,8 +121,33 @@ bool BoardPreference::set_spoofed_mac(String mac) {
   return write_preferences();
 }
 
-bool BoardPreference::set_temperature_offset(int offset) {
-  _temperature_offset = (uint8_t)offset;
+bool BoardPreference::set_temperature_offset(int16_t offset) {
+  _temperature_offset = offset;
+  return write_preferences();
+}
+
+bool BoardPreference::set_humidity_offset(int16_t offset) {
+  _humidity_offset = offset;
+  return write_preferences();
+}
+
+bool BoardPreference::set_co2_offset(int16_t offset) {
+  _co2_offset = offset;
+  return write_preferences();
+}
+
+bool BoardPreference::set_eco2_offset(int16_t offset) {
+  _eco2_offset = offset;
+  return write_preferences();
+}
+
+bool BoardPreference::set_tvoc_offset(int16_t offset) {
+  _tvoc_offset = offset;
+  return write_preferences();
+}
+
+bool BoardPreference::set_pm10_offset(int16_t offset) {
+  _pm10_offset = offset;
   return write_preferences();
 }
 
@@ -163,10 +198,25 @@ bool BoardPreference::read_preferences() {
   _spoofed_mac_addr = EEPROM.readString(addr);
   addr += _spoofed_mac_addr.length() + 1;
   app_debugln("BoardPreference::read_preferences: _spoofed_mac_addr: '" + _spoofed_mac_addr + "'");
-  _temperature_offset = EEPROM.readByte(addr);
-  addr += sizeof(uint8_t);
+  _temperature_offset = EEPROM.readShort(addr);
+  addr += sizeof(int16_t);
   app_debugln("BoardPreference::read_preferences: _temperature_offset: "
               + String(_temperature_offset));
+  _humidity_offset = EEPROM.readShort(addr);
+  addr += sizeof(int16_t);
+  app_debugln("BoardPreference::read_preferences: _humidity_offset: " + String(_humidity_offset));
+  _co2_offset = EEPROM.readShort(addr);
+  addr += sizeof(int16_t);
+  app_debugln("BoardPreference::read_preferences: _co2_offset: " + String(_co2_offset));
+  _eco2_offset = EEPROM.readShort(addr);
+  addr += sizeof(int16_t);
+  app_debugln("BoardPreference::read_preferences: _eco2_offset: " + String(_eco2_offset));
+  _tvoc_offset = EEPROM.readShort(addr);
+  addr += sizeof(int16_t);
+  app_debugln("BoardPreference::read_preferences: _tvoc_offset: " + String(_tvoc_offset));
+  _pm10_offset = EEPROM.readShort(addr);
+  addr += sizeof(int16_t);
+  app_debugln("BoardPreference::read_preferences: _pm10_offset: " + String(_pm10_offset));
   _reboot_count = EEPROM.readUShort(addr);
   addr += sizeof(uint16_t);
   app_debugln("BoardPreference::read_preferences: _reboot_count: " + String(_reboot_count));
@@ -212,8 +262,18 @@ bool BoardPreference::write_preferences() {
   addr += _board_room.length() + 1;
   EEPROM.writeString(addr, _spoofed_mac_addr);
   addr += _spoofed_mac_addr.length() + 1;
-  EEPROM.writeByte(addr, _temperature_offset);
-  addr += sizeof(uint8_t);
+  EEPROM.writeShort(addr, _temperature_offset);
+  addr += sizeof(int16_t);
+  EEPROM.writeShort(addr, _humidity_offset);
+  addr += sizeof(int16_t);
+  EEPROM.writeShort(addr, _co2_offset);
+  addr += sizeof(int16_t);
+  EEPROM.writeShort(addr, _eco2_offset);
+  addr += sizeof(int16_t);
+  EEPROM.writeShort(addr, _tvoc_offset);
+  addr += sizeof(int16_t);
+  EEPROM.writeShort(addr, _pm10_offset);
+  addr += sizeof(int16_t);
   EEPROM.writeUShort(addr, _reboot_count);
   addr += sizeof(uint16_t);
 
@@ -233,6 +293,11 @@ void BoardPreference::create_checksum_prefs_buffer() {
   _checksum_buffer_sz += _board_room.length();
   _checksum_buffer_sz += _spoofed_mac_addr.length();
   _checksum_buffer_sz += sizeof(_temperature_offset);
+  _checksum_buffer_sz += sizeof(_humidity_offset);
+  _checksum_buffer_sz += sizeof(_co2_offset);
+  _checksum_buffer_sz += sizeof(_eco2_offset);
+  _checksum_buffer_sz += sizeof(_tvoc_offset);
+  _checksum_buffer_sz += sizeof(_pm10_offset);
   _checksum_buffer_sz += sizeof(_reboot_count);
 
   if (_checksum_buffer != nullptr) {
@@ -255,6 +320,16 @@ void BoardPreference::create_checksum_prefs_buffer() {
   address += _spoofed_mac_addr.length();
   memcpy((_checksum_buffer + address), &_temperature_offset, sizeof(_temperature_offset));
   address += sizeof(_temperature_offset);
+  memcpy((_checksum_buffer + address), &_humidity_offset, sizeof(_humidity_offset));
+  address += sizeof(_humidity_offset);
+  memcpy((_checksum_buffer + address), &_co2_offset, sizeof(_co2_offset));
+  address += sizeof(_co2_offset);
+  memcpy((_checksum_buffer + address), &_eco2_offset, sizeof(_eco2_offset));
+  address += sizeof(_eco2_offset);
+  memcpy((_checksum_buffer + address), &_tvoc_offset, sizeof(_tvoc_offset));
+  address += sizeof(_tvoc_offset);
+  memcpy((_checksum_buffer + address), &_pm10_offset, sizeof(_pm10_offset));
+  address += sizeof(_pm10_offset);
   memcpy((_checksum_buffer + address), &_reboot_count, sizeof(_reboot_count));
   address += sizeof(_reboot_count);
 }

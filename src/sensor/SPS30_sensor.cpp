@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <sps30.h>
 
+#include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
 
@@ -66,6 +67,12 @@ bool SPS30_Sensor::on_measure() {
     app_errorln("SPS30_Sensor::measure: error reading measurement");
     return false;
   }
+
+  // Remove offset from data
+  int16_t pm10_offset = Preference.get_pm10_offset();
+  app_traceln("SGP30_Sensor::measure: using offset of " + String(pm10_offset)
+              + " for real PM 10 of " + String(_sps_meas.mc_10p0));
+  _sps_meas.mc_10p0 += pm10_offset;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("SPS30 PM 1.0: " + String(_sps_meas.mc_1p0));
