@@ -60,10 +60,10 @@ bool MHZ19_Sensor::on_measure() {
   _co2 = totalCo2;
 
   // Remove offset from data
-  int16_t co2_offset = Preference.get_co2_offset();
+  float co2_offset = Preference.get_co2_offset() * 0.01;
   app_traceln("MHZ19_Sensor::measure: using offset of " + String(co2_offset) + " for real CO2 of "
               + String(_co2));
-  _co2 += temp_offset;
+  _co2 *= round(co2_offset);
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("MHZ19 Co2: " + String(_co2));
