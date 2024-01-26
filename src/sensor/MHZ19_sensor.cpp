@@ -8,10 +8,29 @@
 
 MHZ19_Sensor MHZ19Sensor;
 
+volatile uint16_t pwm_time_high_ms;
+
+static void irq_fn() {
+  static uint32_t start = 0;
+  int             v     = digitalRead(MHZ19B_PWM_PIN);
+  if (v == HIGH) {
+    start = millis();
+  } else {
+    pwm_time_high_ms = millis() - start;
+  }
+}
+
+static uint16_t measure_co2_pwm() {
+  noInterrupts();
+  uint16_t high_time_ms = pwm_time_high_ms;
+  interrupts();
+
+  uint16_t concentration = round(((high_time_ms - 2) * MHZ19_RANGE) * 0.001);
+  return concentration;
+}
+
 bool MHZ19_Sensor::on_init() {
-  MHZ19_SERIAL.begin(MHZ19_BAUD_RATE, SERIAL_8N1, MHZ19_RX, MHZ19_TX);
-  _mhz.begin(&MHZ19_SERIAL);
-  _mhz.setPPM(5000);
+  attachInterrupt(digitalPinToInterrupt(MHZ19B_PWM_PIN), irq_fn, CHANGE);
 
   delay(MHZ19_INIT_DELAY_MS);
   app_traceln("MHZ19_Sensor::init: sensor initialized");
@@ -24,8 +43,7 @@ bool MHZ19_Sensor::on_measure() {
 
   app_traceln("MHZ19_Sensor::measure: reading sensor values");
   for (int i = 0; i < MHZ19_AVG_NUM; i++) {
-    _mhz.measure();
-    int currentCo2 = _mhz.getCO2();
+    int currentCo2 = measure_co2_pwm();
     app_fatalln(String(currentCo2));
 
     if (currentCo2 < MHZ19_MAX_CO2) {

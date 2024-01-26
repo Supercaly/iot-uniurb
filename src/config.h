@@ -38,17 +38,10 @@
 
 // PIN of the LED used to signal to the user.
 #define SIGNAL_LED_PIN 4
-
 // PIN of the DHT11 sensor.
 #define DHT11_PIN 32
-
-// Serial for the MHZ19 sensor.
-#define MHZ19_SERIAL Serial2
-// Serial Baud Rate for the MHZ19 sensor.
-#define MHZ19_BAUD_RATE 9600
-// PINs of the MHZ19 sensor.
-#define MHZ19_RX 16
-#define MHZ19_TX 17
+// PWM PIN for the MHZ19 sensor.
+#define MHZ19B_PWM_PIN 16
 
 // InfluxDB settings.
 #define HAS_INFLUXDB
