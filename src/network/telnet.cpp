@@ -30,6 +30,16 @@ struct TelnetCommand {
 
 static ESPTelnet telnet;
 
+static void cmd_sensor(String);
+static void cmd_board(String);
+static void cmd_offset(String);
+static void cmd_reboot_count(String);
+static void cmd_uptime(String);
+static void cmd_ping(String);
+static void cmd_reboot(String);
+static void cmd_version(String);
+static void cmd_quit(String);
+static void cmd_help(String);
 static void cmd_sensor_info(String);
 static void cmd_sensor_list(String);
 static void cmd_sensor_add(String);
@@ -37,46 +47,179 @@ static void cmd_sensor_rm(String);
 static void cmd_board_host(String);
 static void cmd_board_location(String);
 static void cmd_board_room(String);
-static void cmd_mac_address(String);
-static void cmd_temp_offset(String);
-static void cmd_hum_offset(String);
-static void cmd_co2_offset(String);
-static void cmd_eco2_offset(String);
-static void cmd_tvoc_offset(String);
-static void cmd_pm10_offset(String);
-static void cmd_get_reboot_count(String);
-static void cmd_clear_reboot_count(String);
-static void cmd_uptime(String);
-static void cmd_ping(String);
-static void cmd_reboot(String);
-static void cmd_version(String);
-static void cmd_quit(String);
-static void cmd_help(String);
+static void cmd_board_mac(String);
+static void cmd_offset_temp(String);
+static void cmd_offset_hum(String);
+static void cmd_offset_co2(String);
+static void cmd_offset_eco2(String);
+static void cmd_offset_tvoc(String);
+static void cmd_offset_pm10(String);
+static void cmd_reboot_count_get(String);
+static void cmd_reboot_count_clear(String);
 
 static const TelnetCommand commands[] = {
-    {"sensor-info",    cmd_sensor_info,        "retrieve the values from all available sensors"},
-    {"sensor-list",    cmd_sensor_list,        "list the available sensors"                    },
-    {"sensor-add",     cmd_sensor_add,         "mark a sensor as available"                    },
-    {"sensor-rm",      cmd_sensor_rm,          "mark a sensor as no longer available"          },
-    {"board-host",     cmd_board_host,         "get or set board's host name"                  },
-    {"board-location", cmd_board_location,     "get or set board's location"                   },
-    {"board-room",     cmd_board_room,         "get or set board's room"                       },
-    {"board-mac",      cmd_mac_address,        "get board's MAC address"                       },
-    {"temp-offset",    cmd_temp_offset,        "get or set offset of each temperature value"   },
-    {"hum-offset",     cmd_hum_offset,         "get or set offset of each humidity value"      },
-    {"co2-offset",     cmd_co2_offset,         "get or set offset of each CO2 value"           },
-    {"eco2-offset",    cmd_eco2_offset,        "get or set offset of each eCO2 value"          },
-    {"tvoc-offset",    cmd_tvoc_offset,        "get or set offset of each tvoc value"          },
-    {"pm10-offset",    cmd_pm10_offset,        "get or set offset of each PM 10 value"         },
-    {"get-reboot",     cmd_get_reboot_count,   "get count of reboots performed by the device"  },
-    {"clear-reboot",   cmd_clear_reboot_count, "clear count of reboots performed by the device"},
-    {"uptime",         cmd_uptime,             "get the time elapsed since the board's boot"   },
-    {"ping",           cmd_ping,               "ping the board"                                },
-    {"reboot",         cmd_reboot,             "reboot the board"                              },
-    {"version",        cmd_version,            "show current firmware version"                 },
-    {"quit",           cmd_quit,               "exit"                                          },
-    {"help",           cmd_help,               "show this help message"                        },
+    {"sensor",       cmd_sensor,       "manage the available sensors"               },
+    {"board",        cmd_board,        "get or set board's info"                    },
+    {"offset",       cmd_offset,       "get or set sensors offsets"                 },
+    {"reboot-count", cmd_reboot_count, "get or clear number of reboots"             },
+    {"uptime",       cmd_uptime,       "get the time elapsed since the board's boot"},
+    {"ping",         cmd_ping,         "ping the board"                             },
+    {"reboot",       cmd_reboot,       "reboot the board"                           },
+    {"version",      cmd_version,      "show current firmware version"              },
+    {"quit",         cmd_quit,         "exit"                                       },
+    {"help",         cmd_help,         "show this help message"                     },
 };
+
+static const TelnetCommand sensor_commands[] = {
+    {"info", cmd_sensor_info, "print the last values of all sensors"},
+    {"list", cmd_sensor_list, "list the available sensors"          },
+    {"add",  cmd_sensor_add,  "mark a sensor as available"          },
+    {"rm",   cmd_sensor_rm,   "mark a sensor as no longer available"},
+};
+
+static const TelnetCommand board_commands[] = {
+    {"host",     cmd_board_host,     "get or set board's host name"},
+    {"location", cmd_board_location, "get or set board's location" },
+    {"room",     cmd_board_room,     "get or set board's room"     },
+    {"mac",      cmd_board_mac,      "get board's MAC address"     },
+};
+static const TelnetCommand offset_commands[] = {
+    {"temp", cmd_offset_temp, "get or set temperature offset"},
+    {"hum",  cmd_offset_hum,  "get or set humidity offset"   },
+    {"co2",  cmd_offset_co2,  "get or set CO2 offset"        },
+    {"eco2", cmd_offset_eco2, "get or set eCO2 offset"       },
+    {"tvoc", cmd_offset_tvoc, "get or set TVOC offset"       },
+    {"pm10", cmd_offset_pm10, "get or set PM 10 offset"      },
+};
+
+static const TelnetCommand reboot_count_commands[] = {
+    {"get",   cmd_reboot_count_get,   "get number of reboots performed by the device"  },
+    {"clear", cmd_reboot_count_clear, "reset number of reboots performed by the device"},
+};
+
+// Main commands.
+
+static void cmd_sensor(String cmd) {
+  cmd.trim();
+  String sub_cmd = string_divide_by(&cmd, ' ');
+  sub_cmd.trim();
+  cmd.trim();
+  for (int i = 0; i < size_of_array(sensor_commands); i++) {
+    if (sub_cmd == sensor_commands[i].name) {
+      sensor_commands[i].run(cmd);
+      return;
+    }
+  }
+  telnet.println("sub-command not found: " + cmd);
+}
+
+static void cmd_board(String cmd) {
+  cmd.trim();
+  String sub_cmd = string_divide_by(&cmd, ' ');
+  sub_cmd.trim();
+  cmd.trim();
+  for (int i = 0; i < size_of_array(board_commands); i++) {
+    if (sub_cmd == board_commands[i].name) {
+      board_commands[i].run(cmd);
+      return;
+    }
+  }
+  telnet.println("sub-command not found: " + cmd);
+}
+
+static void cmd_offset(String cmd) {
+  cmd.trim();
+  String sub_cmd = string_divide_by(&cmd, ' ');
+  sub_cmd.trim();
+  cmd.trim();
+  for (int i = 0; i < size_of_array(offset_commands); i++) {
+    if (sub_cmd == offset_commands[i].name) {
+      offset_commands[i].run(cmd);
+      return;
+    }
+  }
+  telnet.println("sub-command not found: " + cmd);
+}
+
+static void cmd_reboot_count(String cmd) {
+  cmd.trim();
+  String sub_cmd = string_divide_by(&cmd, ' ');
+  sub_cmd.trim();
+  cmd.trim();
+  for (int i = 0; i < size_of_array(reboot_count_commands); i++) {
+    if (sub_cmd == reboot_count_commands[i].name) {
+      reboot_count_commands[i].run(cmd);
+      return;
+    }
+  }
+  telnet.println("sub-command not found: " + cmd);
+}
+
+static void cmd_uptime(String _) {
+  telnet.println(board_uptime());
+}
+
+static void cmd_ping(String _) {
+  telnet.println("pong");
+}
+
+static void cmd_reboot(String _) {
+  telnet.println("rebooting board... you will be disconnected");
+  telnet.disconnectClient();
+  reboot_board(BOARD_REBOOT_DELAY_NOW);
+}
+
+static void cmd_version(String _) {
+  telnet.println("IoT UniUrb version " VERSION);
+}
+
+static void cmd_quit(String _) {
+  telnet.println("disconnecting you... bye!");
+  telnet.disconnectClient();
+}
+
+static void print_command_help(const TelnetCommand *cmd, int sz) {
+  for (int i = 0; i < sz; i++) {
+    telnet.print("  " + cmd[i].name);
+    String spaces;
+    for (int s = 0; s < (20 - cmd[i].name.length()); s++) {
+      spaces += ' ';
+    }
+    telnet.print(spaces);
+    telnet.println(cmd[i].help);
+  }
+}
+
+static void cmd_help(String cmd) {
+  cmd.trim();
+  String sub_cmd = string_divide_by(&cmd, ' ');
+  sub_cmd.trim();
+
+  if (sub_cmd.isEmpty()) {
+    telnet.println("IoT UniUrb");
+    telnet.println("");
+    telnet.println("commands:");
+    print_command_help(commands, size_of_array(commands));
+  } else {
+    if (sub_cmd == "sensor") {
+      telnet.println("sensor commands:");
+      print_command_help(sensor_commands, size_of_array(sensor_commands));
+    } else if (sub_cmd == "board") {
+      telnet.println("board commands:");
+      print_command_help(board_commands, size_of_array(board_commands));
+    } else if (sub_cmd == "offset") {
+      telnet.println("offset commands:");
+      print_command_help(offset_commands, size_of_array(offset_commands));
+    } else if (sub_cmd == "reboot-count") {
+      telnet.println("reboot count commands:");
+      print_command_help(reboot_count_commands, size_of_array(reboot_count_commands));
+    } else {
+      telnet.println("sub-command not found: " + sub_cmd);
+    }
+  }
+}
+
+// Sensor sub commands.
 
 static void cmd_sensor_info(String _) {
   telnet.println("Values from available sensors:");
@@ -129,6 +272,8 @@ static void cmd_sensor_rm(String sensor_str) {
   }
 }
 
+// Board sub commands.
+
 static void cmd_board_host(String new_name) {
   new_name.trim();
   BoardInfo bi;
@@ -177,15 +322,17 @@ static void cmd_mac_address(String _) {
   return;
 }
 
-static void cmd_temp_offset(String str) {
+// Offset sub commands.
+
+static void cmd_offset_temp(String str) {
   str.trim();
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
-    app_traceln("cmd_temp_offset: wants to get current temperature offset");
+    app_traceln("cmd_offset_temp: wants to get current temperature offset");
     telnet.println(String(so.temperature));
   } else {
-    app_traceln("cmd_temp_offset: wants to set temperature offset");
+    app_traceln("cmd_offset_temp: wants to set temperature offset");
     so.temperature = (int16_t)str.toInt();
     if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting temperature offset");
@@ -193,15 +340,15 @@ static void cmd_temp_offset(String str) {
   }
 }
 
-static void cmd_hum_offset(String str) {
+static void cmd_offset_hum(String str) {
   str.trim();
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
-    app_traceln("cmd_hum_offset: wants to get current humidity offset");
+    app_traceln("cmd_offset_hum: wants to get current humidity offset");
     telnet.println(String(so.humidity));
   } else {
-    app_traceln("cmd_hum_offset: wants to set humidity offset");
+    app_traceln("cmd_offset_hum: wants to set humidity offset");
     so.humidity = (int16_t)str.toInt();
     if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting humidity offset");
@@ -209,15 +356,15 @@ static void cmd_hum_offset(String str) {
   }
 }
 
-static void cmd_co2_offset(String str) {
+static void cmd_offset_co2(String str) {
   str.trim();
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
-    app_traceln("cmd_co2_offset: wants to get current co2 offset");
+    app_traceln("cmd_offset_co2: wants to get current co2 offset");
     telnet.println(String(so.co2));
   } else {
-    app_traceln("cmd_co2_offset: wants to set co2 offset");
+    app_traceln("cmd_offset_co2: wants to set co2 offset");
     so.co2 = (int16_t)str.toInt();
     if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting co2 offset");
@@ -225,15 +372,15 @@ static void cmd_co2_offset(String str) {
   }
 }
 
-static void cmd_eco2_offset(String str) {
+static void cmd_offset_eco2(String str) {
   str.trim();
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
-    app_traceln("cmd_eco2_offset: wants to get current eco2 offset");
+    app_traceln("cmd_offset_eco2: wants to get current eco2 offset");
     telnet.println(String(so.eco2));
   } else {
-    app_traceln("cmd_eco2_offset: wants to set eco2 offset");
+    app_traceln("cmd_offset_eco2: wants to set eco2 offset");
     so.eco2 = (int16_t)str.toInt();
     if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting eco2 offset");
@@ -241,15 +388,15 @@ static void cmd_eco2_offset(String str) {
   }
 }
 
-static void cmd_tvoc_offset(String str) {
+static void cmd_offset_tvoc(String str) {
   str.trim();
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
-    app_traceln("cmd_tvoc_offset: wants to get current tvoc offset");
+    app_traceln("cmd_offset_tvoc: wants to get current tvoc offset");
     telnet.println(String(so.tvoc));
   } else {
-    app_traceln("cmd_tvoc_offset: wants to set tvoc offset");
+    app_traceln("cmd_offset_tvoc: wants to set tvoc offset");
     so.tvoc = (int16_t)str.toInt();
     if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting tvoc offset");
@@ -257,15 +404,15 @@ static void cmd_tvoc_offset(String str) {
   }
 }
 
-static void cmd_pm10_offset(String str) {
+static void cmd_offset_pm10(String str) {
   str.trim();
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
-    app_traceln("cmd_pm10_offset: wants to get current pm 10 offset");
+    app_traceln("cmd_offset_pm10: wants to get current pm 10 offset");
     telnet.println(String(so.pm10));
   } else {
-    app_traceln("cmd_pm10_offset: wants to set pm 10 offset");
+    app_traceln("cmd_offset_pm10: wants to set pm 10 offset");
     so.pm10 = (int16_t)str.toInt();
     if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting pm 10 offset");
@@ -273,54 +420,19 @@ static void cmd_pm10_offset(String str) {
   }
 }
 
-static void cmd_get_reboot_count(String _) {
-  app_traceln("cmd_get_reboot_count: wants to get reboot count");
+// Reboot count sub commands.
+
+static void cmd_reboot_count_get(String _) {
+  app_traceln("cmd_reboot_count_get: wants to get reboot count");
   telnet.println(String(Preference.get_reboot_count()));
 }
 
-static void cmd_clear_reboot_count(String _) {
-  app_traceln("cmd_clear_reboot_count: wants to clear reboot count");
+static void cmd_reboot_count_clear(String _) {
+  app_traceln("cmd_reboot_count_clear: wants to clear reboot count");
   Preference.clear_reboot_count();
 }
 
-static void cmd_uptime(String _) {
-  telnet.println(board_uptime());
-}
-
-static void cmd_ping(String _) {
-  telnet.println("pong");
-}
-
-static void cmd_reboot(String _) {
-  telnet.println("rebooting board... you will be disconnected");
-  telnet.disconnectClient();
-  reboot_board(BOARD_REBOOT_DELAY_NOW);
-}
-
-static void cmd_version(String cmd) {
-  telnet.println("IoT UniUrb version " VERSION);
-}
-
-static void cmd_quit(String cmd) {
-  telnet.println("disconnecting you... bye!");
-  telnet.disconnectClient();
-}
-
-static void cmd_help(String cmd) {
-  telnet.println("IoT UniUrb");
-  telnet.println("");
-  telnet.println("commands:");
-
-  for (int i = 0; i < size_of_array(commands); i++) {
-    telnet.print("  " + commands[i].name);
-    String spaces;
-    for (int s = 0; s < (20 - commands[i].name.length()); s++) {
-      spaces += ' ';
-    }
-    telnet.print(spaces);
-    telnet.println(commands[i].help);
-  }
-}
+// Telnet callbacks.
 
 static void telnet_on_connect_cb(String ip) {
   app_debugln("Telnet: IP '" + ip + "' connected");
