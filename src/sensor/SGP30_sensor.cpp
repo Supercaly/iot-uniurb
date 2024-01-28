@@ -52,14 +52,14 @@ bool SGP30_Sensor::on_measure() {
   _eco2 = totalEco2;
 
   // Remove offset from data
-  int16_t eco2_offset = Preference.get_eco2_offset();
-  int16_t tvoc_offset = Preference.get_tvoc_offset();
-  app_traceln("SGP30_Sensor::measure: using offset of " + String(eco2_offset) + " for real eCO2 of "
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
+  app_traceln("SGP30_Sensor::measure: using offset of " + String(so.eco2) + " for real eCO2 of "
               + String(_eco2));
-  _eco2 += eco2_offset;
-  app_traceln("SGP30_Sensor::measure: using offset of " + String(tvoc_offset) + " for real TVOC of "
+  _eco2 += so.eco2;
+  app_traceln("SGP30_Sensor::measure: using offset of " + String(so.tvoc) + " for real TVOC of "
               + String(_tvoc));
-  _tvoc += tvoc_offset;
+  _tvoc += so.tvoc;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("SGP30 TVOC: " + String(_tvoc));

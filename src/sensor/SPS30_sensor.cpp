@@ -69,10 +69,11 @@ bool SPS30_Sensor::on_measure() {
   }
 
   // Remove offset from data
-  int16_t pm10_offset = Preference.get_pm10_offset();
-  app_traceln("SGP30_Sensor::measure: using offset of " + String(pm10_offset)
-              + " for real PM 10 of " + String(_sps_meas.mc_10p0));
-  _sps_meas.mc_10p0 += pm10_offset;
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
+  app_traceln("SGP30_Sensor::measure: using offset of " + String(so.pm10) + " for real PM 10 of "
+              + String(_sps_meas.mc_10p0));
+  _sps_meas.mc_10p0 += so.pm10;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("SPS30 PM 1.0: " + String(_sps_meas.mc_1p0));

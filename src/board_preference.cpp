@@ -1,12 +1,22 @@
 #include "board_preference.h"
 
-#include <EEPROM.h>
-#include <WString.h>
-#include <stdint.h>
-#include <string.h>
+#include <Arduino.h>
+#include <Preferences.h>
 
 #include "log.h"
 #include "sensor/sensor_type.h"
+
+#define PREF_SENSORS_KEY      "sensors"
+#define PREF_HOST_NAME_KEY    "board-host"
+#define PREF_ROOM_KEY         "board-room"
+#define PREF_LOCATION_KEY     "board-loc"
+#define PREF_TEMP_OFFSET_KEY  "offs-temp"
+#define PREF_HUM_OFFSET_KEY   "offs-hum"
+#define PREF_CO2_OFFSET_KEY   "offs-co2"
+#define PREF_ECO2_OFFSET_KEY  "offs-eco2"
+#define PREF_TVOC_OFFSET_KEY  "offs-tvco"
+#define PREF_PM10_OFFSET_KEY  "offs-pm10"
+#define PREF_REBOOT_COUNT_KEY "reboot-cnt"
 
 #define _PREF_HAS_SENSOR_BIT(bytes, idx)   (((bytes >> (uint16_t)idx)) & (uint16_t)0x01)
 #define _PREF_SET_SENSOR_BIT(bytes, idx)   bytes |= ((uint16_t)0x01 << (uint16_t)idx)
@@ -14,49 +24,52 @@
 
 BoardPreference Preference;
 
-bool BoardPreference::init() {
-  app_traceln("BoardPreference::init: ");
-  if (!EEPROM.begin(1000)) {
-    app_errorln("BoardPreference::init: cannot initialize EEPROM");
-    return false;
-  }
-  if (!read_preferences()) {
-    app_debugln("BoardPreference::init: EEPROM memory is malformed and will be "
-                "restored to default state");
-    return clear();
-  }
-  app_infoln("Available Sensors:   " + available_sensors_to_String());
-  app_infoln("Device Host Name:   '" + get_board_host_name() + "'");
-  app_infoln("Device Location:    '" + get_board_location() + "'");
-  app_infoln("Device Room:        '" + get_board_room() + "'");
-  app_infoln("Spoofed MAC:        '" + get_spoofed_mac() + "'");
-  app_infoln("Temp Offset:        '" + String(get_temperature_offset()) + "'");
-  app_infoln("Hum Offset:         '" + String(get_humidity_offset()) + "'");
-  app_infoln("CO2 Offset:         '" + String(get_co2_offset()) + "'");
-  app_infoln("eCO2 Offset:        '" + String(get_eco2_offset()) + "'");
-  app_infoln("TVOC Offset:        '" + String(get_tvoc_offset()) + "'");
-  app_infoln("PM 10 Offset:       '" + String(get_pm10_offset()) + "'");
-  app_infoln("Reboot Count:       '" + String(get_reboot_count()) + "'");
-
-  return true;
+BoardPreference::BoardPreference() {
+  _board_info     = new BoardInfo();
+  _sensor_offsets = new SensorOffsets();
 }
 
-bool BoardPreference::clear() {
-  app_traceln("BoardPreference::clear: restoring preferences to default state");
-  _available_sensors_bytes = 0x0;
-  _board_host_name         = "";
-  _board_location          = "";
-  _board_room              = "";
-  _spoofed_mac_addr        = "";
-  _temperature_offset      = 0;
-  _humidity_offset         = 0;
-  _co2_offset              = 0;
-  _eco2_offset             = 0;
-  _tvoc_offset             = 0;
-  _pm10_offset             = 0;
-  _reboot_count            = 0;
+BoardPreference::~BoardPreference() {
+  delete _board_info;
+  delete _sensor_offsets;
+}
 
-  return write_preferences();
+bool BoardPreference::init() {
+  app_traceln("BoardPreference::init: initializing preferences");
+
+  if (!_prefs.begin("app-prefs")) {
+    app_errorln("BoardPreference::init: cannot initialize preferences");
+    return false;
+  }
+
+  app_traceln("BoardPreference::init: preferences initialized");
+
+  // Read all preferences from memory and store it in variables for easy access
+  _available_sensors_bytes     = _prefs.getUShort(PREF_SENSORS_KEY, 0);
+  _board_info->host_name       = _prefs.getString(PREF_HOST_NAME_KEY, DEFAULT_BOARD_HOST_NAME);
+  _board_info->room            = _prefs.getString(PREF_ROOM_KEY, DEFAULT_BOARD_ROOM);
+  _board_info->location        = _prefs.getString(PREF_LOCATION_KEY, DEFAULT_BOARD_ROOM);
+  _sensor_offsets->temperature = _prefs.getShort(PREF_TEMP_OFFSET_KEY, 1);
+  _sensor_offsets->humidity    = _prefs.getShort(PREF_HUM_OFFSET_KEY, 1);
+  _sensor_offsets->co2         = _prefs.getShort(PREF_CO2_OFFSET_KEY, 100);
+  _sensor_offsets->eco2        = _prefs.getShort(PREF_ECO2_OFFSET_KEY, 1);
+  _sensor_offsets->tvoc        = _prefs.getShort(PREF_TVOC_OFFSET_KEY, 1);
+  _sensor_offsets->pm10        = _prefs.getShort(PREF_PM10_OFFSET_KEY, 1);
+  _reboot_count                = _prefs.getUShort(PREF_REBOOT_COUNT_KEY, 0);
+
+  app_infoln("Available Sensors:   " + available_sensors_to_String());
+  app_infoln("Device Host Name:   '" + _board_info->host_name + "'");
+  app_infoln("Device Location:    '" + _board_info->location + "'");
+  app_infoln("Device Room:        '" + _board_info->room + "'");
+  app_infoln("Temp Offset:        '" + String(_sensor_offsets->temperature) + "'");
+  app_infoln("Hum Offset:         '" + String(_sensor_offsets->humidity) + "'");
+  app_infoln("CO2 Offset:         '" + String(_sensor_offsets->co2) + "'");
+  app_infoln("eCO2 Offset:        '" + String(_sensor_offsets->eco2) + "'");
+  app_infoln("TVOC Offset:        '" + String(_sensor_offsets->tvoc) + "'");
+  app_infoln("PM 10 Offset:       '" + String(_sensor_offsets->pm10) + "'");
+  app_infoln("Reboot Count:       '" + String(_reboot_count) + "'");
+
+  return true;
 }
 
 bool BoardPreference::has_sensor(SensorType s) {
@@ -72,7 +85,7 @@ bool BoardPreference::add_sensor(SensorType s) {
   }
   app_traceln("BoardPreference::add_sensor: " + SensorType_to_String(s));
   _PREF_SET_SENSOR_BIT(_available_sensors_bytes, s);
-  return write_preferences();
+  return _prefs.putUShort(PREF_SENSORS_KEY, _available_sensors_bytes) > 0;
 }
 
 bool BoardPreference::remove_sensor(SensorType s) {
@@ -81,7 +94,7 @@ bool BoardPreference::remove_sensor(SensorType s) {
   }
   app_traceln("BoardPreference::remove_sensor: " + SensorType_to_String(s));
   _PREF_UNSET_SENSOR_BIT(_available_sensors_bytes, s);
-  return write_preferences();
+  return _prefs.putUShort(PREF_SENSORS_KEY, _available_sensors_bytes) > 0;
 }
 
 String BoardPreference::available_sensors_to_String() {
@@ -101,250 +114,77 @@ String BoardPreference::available_sensors_to_String() {
   return ret;
 }
 
-bool BoardPreference::set_board_host_name(String name) {
-  _board_host_name = name;
-  return write_preferences();
+bool BoardPreference::get_board_info(BoardInfo *info) {
+  info->host_name = _board_info->host_name;
+  info->room      = _board_info->room;
+  info->location  = _board_info->location;
+  return true;
 }
 
-bool BoardPreference::set_board_location(String location) {
-  _board_location = location;
-  return write_preferences();
+bool BoardPreference::set_board_info(BoardInfo info) {
+  _board_info->host_name = info.host_name;
+  _board_info->room      = info.room;
+  _board_info->location  = info.location;
+  if (_prefs.putString(PREF_HOST_NAME_KEY, _board_info->host_name) <= 0) {
+    return false;
+  }
+  if (_prefs.putString(PREF_ROOM_KEY, _board_info->room) <= 0) {
+    return false;
+  }
+  if (_prefs.putString(PREF_LOCATION_KEY, _board_info->location) <= 0) {
+    return false;
+  }
+  return true;
 }
 
-bool BoardPreference::set_board_room(String room) {
-  _board_room = room;
-  return write_preferences();
+bool BoardPreference::get_sensor_offsets(SensorOffsets *offsets) {
+  offsets->temperature = _sensor_offsets->temperature;
+  offsets->humidity    = _sensor_offsets->humidity;
+  offsets->co2         = _sensor_offsets->co2;
+  offsets->eco2        = _sensor_offsets->eco2;
+  offsets->tvoc        = _sensor_offsets->tvoc;
+  offsets->pm10        = _sensor_offsets->pm10;
+  return true;
 }
 
-bool BoardPreference::set_spoofed_mac(String mac) {
-  _spoofed_mac_addr = mac;
-  return write_preferences();
+bool BoardPreference::set_sensor_offsets(SensorOffsets offsets) {
+  _sensor_offsets->temperature = offsets.temperature;
+  _sensor_offsets->humidity    = offsets.humidity;
+  _sensor_offsets->co2         = offsets.co2;
+  _sensor_offsets->eco2        = offsets.eco2;
+  _sensor_offsets->tvoc        = offsets.tvoc;
+  _sensor_offsets->pm10        = offsets.pm10;
+  if (_prefs.putShort(PREF_TEMP_OFFSET_KEY, _sensor_offsets->temperature) <= 0) {
+    return false;
+  }
+  if (_prefs.putShort(PREF_HUM_OFFSET_KEY, _sensor_offsets->humidity) <= 0) {
+    return false;
+  }
+  if (_prefs.putShort(PREF_CO2_OFFSET_KEY, _sensor_offsets->co2) <= 0) {
+    return false;
+  }
+  if (_prefs.putShort(PREF_ECO2_OFFSET_KEY, _sensor_offsets->eco2) <= 0) {
+    return false;
+  }
+  if (_prefs.putShort(PREF_TVOC_OFFSET_KEY, _sensor_offsets->tvoc) <= 0) {
+    return false;
+  }
+  if (_prefs.putShort(PREF_PM10_OFFSET_KEY, _sensor_offsets->pm10) <= 0) {
+    return false;
+  }
+  return true;
 }
 
-bool BoardPreference::set_temperature_offset(int16_t offset) {
-  _temperature_offset = offset;
-  return write_preferences();
-}
-
-bool BoardPreference::set_humidity_offset(int16_t offset) {
-  _humidity_offset = offset;
-  return write_preferences();
-}
-
-bool BoardPreference::set_co2_offset(int16_t offset) {
-  _co2_offset = offset;
-  return write_preferences();
-}
-
-bool BoardPreference::set_eco2_offset(int16_t offset) {
-  _eco2_offset = offset;
-  return write_preferences();
-}
-
-bool BoardPreference::set_tvoc_offset(int16_t offset) {
-  _tvoc_offset = offset;
-  return write_preferences();
-}
-
-bool BoardPreference::set_pm10_offset(int16_t offset) {
-  _pm10_offset = offset;
-  return write_preferences();
+uint16_t BoardPreference::get_reboot_count() {
+  return _reboot_count;
 }
 
 bool BoardPreference::increment_reboot_count() {
   _reboot_count++;
-  return write_preferences();
+  return _prefs.putUShort(PREF_REBOOT_COUNT_KEY, _reboot_count) > 0;
 }
 
 bool BoardPreference::clear_reboot_count() {
   _reboot_count = 0;
-  return write_preferences();
-}
-
-bool BoardPreference::read_preferences() {
-  app_traceln("BoardPreference::read_preferences: reading board preferences "
-              "form EEPROM");
-
-  int addr = 0;
-  // Read header magic number and perform sanity check
-  uint32_t magic = EEPROM.readUInt(addr);
-  addr += sizeof(uint32_t);
-  app_traceln("BoardPreference::read_preferences: header magic number: 0x" + String(magic, HEX));
-  if (magic != PREFERENCES_HEADER_MAGIC) {
-    app_errorln("BoardPreference::read_preferences: error reading preferences; "
-                "expecting header magic number: 0x"
-                + String(PREFERENCES_HEADER_MAGIC, HEX) + " but got: 0x" + String(magic, HEX));
-    return false;
-  }
-
-  // Read stored checksum bytes
-  uint16_t old_checksum = EEPROM.readUShort(addr);
-  addr += sizeof(uint16_t);
-
-  // Read other preferences
-  _available_sensors_bytes = EEPROM.readUShort(addr);
-  addr += sizeof(uint16_t);
-  app_debugln("BoardPreference::read_preferences: _available_sensors_bytes: 0x"
-              + String(_available_sensors_bytes, HEX));
-  _board_host_name = EEPROM.readString(addr);
-  addr += _board_host_name.length() + 1;
-  app_debugln("BoardPreference::read_preferences: _board_host_name: '" + _board_host_name + "'");
-  _board_location = EEPROM.readString(addr);
-  addr += _board_location.length() + 1;
-  app_debugln("BoardPreference::read_preferences: _board_location: '" + _board_location + "'");
-  _board_room = EEPROM.readString(addr);
-  addr += _board_room.length() + 1;
-  app_debugln("BoardPreference::read_preferences: _board_room: '" + _board_room + "'");
-  _spoofed_mac_addr = EEPROM.readString(addr);
-  addr += _spoofed_mac_addr.length() + 1;
-  app_debugln("BoardPreference::read_preferences: _spoofed_mac_addr: '" + _spoofed_mac_addr + "'");
-  _temperature_offset = EEPROM.readShort(addr);
-  addr += sizeof(int16_t);
-  app_debugln("BoardPreference::read_preferences: _temperature_offset: "
-              + String(_temperature_offset));
-  _humidity_offset = EEPROM.readShort(addr);
-  addr += sizeof(int16_t);
-  app_debugln("BoardPreference::read_preferences: _humidity_offset: " + String(_humidity_offset));
-  _co2_offset = EEPROM.readShort(addr);
-  addr += sizeof(int16_t);
-  app_debugln("BoardPreference::read_preferences: _co2_offset: " + String(_co2_offset));
-  _eco2_offset = EEPROM.readShort(addr);
-  addr += sizeof(int16_t);
-  app_debugln("BoardPreference::read_preferences: _eco2_offset: " + String(_eco2_offset));
-  _tvoc_offset = EEPROM.readShort(addr);
-  addr += sizeof(int16_t);
-  app_debugln("BoardPreference::read_preferences: _tvoc_offset: " + String(_tvoc_offset));
-  _pm10_offset = EEPROM.readShort(addr);
-  addr += sizeof(int16_t);
-  app_debugln("BoardPreference::read_preferences: _pm10_offset: " + String(_pm10_offset));
-  _reboot_count = EEPROM.readUShort(addr);
-  addr += sizeof(uint16_t);
-  app_debugln("BoardPreference::read_preferences: _reboot_count: " + String(_reboot_count));
-
-  // Compute checksum of the parameter just read and check
-  // if it's equal to the one stored in memory
-  uint16_t new_checksum = checksum();
-  if (old_checksum != new_checksum) {
-    app_errorln("BoardPreference::read_preferences: checksum is not equal to the one stored ("
-                + String(old_checksum) + "!=" + String(new_checksum) + ")");
-    return false;
-  }
-  return true;
-}
-
-bool BoardPreference::write_preferences() {
-  app_debugln("BoardPreference::write_preferences: writing board preferences "
-              "to EEPROM");
-  app_trace("BoardPreference::write_preferences: ");
-  app_trace("_available_sensors_bytes: '0x" + String(_available_sensors_bytes, HEX) + "', ");
-  app_trace("_board_host_name: '" + _board_host_name + "', ");
-  app_trace("_board_location: '" + _board_location + "', ");
-  app_trace("_board_room: '" + _board_room + "'");
-  app_trace("_spoofed_mac_addr: '" + _spoofed_mac_addr + "'");
-  app_trace("_temperature_offset: '" + String(_temperature_offset) + "'");
-  app_traceln("_reboot_count: '" + String(_reboot_count) + "'");
-
-  int addr = 0;
-  // Write header magic number
-  EEPROM.writeUInt(addr, PREFERENCES_HEADER_MAGIC);
-  addr += sizeof(uint32_t);
-  // Write checksum
-  EEPROM.writeUShort(addr, checksum());
-  addr += sizeof(uint16_t);
-  // Write other preferences
-  EEPROM.writeUShort(addr, _available_sensors_bytes);
-  addr += sizeof(uint16_t);
-  EEPROM.writeString(addr, _board_host_name);
-  addr += _board_host_name.length() + 1;
-  EEPROM.writeString(addr, _board_location);
-  addr += _board_location.length() + 1;
-  EEPROM.writeString(addr, _board_room);
-  addr += _board_room.length() + 1;
-  EEPROM.writeString(addr, _spoofed_mac_addr);
-  addr += _spoofed_mac_addr.length() + 1;
-  EEPROM.writeShort(addr, _temperature_offset);
-  addr += sizeof(int16_t);
-  EEPROM.writeShort(addr, _humidity_offset);
-  addr += sizeof(int16_t);
-  EEPROM.writeShort(addr, _co2_offset);
-  addr += sizeof(int16_t);
-  EEPROM.writeShort(addr, _eco2_offset);
-  addr += sizeof(int16_t);
-  EEPROM.writeShort(addr, _tvoc_offset);
-  addr += sizeof(int16_t);
-  EEPROM.writeShort(addr, _pm10_offset);
-  addr += sizeof(int16_t);
-  EEPROM.writeUShort(addr, _reboot_count);
-  addr += sizeof(uint16_t);
-
-  if (!EEPROM.commit()) {
-    app_errorln("BoardPreference::write_preferences: error writing preferences "
-                "to EEPROM");
-    return false;
-  }
-  return true;
-}
-
-void BoardPreference::create_checksum_prefs_buffer() {
-  _checksum_buffer_sz = 0;
-  _checksum_buffer_sz += sizeof(_available_sensors_bytes);
-  _checksum_buffer_sz += _board_host_name.length();
-  _checksum_buffer_sz += _board_location.length();
-  _checksum_buffer_sz += _board_room.length();
-  _checksum_buffer_sz += _spoofed_mac_addr.length();
-  _checksum_buffer_sz += sizeof(_temperature_offset);
-  _checksum_buffer_sz += sizeof(_humidity_offset);
-  _checksum_buffer_sz += sizeof(_co2_offset);
-  _checksum_buffer_sz += sizeof(_eco2_offset);
-  _checksum_buffer_sz += sizeof(_tvoc_offset);
-  _checksum_buffer_sz += sizeof(_pm10_offset);
-  _checksum_buffer_sz += sizeof(_reboot_count);
-
-  if (_checksum_buffer != nullptr) {
-    free(_checksum_buffer);
-  }
-  _checksum_buffer = (uint8_t *)malloc(_checksum_buffer_sz);
-  app_traceln("BoardPreference::create_checksum_prefs_buffer: create checksum buffer with size "
-              + String(_checksum_buffer_sz));
-
-  size_t address = 0;
-  memcpy((_checksum_buffer + address), &_available_sensors_bytes, sizeof(_available_sensors_bytes));
-  address += sizeof(_available_sensors_bytes);
-  memcpy((_checksum_buffer + address), _board_host_name.c_str(), _board_host_name.length());
-  address += _board_host_name.length();
-  memcpy((_checksum_buffer + address), _board_location.c_str(), _board_location.length());
-  address += _board_location.length();
-  memcpy((_checksum_buffer + address), _board_room.c_str(), _board_room.length());
-  address += _board_room.length();
-  memcpy((_checksum_buffer + address), _spoofed_mac_addr.c_str(), _spoofed_mac_addr.length());
-  address += _spoofed_mac_addr.length();
-  memcpy((_checksum_buffer + address), &_temperature_offset, sizeof(_temperature_offset));
-  address += sizeof(_temperature_offset);
-  memcpy((_checksum_buffer + address), &_humidity_offset, sizeof(_humidity_offset));
-  address += sizeof(_humidity_offset);
-  memcpy((_checksum_buffer + address), &_co2_offset, sizeof(_co2_offset));
-  address += sizeof(_co2_offset);
-  memcpy((_checksum_buffer + address), &_eco2_offset, sizeof(_eco2_offset));
-  address += sizeof(_eco2_offset);
-  memcpy((_checksum_buffer + address), &_tvoc_offset, sizeof(_tvoc_offset));
-  address += sizeof(_tvoc_offset);
-  memcpy((_checksum_buffer + address), &_pm10_offset, sizeof(_pm10_offset));
-  address += sizeof(_pm10_offset);
-  memcpy((_checksum_buffer + address), &_reboot_count, sizeof(_reboot_count));
-  address += sizeof(_reboot_count);
-}
-
-uint16_t BoardPreference::checksum() {
-  uint8_t a = 1, b = 0;
-
-  // Compute the checksum from the preferences as buffer
-  create_checksum_prefs_buffer();
-  for (int i = 0; i < _checksum_buffer_sz; i++) {
-    a = (a + _checksum_buffer[i]) % UINT8_MAX;
-    b = (a + b) % UINT8_MAX;
-  }
-
-  uint16_t cs = ((b << 8) | a);
-  app_traceln("BoardPreference::checksum: computed checksum '" + String(cs) + "'");
-  return cs;
+  return _prefs.putUShort(PREF_REBOOT_COUNT_KEY, 0) > 0;
 }
