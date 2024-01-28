@@ -61,7 +61,7 @@ static const TelnetCommand commands[] = {
     {"board-host",     cmd_board_host,         "get or set board's host name"                  },
     {"board-location", cmd_board_location,     "get or set board's location"                   },
     {"board-room",     cmd_board_room,         "get or set board's room"                       },
-    {"board-mac",      cmd_mac_address,        "get or set MAC address (off to use default)"   },
+    {"board-mac",      cmd_mac_address,        "get board's MAC address"                       },
     {"temp-offset",    cmd_temp_offset,        "get or set offset of each temperature value"   },
     {"hum-offset",     cmd_hum_offset,         "get or set offset of each humidity value"      },
     {"co2-offset",     cmd_co2_offset,         "get or set offset of each CO2 value"           },
@@ -171,23 +171,10 @@ static void cmd_board_room(String new_room) {
   }
 }
 
-// TODO: Remove this function after deprecation
-static void cmd_mac_address(String mac_addr) {
-  mac_addr.trim();
-  if (mac_addr.isEmpty()) {
-    app_traceln("cmd_mac_address: wants to get current MAC address");
-    telnet.println(wifi_get_mac_address());
-    return;
-  }
-
-  if (mac_addr == "off") {
-    app_traceln("cmd_mac_address: wants to disable MAC address spoofing");
-    telnet.println("cannot disable MAC spoofing");
-    return;
-  }
-
-  app_traceln("cmd_mac_address: want to set MAC address to: '" + mac_addr + "'");
-  telnet.println("cannot set MAC address");
+static void cmd_mac_address(String _) {
+  app_traceln("cmd_mac_address: wants to get current MAC address");
+  telnet.println(wifi_get_mac_address());
+  return;
 }
 
 static void cmd_temp_offset(String str) {
