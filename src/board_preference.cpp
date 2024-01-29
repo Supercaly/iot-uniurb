@@ -49,12 +49,12 @@ bool BoardPreference::init() {
   _board_info->host_name       = _prefs.getString(PREF_HOST_NAME_KEY, DEFAULT_BOARD_HOST_NAME);
   _board_info->room            = _prefs.getString(PREF_ROOM_KEY, DEFAULT_BOARD_ROOM);
   _board_info->location        = _prefs.getString(PREF_LOCATION_KEY, DEFAULT_BOARD_ROOM);
-  _sensor_offsets->temperature = _prefs.getShort(PREF_TEMP_OFFSET_KEY, 1);
-  _sensor_offsets->humidity    = _prefs.getShort(PREF_HUM_OFFSET_KEY, 1);
-  _sensor_offsets->co2         = _prefs.getShort(PREF_CO2_OFFSET_KEY, 100);
-  _sensor_offsets->eco2        = _prefs.getShort(PREF_ECO2_OFFSET_KEY, 1);
-  _sensor_offsets->tvoc        = _prefs.getShort(PREF_TVOC_OFFSET_KEY, 1);
-  _sensor_offsets->pm10        = _prefs.getShort(PREF_PM10_OFFSET_KEY, 1);
+  _sensor_offsets->temperature = _prefs.getShort(PREF_TEMP_OFFSET_KEY, 0);
+  _sensor_offsets->humidity    = _prefs.getShort(PREF_HUM_OFFSET_KEY, 0);
+  _sensor_offsets->co2         = _prefs.getShort(PREF_CO2_OFFSET_KEY, 0);
+  _sensor_offsets->eco2        = _prefs.getShort(PREF_ECO2_OFFSET_KEY, 0);
+  _sensor_offsets->tvoc        = _prefs.getShort(PREF_TVOC_OFFSET_KEY, 0);
+  _sensor_offsets->pm10        = _prefs.getShort(PREF_PM10_OFFSET_KEY, 0);
   _reboot_count                = _prefs.getUShort(PREF_REBOOT_COUNT_KEY, 0);
 
   app_infoln("Available Sensors:   " + available_sensors_to_String());

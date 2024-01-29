@@ -45,8 +45,6 @@ bool MHZ19_Sensor::on_measure() {
   app_traceln("MHZ19_Sensor::measure: reading sensor values");
   for (int i = 0; i < MHZ19_AVG_NUM; i++) {
     int currentCo2 = measure_co2_pwm();
-    app_fatalln(String(currentCo2));
-
     if (currentCo2 < MHZ19_MAX_CO2) {
       totalCo2 += currentCo2;
       j++;
@@ -62,10 +60,9 @@ bool MHZ19_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  float co2_offset = so.co2 * 0.01;
-  app_traceln("MHZ19_Sensor::measure: using offset of " + String(co2_offset) + " for real CO2 of "
+  app_traceln("MHZ19_Sensor::measure: using offset of " + String(so.co2) + " for real CO2 of "
               + String(_co2));
-  _co2 *= round(co2_offset);
+  _co2 += so.co2;
 
 #ifdef PRINT_SENSORS_ON_READ
   app_infoln("MHZ19 Co2: " + String(_co2));
