@@ -61,7 +61,7 @@ static const TelnetCommand commands[] = {
     {"board-host",     cmd_board_host,         "get or set board's host name"                  },
     {"board-location", cmd_board_location,     "get or set board's location"                   },
     {"board-room",     cmd_board_room,         "get or set board's room"                       },
-    {"board-mac",      cmd_mac_address,        "get or set MAC address (off to use default)"   },
+    {"board-mac",      cmd_mac_address,        "get board's MAC address"                       },
     {"temp-offset",    cmd_temp_offset,        "get or set offset of each temperature value"   },
     {"hum-offset",     cmd_hum_offset,         "get or set offset of each humidity value"      },
     {"co2-offset",     cmd_co2_offset,         "get or set offset of each CO2 value"           },
@@ -131,69 +131,63 @@ static void cmd_sensor_rm(String sensor_str) {
 
 static void cmd_board_host(String new_name) {
   new_name.trim();
+  BoardInfo bi;
+  Preference.get_board_info(&bi);
   if (new_name.isEmpty()) {
     app_traceln("cmd_board_host: want to get the board host name");
-    telnet.println(Preference.get_board_host_name());
+    telnet.println(bi.host_name);
   } else {
     app_traceln("cmd_board_host: want to set the board host name to: '" + new_name + "'");
-    Preference.set_board_host_name(new_name);
+    bi.host_name = new_name;
+    Preference.set_board_info(bi);
   }
 }
 
 static void cmd_board_location(String new_loc) {
   new_loc.trim();
+  BoardInfo bi;
+  Preference.get_board_info(&bi);
   if (new_loc.isEmpty()) {
     app_traceln("cmd_board_location: want to get the board location");
-    telnet.println(Preference.get_board_location());
+    telnet.println(bi.location);
   } else {
     app_traceln("cmd_board_location: want to set the board location to '" + new_loc + "'");
-    Preference.set_board_location(new_loc);
+    bi.location = new_loc;
+    Preference.set_board_info(bi);
   }
 }
 
 static void cmd_board_room(String new_room) {
   new_room.trim();
+  BoardInfo bi;
+  Preference.get_board_info(&bi);
   if (new_room.isEmpty()) {
     app_traceln("cmd_board_room: want to get the board room");
-    telnet.println(Preference.get_board_room());
+    telnet.println(bi.room);
   } else {
     app_traceln("cmd_board_room: want to set the board room to '" + new_room + "'");
-    Preference.set_board_room(new_room);
+    bi.room = new_room;
+    Preference.set_board_info(bi);
   }
 }
 
-static void cmd_mac_address(String mac_addr) {
-  mac_addr.trim();
-  if (mac_addr.isEmpty()) {
-    app_traceln("cmd_mac_address: wants to get current MAC address");
-    telnet.println(wifi_get_mac_address());
-    return;
-  }
-
-  if (mac_addr == "off") {
-    app_traceln("cmd_mac_address: wants to disable MAC address spoofing");
-    if (!Preference.set_spoofed_mac("")) {
-      app_errorln("cmd_mac_address: error disabling MAC address spoofing");
-      telnet.println("cannot disable MAC spoofing");
-    }
-    return;
-  }
-
-  app_traceln("cmd_mac_address: want to set MAC address to: '" + mac_addr + "'");
-  if (!Preference.set_spoofed_mac(mac_addr)) {
-    telnet.println("cannot set MAC address");
-  }
+static void cmd_mac_address(String _) {
+  app_traceln("cmd_mac_address: wants to get current MAC address");
+  telnet.println(wifi_get_mac_address());
+  return;
 }
 
 static void cmd_temp_offset(String str) {
   str.trim();
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
     app_traceln("cmd_temp_offset: wants to get current temperature offset");
-    telnet.println(String(Preference.get_temperature_offset()));
+    telnet.println(String(so.temperature));
   } else {
     app_traceln("cmd_temp_offset: wants to set temperature offset");
-    int offset = (int)str.toInt();
-    if (!Preference.set_temperature_offset(offset)) {
+    so.temperature = (int16_t)str.toInt();
+    if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting temperature offset");
     }
   }
@@ -201,13 +195,15 @@ static void cmd_temp_offset(String str) {
 
 static void cmd_hum_offset(String str) {
   str.trim();
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
     app_traceln("cmd_hum_offset: wants to get current humidity offset");
-    telnet.println(String(Preference.get_humidity_offset()));
+    telnet.println(String(so.humidity));
   } else {
     app_traceln("cmd_hum_offset: wants to set humidity offset");
-    int offset = (int16_t)str.toInt();
-    if (!Preference.set_humidity_offset(offset)) {
+    so.humidity = (int16_t)str.toInt();
+    if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting humidity offset");
     }
   }
@@ -215,13 +211,15 @@ static void cmd_hum_offset(String str) {
 
 static void cmd_co2_offset(String str) {
   str.trim();
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
     app_traceln("cmd_co2_offset: wants to get current co2 offset");
-    telnet.println(String(Preference.get_co2_offset()));
+    telnet.println(String(so.co2));
   } else {
     app_traceln("cmd_co2_offset: wants to set co2 offset");
-    int offset = (int16_t)str.toInt();
-    if (!Preference.set_co2_offset(offset)) {
+    so.co2 = (int16_t)str.toInt();
+    if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting co2 offset");
     }
   }
@@ -229,13 +227,15 @@ static void cmd_co2_offset(String str) {
 
 static void cmd_eco2_offset(String str) {
   str.trim();
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
     app_traceln("cmd_eco2_offset: wants to get current eco2 offset");
-    telnet.println(String(Preference.get_eco2_offset()));
+    telnet.println(String(so.eco2));
   } else {
     app_traceln("cmd_eco2_offset: wants to set eco2 offset");
-    int offset = (int16_t)str.toInt();
-    if (!Preference.set_eco2_offset(offset)) {
+    so.eco2 = (int16_t)str.toInt();
+    if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting eco2 offset");
     }
   }
@@ -243,13 +243,15 @@ static void cmd_eco2_offset(String str) {
 
 static void cmd_tvoc_offset(String str) {
   str.trim();
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
     app_traceln("cmd_tvoc_offset: wants to get current tvoc offset");
-    telnet.println(String(Preference.get_tvoc_offset()));
+    telnet.println(String(so.tvoc));
   } else {
     app_traceln("cmd_tvoc_offset: wants to set tvoc offset");
-    int offset = (int16_t)str.toInt();
-    if (!Preference.set_tvoc_offset(offset)) {
+    so.tvoc = (int16_t)str.toInt();
+    if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting tvoc offset");
     }
   }
@@ -257,13 +259,15 @@ static void cmd_tvoc_offset(String str) {
 
 static void cmd_pm10_offset(String str) {
   str.trim();
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
   if (str.isEmpty()) {
     app_traceln("cmd_pm10_offset: wants to get current pm 10 offset");
-    telnet.println(String(Preference.get_pm10_offset()));
+    telnet.println(String(so.pm10));
   } else {
     app_traceln("cmd_pm10_offset: wants to set pm 10 offset");
-    int offset = (int16_t)str.toInt();
-    if (!Preference.set_pm10_offset(offset)) {
+    so.pm10 = (int16_t)str.toInt();
+    if (!Preference.set_sensor_offsets(so)) {
       telnet.println("error setting pm 10 offset");
     }
   }

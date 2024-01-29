@@ -27,13 +27,14 @@ bool influxdb_init() {
   influxdb_client.setConnectionParams(
       INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
 
-  influxdb_point.addTag("host", Preference.get_board_host_name());
-  influxdb_point.addTag("location", Preference.get_board_location());
-  influxdb_point.addTag("room", Preference.get_board_room());
+  BoardInfo bi;
+  Preference.get_board_info(&bi);
+  influxdb_point.addTag("host", bi.host_name);
+  influxdb_point.addTag("location", bi.location);
+  influxdb_point.addTag("room", bi.room);
 
-  app_traceln("influxdb_init: added tags: host: '" + Preference.get_board_host_name()
-              + "', location: '" + Preference.get_board_location() + "', room: '"
-              + Preference.get_board_room() + "'");
+  app_traceln("influxdb_init: added tags: host: '" + bi.host_name + "', location: '" + bi.location
+              + "', room: '" + bi.room + "'");
 
   if (!influxdb_client.validateConnection()) {
     app_errorln("influxdb_init: connection error: " + influxdb_client.getLastErrorMessage());

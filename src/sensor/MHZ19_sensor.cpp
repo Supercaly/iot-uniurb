@@ -60,7 +60,9 @@ bool MHZ19_Sensor::on_measure() {
   _co2 = totalCo2;
 
   // Remove offset from data
-  float co2_offset = Preference.get_co2_offset() * 0.01;
+  SensorOffsets so;
+  Preference.get_sensor_offsets(&so);
+  float co2_offset = so.co2 * 0.01;
   app_traceln("MHZ19_Sensor::measure: using offset of " + String(co2_offset) + " for real CO2 of "
               + String(_co2));
   _co2 *= round(co2_offset);
