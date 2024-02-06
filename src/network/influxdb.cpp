@@ -7,6 +7,7 @@
 #include "../config.h"
 #include "../log.h"
 #include "../sensor/DHT11_sensor.h"
+#include "../sensor/ENS160_sensor.h"
 #include "../sensor/MHZ19_sensor.h"
 #include "../sensor/SGP30_sensor.h"
 #include "../sensor/SPS30_sensor.h"
@@ -73,6 +74,13 @@ bool influxdb_write_sensors() {
   if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
     app_traceln("influxdb_write_sensors: sending MHZ19 values");
     influxdb_point.addField(INFLUXDB_FIELD_MHZ19_CO2, MHZ19Sensor.get_co2());
+  }
+  if (Preference.has_sensor(SensorType::SENSOR_ENS160)) {
+    app_traceln("influxdb_write_sensors: sending ENS160 values");
+    influxdb_point.addField(INFLUXDB_FIELD_ENS160_TEMPERATURE, ENS160Sensor.get_temperature());
+    influxdb_point.addField(INFLUXDB_FIELD_ENS160_HUMIDITY, ENS160Sensor.get_humidity());
+    influxdb_point.addField(INFLUXDB_FIELD_ENS160_ECO2, ENS160Sensor.get_eCO2());
+    influxdb_point.addField(INFLUXDB_FIELD_ENS160_TVOC, ENS160Sensor.get_TVOC());
   }
 
   // If the point to write does not have fields it means no sensor is available

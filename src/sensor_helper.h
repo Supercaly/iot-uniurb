@@ -6,6 +6,7 @@
 #include <assert.h>
 
 #include "sensor/DHT11_sensor.h"
+#include "sensor/ENS160_sensor.h"
 #include "sensor/MHZ19_sensor.h"
 #include "sensor/SGP30_sensor.h"
 #include "sensor/SPS30_sensor.h"
@@ -28,10 +29,11 @@ struct SensorTypeToImplPair {
 };
 
 static const SensorTypeToImplPair type_to_sensor_map[] = {
-    {SensorType::SENSOR_DHT11, &DHT11Sensor},
-    {SensorType::SENSOR_SGP30, &SGP30Sensor},
-    {SensorType::SENSOR_MHZ19, &MHZ19Sensor},
-    {SensorType::SENSOR_SPS30, &SPS30Sensor},
+    {SensorType::SENSOR_DHT11,  &DHT11Sensor },
+    {SensorType::SENSOR_SGP30,  &SGP30Sensor },
+    {SensorType::SENSOR_MHZ19,  &MHZ19Sensor },
+    {SensorType::SENSOR_SPS30,  &SPS30Sensor },
+    {SensorType::SENSOR_ENS160, &ENS160Sensor}
 };
 static_assert(size_of_array(type_to_sensor_map) == SensorType::COUNT_SENSORS,
               "The number of elements of type_to_sensor_map have changed. "
