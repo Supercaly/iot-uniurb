@@ -11,6 +11,9 @@
 #ifdef HAS_TELNET
 #  include "src/network/telnet.h"
 #endif // HAS_TELNET
+#ifdef HAS_OTA
+#  include "src/network/ota.h"
+#endif // HAS_OTA
 
 TaskHandle_t measure_task_handler;
 #ifdef HAS_BUTTON
@@ -19,6 +22,9 @@ TaskHandle_t button_task_handler;
 #ifdef HAS_TELNET
 TaskHandle_t telnet_task_handler;
 #endif // HAS_TELNET
+#ifdef HAS_OTA
+TaskHandle_t ota_task_handler;
+#endif // HAS_OTA
 
 void setup() {
   // Init logger
@@ -59,6 +65,20 @@ void setup() {
     app_errorln("something went wrong initializing Telnet");
   }
 #endif // HAS_TELNET
+
+#ifdef HAS_OTA
+  if (ota_init()) {
+    xTaskCreatePinnedToCore(ota_task_code,
+                            "ota_task",
+                            OTA_TASK_STACK_SIZE,
+                            nullptr,
+                            OTA_TASK_PRIORITY,
+                            &ota_task_handler,
+                            OTA_TASK_CORE);
+  } else {
+    app_errorln("something went wrong initializing OTA updates");
+  }
+#endif // HAS_OTA
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB

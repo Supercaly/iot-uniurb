@@ -66,4 +66,9 @@
 // Telnet settings.
 #define HAS_TELNET
 
+// OTA update settings.
+#define HAS_OTA
+#define OTA_PORT 3232
+#define OTA_PWD  SECRET_OTA_PWD
+
 #endif // CONFIG_H
