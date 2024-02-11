@@ -3,7 +3,7 @@
 
 #include <sps30.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 #define SPS30_MAX_PROBE_RETRY      10
 #define SPS30_PROBE_RETRY_DELAY_MS 500

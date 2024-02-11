@@ -1,6 +1,8 @@
 #ifndef ABSTRACT_SENSOR_H
 #define ABSTRACT_SENSOR_H
 
+#include <Arduino.h>
+#include <assert.h>
 /*
  * Class representing an abstract sensor that
  * is implemented by a real sensor.

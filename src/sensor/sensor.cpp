@@ -1,4 +1,7 @@
-#include "abstract_sensor.h"
+#include "sensor.h"
+
+#include <Arduino.h>
+#include <assert.h>
 
 bool AbstractSensor::init() {
   if (p_is_init) {
@@ -12,7 +15,7 @@ bool AbstractSensor::init() {
 
 bool AbstractSensor::measure() {
   if (!p_is_init) {
-    return true;
+    return false;
   }
 
   return on_measure();

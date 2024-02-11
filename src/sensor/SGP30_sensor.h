@@ -4,7 +4,7 @@
 #include <Adafruit_SGP30.h>
 #include <stdint.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 // Delay in milliseconds for the init process.
 #define SGP30_INIT_DELAY_MS 300

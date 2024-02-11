@@ -3,7 +3,7 @@
 
 #include <MHZCO2.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 // Delay in milliseconds for the sensor init process.
 #define MHZ19_INIT_DELAY_MS 1000 * 60 * 3
