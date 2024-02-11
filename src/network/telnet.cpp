@@ -484,8 +484,8 @@ telnet_parse_input_defer:
   telnet.print("> ");
 }
 
-bool telnet_init(int port) {
-  app_traceln("telnet_init: init telnet server on port " + String(port));
+bool telnet_init() {
+  app_traceln("telnet_init: init telnet server on port " + String(TELNET_PORT));
 
   telnet.onConnect(telnet_on_connect_cb);
   telnet.onConnectionAttempt(telnet_on_connection_attempt_cb);
@@ -493,7 +493,7 @@ bool telnet_init(int port) {
   telnet.onDisconnect(telnet_on_disconnect_cb);
   telnet.onInputReceived(telnet_on_input_received_cb);
 
-  if (!telnet.begin(port)) {
+  if (!telnet.begin(TELNET_PORT)) {
     app_errorln("telnet_init: init error");
     return false;
   }

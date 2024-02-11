@@ -65,6 +65,7 @@
 
 // Telnet settings.
 #define HAS_TELNET
+#define TELNET_PORT 23
 
 // OTA update settings.
 #define HAS_OTA
