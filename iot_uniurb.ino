@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <WString.h>
 
 #include "src/board_preference.h"
 #include "src/config.h"

@@ -10,16 +10,16 @@
 #include "sensor/MHZ19_sensor.h"
 #include "sensor/SGP30_sensor.h"
 #include "sensor/SPS30_sensor.h"
-#include "sensor/sensor_type.h"
+#include "sensor/sensor.h"
 #include "utils.h"
 
 bool init_available_sensors() {
   bool has_errors = false;
-  for (int i = 0; i < size_of_array(type_to_sensor_map); i++) {
-    SensorTypeToImplPair p = type_to_sensor_map[i];
-    if (Preference.has_sensor(p.type)) {
-      if (p.sensor == nullptr || !p.sensor->init()) {
-        app_errorln("something went wrong initializing " + SensorType_to_String(p.type));
+  for (int i = 0; i < COUNT_SENSORS; i++) {
+    if (Preference.has_sensor((SensorType)i)) {
+      if (!sensor_type_to_impl[i]->init()) {
+        app_errorln("something went wrong initializing sensor"
+                    + sensor_type_to_string((SensorType)i));
         has_errors = true;
       }
     }
@@ -29,11 +29,10 @@ bool init_available_sensors() {
 
 bool measure_available_sensors() {
   bool has_errors = false;
-  for (int i = 0; i < size_of_array(type_to_sensor_map); i++) {
-    SensorTypeToImplPair p = type_to_sensor_map[i];
-    if (Preference.has_sensor(p.type)) {
-      if (p.sensor == nullptr || !p.sensor->measure()) {
-        app_errorln("something went wrong measuring " + SensorType_to_String(p.type));
+  for (int i = 0; i < COUNT_SENSORS; i++) {
+    if (Preference.has_sensor((SensorType)i)) {
+      if (!sensor_type_to_impl[i]->measure()) {
+        app_errorln("something went wrong measuring sensor" + sensor_type_to_string((SensorType)i));
         has_errors = true;
       }
     }

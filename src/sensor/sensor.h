@@ -3,6 +3,41 @@
 
 #include <Arduino.h>
 #include <assert.h>
+
+/*
+ * Enum representing the type of
+ * sensors available to the board.
+ */
+enum SensorType {
+  SENSOR_DHT11 = 0,
+  SENSOR_SGP30,
+  SENSOR_MHZ19,
+  SENSOR_SPS30,
+  SENSOR_ENS160,
+  // Count the number of sensors
+  COUNT_SENSORS
+};
+
+static_assert(COUNT_SENSORS == 5,
+              "The number of elements of SensorType have changed. "
+              "You probably have added or removed a sensor. "
+              "Please update the definition above accordingly.");
+
+/*
+ * Returns a String representation of given SensorType.
+ */
+String sensor_type_to_string(SensorType t);
+
+/*
+ * Returns a SensorType form his string name.
+ *
+ * This function returns true if the string has
+ * an associated SensorType; false otherwise.
+ * The SensorType is returned as a pointer passed
+ * with the parameters.
+ */
+bool sensor_type_by_name(String s, SensorType *t);
+
 /*
  * Class representing an abstract sensor that
  * is implemented by a real sensor.

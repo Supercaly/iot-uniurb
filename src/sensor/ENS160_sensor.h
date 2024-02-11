@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include <ScioSense_ENS160.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 class ENS160_Sensor : public AbstractSensor {
   public:

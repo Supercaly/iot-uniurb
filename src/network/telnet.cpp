@@ -241,7 +241,7 @@ static void cmd_sensor_add(String sensor_str) {
   }
 
   SensorType type;
-  if (!SensorType_by_name(sensor_str, &type)) {
+  if (!sensor_type_by_name(sensor_str, &type)) {
     telnet.println("unknown sensor with name '" + sensor_str + "'");
     return;
   }
@@ -262,7 +262,7 @@ static void cmd_sensor_rm(String sensor_str) {
   }
 
   SensorType type;
-  if (!SensorType_by_name(sensor_str, &type)) {
+  if (!sensor_type_by_name(sensor_str, &type)) {
     telnet.println("unknown sensor with name '" + sensor_str + "'");
     return;
   }
