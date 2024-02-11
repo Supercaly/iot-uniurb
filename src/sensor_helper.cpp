@@ -1,7 +1,6 @@
 #include "sensor_helper.h"
 
 #include <Arduino.h>
-#include <WString.h>
 
 #include "board_preference.h"
 #include "log.h"
@@ -14,7 +13,7 @@
 #include "sensor/sensor_type.h"
 #include "utils.h"
 
-bool init_all_available_sensors() {
+bool init_available_sensors() {
   bool has_errors = false;
   for (int i = 0; i < size_of_array(type_to_sensor_map); i++) {
     SensorTypeToImplPair p = type_to_sensor_map[i];
@@ -28,7 +27,7 @@ bool init_all_available_sensors() {
   return has_errors;
 }
 
-bool measure_all_available_sensors() {
+bool measure_available_sensors() {
   bool has_errors = false;
   for (int i = 0; i < size_of_array(type_to_sensor_map); i++) {
     SensorTypeToImplPair p = type_to_sensor_map[i];
@@ -72,7 +71,7 @@ void print_available_sensors_info(void (*print)(String)) {
 void measure_and_send_task_code(void *args) {
   TickType_t last_measure_time = xTaskGetTickCount();
   for (;;) {
-    measure_all_available_sensors();
+    measure_available_sensors();
 #ifdef HAS_INFLUXDB
     // Send sensor values to InfluxDB
     if (!influxdb_write_sensors()) {

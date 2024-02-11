@@ -69,7 +69,7 @@ void setup() {
 #endif // HAS_INFLUXDB
 
   // Init available sensors
-  init_all_available_sensors();
+  init_available_sensors();
 
   xTaskCreatePinnedToCore(measure_and_send_task_code,
                           "measure_task",

@@ -47,7 +47,7 @@ static_assert(size_of_array(type_to_sensor_map) == SensorType::COUNT_SENSORS,
  * Returns true if all available sensors are initialized,
  * false if at least one available sensor cannot be initialized.
  */
-bool init_all_available_sensors();
+bool init_available_sensors();
 
 /*
  * Helper method to automatically measure all available sensors.
@@ -66,6 +66,7 @@ bool measure_all_available_sensors();
  * that displays it.
  */
 void print_available_sensors_info(void (*print)(String));
+bool measure_available_sensors();
 
 /*
  * Function representing a task executing inside the board
