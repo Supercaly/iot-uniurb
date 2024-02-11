@@ -2,6 +2,7 @@
 #define ABSTRACT_SENSOR_H
 
 #include <Arduino.h>
+#include <InfluxDbClient.h>
 #include <assert.h>
 
 /*
@@ -39,6 +40,11 @@ String sensor_type_to_string(SensorType t);
 bool sensor_type_by_name(String s, SensorType *t);
 
 /*
+ * Callback function used to print sensor info.
+ */
+typedef void (*sensor_print_cb_t)(String);
+
+/*
  * Class representing an abstract sensor that
  * is implemented by a real sensor.
  *
@@ -62,6 +68,18 @@ class AbstractSensor {
    * false otherwise.
    */
   bool measure();
+
+  /*
+   * Interface method implemented by the child class
+   * to print his sensor infos.
+   */
+  virtual void print_info(sensor_print_cb_t) = 0;
+
+  /*
+   * Interface method implemented by the child class
+   * to append to the given influxdb point his sensor data.
+   */
+  virtual void to_influx(Point *) = 0;
 
   protected:
   /*

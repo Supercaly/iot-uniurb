@@ -6,6 +6,7 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
+#include "../network/influxdb.h"
 
 MHZ19_Sensor MHZ19Sensor;
 
@@ -69,4 +70,12 @@ bool MHZ19_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
+}
+
+void MHZ19_Sensor::print_info(sensor_print_cb_t p) {
+  p("MHZ19 CO2: " + String(_co2));
+}
+
+void MHZ19_Sensor::to_influx(Point *p) {
+  p->addField(INFLUXDB_FIELD_MHZ19_CO2, _co2);
 }

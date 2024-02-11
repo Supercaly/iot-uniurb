@@ -6,6 +6,7 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
+#include "../network/influxdb.h"
 
 SGP30_Sensor SGP30Sensor;
 
@@ -66,4 +67,14 @@ bool SGP30_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
+}
+
+void SGP30_Sensor::print_info(sensor_print_cb_t p) {
+  p("SGP30 TVOC: " + String(_tvoc));
+  p("SGP30 eCO2: " + String(_eco2));
+}
+
+void SGP30_Sensor::to_influx(Point *p) {
+  p->addField(INFLUXDB_FIELD_SGP30_TVOC, _tvoc);
+  p->addField(INFLUXDB_FIELD_SGP30_ECO2, _eco2);
 }

@@ -6,6 +6,7 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
+#include "../network/influxdb.h"
 
 DHT11_Sensor DHT11Sensor;
 
@@ -39,4 +40,14 @@ bool DHT11_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
+}
+
+void DHT11_Sensor::print_info(sensor_print_cb_t p) {
+  p("DHT11 Temperature: " + String(_temperature));
+  p("DHT11 Humidity: " + String(_humidity));
+}
+
+void DHT11_Sensor::to_influx(Point *p) {
+  p->addField(INFLUXDB_FIELD_DHT11_TEMPERATURE, _temperature);
+  p->addField(INFLUXDB_FIELD_DHT11_HUMIDITY, _humidity);
 }

@@ -19,6 +19,8 @@ class MHZ19_Sensor : public AbstractSensor {
   public:
   bool on_init() override;
   bool on_measure() override;
+  void print_info(sensor_print_cb_t) override;
+  void to_influx(Point *) override;
 
   /*
    * Returns the last measured CO2.

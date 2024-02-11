@@ -6,6 +6,7 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
+#include "../network/influxdb.h"
 
 SPS30_Sensor SPS30Sensor;
 
@@ -83,4 +84,18 @@ bool SPS30_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
+}
+
+void SPS30_Sensor::print_info(sensor_print_cb_t p) {
+  p("SPS30 MC 1.0: " + String(_sps_meas.mc_1p0));
+  p("SPS30 MC 2.5: " + String(_sps_meas.mc_2p5));
+  p("SPS30 MC 4.0: " + String(_sps_meas.mc_4p0));
+  p("SPS30 MC 10.0: " + String(_sps_meas.mc_10p0));
+}
+
+void SPS30_Sensor::to_influx(Point *p) {
+  p->addField(INFLUXDB_FIELD_SPS30_MC_1p0, _sps_meas.mc_1p0);
+  p->addField(INFLUXDB_FIELD_SPS30_MC_2p5, _sps_meas.mc_2p5);
+  p->addField(INFLUXDB_FIELD_SPS30_MC_4p0, _sps_meas.mc_4p0);
+  p->addField(INFLUXDB_FIELD_SPS30_MC_10p0, _sps_meas.mc_10p0);
 }

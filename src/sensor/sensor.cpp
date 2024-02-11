@@ -12,7 +12,7 @@ static_assert(size_of_array(sensor_type_to_string_map) == SensorType::COUNT_SENS
               "You probably have added or removed a sensor. "
               "Please update the definitions above accordingly");
 
-inline String sensor_type_to_string(SensorType t) {
+String sensor_type_to_string(SensorType t) {
   return sensor_type_to_string_map[t];
 }
 

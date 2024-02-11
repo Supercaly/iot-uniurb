@@ -223,7 +223,11 @@ static void cmd_help(String cmd) {
 
 static void cmd_sensor_info(String _) {
   telnet.println("Values from available sensors:");
-  print_available_sensors_info([](String line) { telnet.println(line); });
+  for (int i = 0; i < COUNT_SENSORS; ++i) {
+    if (Preference.has_sensor((SensorType)i)) {
+      sensor_type_to_impl[i]->print_info([](String l) { telnet.println(l); });
+    }
+  }
 }
 
 static void cmd_sensor_list(String _) {

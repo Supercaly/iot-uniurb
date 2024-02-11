@@ -13,6 +13,8 @@ class ENS160_Sensor : public AbstractSensor {
 
   bool on_init() override;
   bool on_measure() override;
+  void print_info(sensor_print_cb_t) override;
+  void to_influx(Point *) override;
 
   /*
    * Return the last measured temperature.
