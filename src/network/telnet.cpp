@@ -253,6 +253,10 @@ static void cmd_sensor_add(String sensor_str) {
   if (!Preference.add_sensor(type)) {
     telnet.println("error adding sensor '" + sensor_str + "'");
   }
+  if (!sensor_type_to_impl[type]->init()) {
+    telnet.println("error initializing sensor '" + sensor_str + "'");
+    Preference.remove_sensor(type);
+  }
 }
 
 static void cmd_sensor_rm(String sensor_str) {
