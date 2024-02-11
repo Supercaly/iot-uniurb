@@ -8,6 +8,9 @@
 #ifdef HAS_INFLUXDB
 #  include "src/network/influxdb.h"
 #endif // HAS_INFLUXDB
+#ifdef HAS_BUTTON
+#  include "src/button.h"
+#endif // HAS_BUTTON
 #ifdef HAS_TELNET
 #  include "src/network/telnet.h"
 #endif // HAS_TELNET
