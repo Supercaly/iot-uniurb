@@ -6,6 +6,7 @@
 
 #include "../board_preference.h"
 #include "../log.h"
+#include "../config.h"
 
 ENS160_Sensor ENS160Sensor;
 
@@ -66,4 +67,18 @@ bool ENS160_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
+}
+
+void ENS160_Sensor::print_info(sensor_print_cb_t p) {
+  p("ENS160+AHT2X eCO2: " + String(_eco2));
+  p("ENS160+AHT2X TVOC: " + String(_tvoc));
+  p("ENS160+AHT2X temperature: " + String(_temperature));
+  p("ENS160+AHT2X humidity: " + String(_humidity));
+}
+
+void ENS160_Sensor::to_influx(Point *p) {
+  p->addField(INFLUXDB_FIELD_ENS160_TEMPERATURE, _temperature);
+  p->addField(INFLUXDB_FIELD_ENS160_HUMIDITY, _humidity);
+  p->addField(INFLUXDB_FIELD_ENS160_ECO2, _eco2);
+  p->addField(INFLUXDB_FIELD_ENS160_TVOC, _tvoc);
 }

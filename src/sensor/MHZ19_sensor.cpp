@@ -34,7 +34,7 @@ bool MHZ19_Sensor::on_init() {
   attachInterrupt(digitalPinToInterrupt(MHZ19B_PWM_PIN), irq_fn, CHANGE);
 
   delay(MHZ19_INIT_DELAY_MS);
-  app_traceln("MHZ19_Sensor::init: sensor initialized");
+  app_traceln("MHZ19_Sensor::on_init: sensor initialized");
   return true;
 }
 
@@ -42,7 +42,7 @@ bool MHZ19_Sensor::on_measure() {
   int totalCo2 = 0;
   int j        = 0;
 
-  app_traceln("MHZ19_Sensor::measure: reading sensor values");
+  app_traceln("MHZ19_Sensor::on_measure: reading sensor values");
   for (int i = 0; i < MHZ19_AVG_NUM; i++) {
     int currentCo2 = measure_co2_pwm();
     if (currentCo2 < MHZ19_MAX_CO2) {
@@ -60,7 +60,7 @@ bool MHZ19_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  app_traceln("MHZ19_Sensor::measure: using offset of " + String(so.co2) + " for real CO2 of "
+  app_traceln("MHZ19_Sensor::on_measure: using offset of " + String(so.co2) + " for real CO2 of "
               + String(_co2));
   _co2 += so.co2;
 
@@ -69,4 +69,12 @@ bool MHZ19_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
+}
+
+void MHZ19_Sensor::print_info(sensor_print_cb_t p) {
+  p("MHZ19 CO2: " + String(_co2));
+}
+
+void MHZ19_Sensor::to_influx(Point *p) {
+  p->addField(INFLUXDB_FIELD_MHZ19_CO2, _co2);
 }

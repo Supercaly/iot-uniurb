@@ -4,7 +4,7 @@
 #include <Adafruit_SGP30.h>
 #include <stdint.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 // Delay in milliseconds for the init process.
 #define SGP30_INIT_DELAY_MS 300
@@ -17,11 +17,12 @@
 // Number of iterations used to compute the mean eCO2 and TVOC.
 #define SGP30_AVG_NUM 10
 
-
 class SGP30_Sensor : public AbstractSensor {
   public:
   bool on_init() override;
   bool on_measure() override;
+  void print_info(sensor_print_cb_t) override;
+  void to_influx(Point *) override;
 
   /*
    * Return the last measured Total Volatile Organic

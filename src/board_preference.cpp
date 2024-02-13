@@ -4,7 +4,7 @@
 #include <Preferences.h>
 
 #include "log.h"
-#include "sensor/sensor_type.h"
+#include "sensor/sensor.h"
 
 #define PREF_SENSORS_KEY      "sensors"
 #define PREF_HOST_NAME_KEY    "board-host"
@@ -83,7 +83,7 @@ bool BoardPreference::add_sensor(SensorType s) {
   if (s >= SensorType::COUNT_SENSORS) {
     return false;
   }
-  app_traceln("BoardPreference::add_sensor: " + SensorType_to_String(s));
+  app_traceln("BoardPreference::add_sensor: " + sensor_type_to_string(s));
   _PREF_SET_SENSOR_BIT(_available_sensors_bytes, s);
   return _prefs.putUShort(PREF_SENSORS_KEY, _available_sensors_bytes) > 0;
 }
@@ -92,7 +92,7 @@ bool BoardPreference::remove_sensor(SensorType s) {
   if (s >= SensorType::COUNT_SENSORS) {
     return false;
   }
-  app_traceln("BoardPreference::remove_sensor: " + SensorType_to_String(s));
+  app_traceln("BoardPreference::remove_sensor: " + sensor_type_to_string(s));
   _PREF_UNSET_SENSOR_BIT(_available_sensors_bytes, s);
   return _prefs.putUShort(PREF_SENSORS_KEY, _available_sensors_bytes) > 0;
 }
@@ -106,7 +106,7 @@ String BoardPreference::available_sensors_to_String() {
       if (!is_first) {
         ret += ", ";
       }
-      ret += SensorType_to_String((SensorType)i);
+      ret += sensor_type_to_string((SensorType)i);
       is_first = false;
     }
   }

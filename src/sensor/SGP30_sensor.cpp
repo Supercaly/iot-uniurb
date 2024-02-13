@@ -2,7 +2,6 @@
 
 #include <Adafruit_SGP30.h>
 #include <Arduino.h>
-#include <WString.h>
 
 #include "../board_preference.h"
 #include "../config.h"
@@ -12,11 +11,11 @@ SGP30_Sensor SGP30Sensor;
 
 bool SGP30_Sensor::on_init() {
   if (!_sgp.begin()) {
-    app_errorln("SGP30_Sensor::init: sensor not found");
+    app_errorln("SGP30_Sensor::on_init: sensor not found");
     return false;
   }
   delay(SGP30_INIT_DELAY_MS);
-  app_traceln("SGP30_Sensor::init: sensor initialized");
+  app_traceln("SGP30_Sensor::on_init: sensor initialized");
   return true;
 }
 
@@ -24,7 +23,7 @@ bool SGP30_Sensor::on_measure() {
   uint16_t totalEco2 = 0, totalTvoc = 0;
   int      j = 0, k = 0;
 
-  app_traceln("SGP30_Sensor::measure: reading sensor values");
+  app_traceln("SGP30_Sensor::on_measure: reading sensor values");
   for (int i = 0; i < SGP30_AVG_NUM; i++) {
     _sgp.IAQmeasure();
     uint16_t currentTvoc = _sgp.TVOC;
@@ -54,10 +53,10 @@ bool SGP30_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  app_traceln("SGP30_Sensor::measure: using offset of " + String(so.eco2) + " for real eCO2 of "
+  app_traceln("SGP30_Sensor::on_measure: using offset of " + String(so.eco2) + " for real eCO2 of "
               + String(_eco2));
   _eco2 += so.eco2;
-  app_traceln("SGP30_Sensor::measure: using offset of " + String(so.tvoc) + " for real TVOC of "
+  app_traceln("SGP30_Sensor::on_measure: using offset of " + String(so.tvoc) + " for real TVOC of "
               + String(_tvoc));
   _tvoc += so.tvoc;
 
@@ -67,4 +66,14 @@ bool SGP30_Sensor::on_measure() {
 #endif // PRINT_SENSORS_ON_READ
 
   return true;
+}
+
+void SGP30_Sensor::print_info(sensor_print_cb_t p) {
+  p("SGP30 TVOC: " + String(_tvoc));
+  p("SGP30 eCO2: " + String(_eco2));
+}
+
+void SGP30_Sensor::to_influx(Point *p) {
+  p->addField(INFLUXDB_FIELD_SGP30_TVOC, _tvoc);
+  p->addField(INFLUXDB_FIELD_SGP30_ECO2, _eco2);
 }

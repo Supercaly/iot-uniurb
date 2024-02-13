@@ -3,7 +3,7 @@
 
 #include <DHT.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 // Delay in milliseconds for the sensor init process.
 #define DHT11_INIT_DELAY_MS 300
@@ -14,6 +14,8 @@ class DHT11_Sensor : public AbstractSensor {
 
   bool on_init() override;
   bool on_measure() override;
+  void print_info(sensor_print_cb_t) override;
+  void to_influx(Point *) override;
 
   /*
    * Return the last measured temperature.

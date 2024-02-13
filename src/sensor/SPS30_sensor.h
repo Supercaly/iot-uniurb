@@ -3,7 +3,7 @@
 
 #include <sps30.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 #define SPS30_MAX_PROBE_RETRY      10
 #define SPS30_PROBE_RETRY_DELAY_MS 500
@@ -16,6 +16,8 @@ class SPS30_Sensor : public AbstractSensor {
   public:
   bool on_init() override;
   bool on_measure() override;
+  void print_info(sensor_print_cb_t) override;
+  void to_influx(Point *) override;
 
   /*
    * Returns the last measured MC 1.0

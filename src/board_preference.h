@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <Preferences.h>
 
-#include "sensor/sensor_type.h"
+#include "sensor/sensor.h"
 
 // Default values for preferences.
 #define DEFAULT_BOARD_HOST_NAME "default_host"

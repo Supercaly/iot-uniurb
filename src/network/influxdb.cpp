@@ -6,11 +6,7 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
-#include "../sensor/DHT11_sensor.h"
-#include "../sensor/ENS160_sensor.h"
-#include "../sensor/MHZ19_sensor.h"
-#include "../sensor/SGP30_sensor.h"
-#include "../sensor/SPS30_sensor.h"
+#include "../sensor_helper.h"
 
 static InfluxDBClient influxdb_client;
 static Point          influxdb_point(INFLUXDB_POINT_NAME);
@@ -52,35 +48,10 @@ bool influxdb_write_sensors() {
   influxdb_point.clearFields();
 
   // Add available sensors
-  // TODO: Remove all this sensor-checking code inside InfluxDB.
-  if (Preference.has_sensor(SensorType::SENSOR_DHT11)) {
-    app_traceln("influxdb_write_sensors: sending DHT11 values");
-    influxdb_point.addField(INFLUXDB_FIELD_DHT11_TEMPERATURE, DHT11Sensor.get_temperature());
-    influxdb_point.addField(INFLUXDB_FIELD_DHT11_HUMIDITY, DHT11Sensor.get_humidity());
-  }
-  if (Preference.has_sensor(SensorType::SENSOR_SGP30)) {
-    app_traceln("influxdb_write_sensors: sending SGP30 values");
-    influxdb_point.addField(INFLUXDB_FIELD_SGP30_TVOC, SGP30Sensor.get_TVOC());
-    influxdb_point.addField(INFLUXDB_FIELD_SGP30_ECO2, SGP30Sensor.get_eCO2());
-  }
-  if (Preference.has_sensor(SensorType::SENSOR_SPS30)) {
-    app_traceln("influxdb_write_sensors: sending SPS30 values");
-    influxdb_point.addField(INFLUXDB_FIELD_SPS30_MC_1p0, SPS30Sensor.get_mc_1p0());
-    influxdb_point.addField(INFLUXDB_FIELD_SPS30_MC_2p5, SPS30Sensor.get_mc_2p5());
-    influxdb_point.addField(INFLUXDB_FIELD_SPS30_MC_4p0, SPS30Sensor.get_mc_4p0());
-    influxdb_point.addField(INFLUXDB_FIELD_SPS30_MC_10p0, SPS30Sensor.get_mc_10p0());
-    influxdb_point.addField(INFLUXDB_FIELD_SPS30_PARTICLE_SIZE, SPS30Sensor.get_particle_size());
-  }
-  if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
-    app_traceln("influxdb_write_sensors: sending MHZ19 values");
-    influxdb_point.addField(INFLUXDB_FIELD_MHZ19_CO2, MHZ19Sensor.get_co2());
-  }
-  if (Preference.has_sensor(SensorType::SENSOR_ENS160)) {
-    app_traceln("influxdb_write_sensors: sending ENS160 values");
-    influxdb_point.addField(INFLUXDB_FIELD_ENS160_TEMPERATURE, ENS160Sensor.get_temperature());
-    influxdb_point.addField(INFLUXDB_FIELD_ENS160_HUMIDITY, ENS160Sensor.get_humidity());
-    influxdb_point.addField(INFLUXDB_FIELD_ENS160_ECO2, ENS160Sensor.get_eCO2());
-    influxdb_point.addField(INFLUXDB_FIELD_ENS160_TVOC, ENS160Sensor.get_TVOC());
+  for (int i = 0; i < COUNT_SENSORS; ++i) {
+    if (Preference.has_sensor((SensorType)i)) {
+      sensor_type_to_impl[i]->to_influx(&influxdb_point);
+    }
   }
 
   // If the point to write does not have fields it means no sensor is available

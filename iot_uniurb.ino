@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <WString.h>
 
 #include "src/board_preference.h"
 #include "src/config.h"
@@ -69,7 +68,7 @@ void setup() {
 #endif // HAS_INFLUXDB
 
   // Init available sensors
-  init_all_available_sensors();
+  init_available_sensors();
 
   xTaskCreatePinnedToCore(measure_and_send_task_code,
                           "measure_task",

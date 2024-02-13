@@ -3,7 +3,7 @@
 
 #include <MHZCO2.h>
 
-#include "abstract_sensor.h"
+#include "sensor.h"
 
 // Delay in milliseconds for the sensor init process.
 #define MHZ19_INIT_DELAY_MS 1000 * 60 * 3
@@ -19,6 +19,8 @@ class MHZ19_Sensor : public AbstractSensor {
   public:
   bool on_init() override;
   bool on_measure() override;
+  void print_info(sensor_print_cb_t) override;
+  void to_influx(Point *) override;
 
   /*
    * Returns the last measured CO2.
