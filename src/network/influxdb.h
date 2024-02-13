@@ -12,6 +12,10 @@
 #define INFLUXDB_FIELD_SPS30_MC_10p0       "sps30_mc_10p0"
 #define INFLUXDB_FIELD_SPS30_PARTICLE_SIZE "sps30_particle_size"
 #define INFLUXDB_FIELD_MHZ19_CO2           "mhz19_co2"
+#define INFLUXDB_FIELD_ENS160_TEMPERATURE  "aht2x_temperature"
+#define INFLUXDB_FIELD_ENS160_HUMIDITY     "aht2x_humidity"
+#define INFLUXDB_FIELD_ENS160_ECO2         "ens160_eco2"
+#define INFLUXDB_FIELD_ENS160_TVOC         "ens160_tvoc"
 
 /*
  * Init a new connection with InfluxDB server.

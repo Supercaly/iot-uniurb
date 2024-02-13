@@ -7,6 +7,7 @@
 #include "log.h"
 #include "network/influxdb.h"
 #include "sensor/DHT11_sensor.h"
+#include "sensor/ENS160_sensor.h"
 #include "sensor/MHZ19_sensor.h"
 #include "sensor/SGP30_sensor.h"
 #include "sensor/SPS30_sensor.h"
@@ -59,6 +60,12 @@ void print_available_sensors_info(void (*print)(String)) {
   }
   if (Preference.has_sensor(SensorType::SENSOR_MHZ19)) {
     print("MHZ19 CO2: " + String(MHZ19Sensor.get_co2()));
+  }
+  if (Preference.has_sensor(SensorType::SENSOR_ENS160)) {
+    print("ENS160 Temperature: " + String(ENS160Sensor.get_temperature()));
+    print("ENS160 Humidity: " + String(ENS160Sensor.get_humidity()));
+    print("ENS160 TVOC: " + String(ENS160Sensor.get_TVOC()));
+    print("ENS160 eCO2: " + String(ENS160Sensor.get_eCO2()));
   }
 }
 

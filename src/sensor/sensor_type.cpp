@@ -12,6 +12,8 @@ String SensorType_to_String(SensorType t) {
     return "SENSOR_MHZ19";
   case SENSOR_SPS30:
     return "SENSOR_SPS30";
+  case SENSOR_ENS160:
+    return "SENSOR_ENS160";
   default:
     assert(false && "SensorType_to_String: unreachable");
     exit(1);
@@ -30,6 +32,9 @@ bool SensorType_by_name(String s, SensorType *t) {
     return true;
   } else if (s == "MHZ19") {
     *t = SensorType::SENSOR_MHZ19;
+    return true;
+  } else if (s == "ENS160") {
+    *t = SensorType::SENSOR_ENS160;
     return true;
   } else {
     return false;
