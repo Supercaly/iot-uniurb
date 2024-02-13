@@ -1,8 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <assert.h>
-
 #include "../arduino_secrets.h"
 
 /*
@@ -45,11 +43,25 @@
 
 // InfluxDB settings.
 #define HAS_INFLUXDB
-#define INFLUXDB_URL        SECRET_INFLUXDB_URL
-#define INFLUXDB_ORG        SECRET_INFLUXDB_ORG
-#define INFLUXDB_BUCKET     SECRET_INFLUXDB_BUCKET
-#define INFLUXDB_TOKEN      SECRET_INFLUXDB_TOKEN
-#define INFLUXDB_POINT_NAME SECRET_INFLUXDB_POINT_NAME
+#define INFLUXDB_URL                       SECRET_INFLUXDB_URL
+#define INFLUXDB_ORG                       SECRET_INFLUXDB_ORG
+#define INFLUXDB_BUCKET                    SECRET_INFLUXDB_BUCKET
+#define INFLUXDB_TOKEN                     SECRET_INFLUXDB_TOKEN
+#define INFLUXDB_POINT_NAME                SECRET_INFLUXDB_POINT_NAME
+#define INFLUXDB_FIELD_DHT11_TEMPERATURE   "dht11_temperature"
+#define INFLUXDB_FIELD_DHT11_HUMIDITY      "dht11_humidity"
+#define INFLUXDB_FIELD_SGP30_TVOC          "sgp30_TVOC"
+#define INFLUXDB_FIELD_SGP30_ECO2          "sgp30_eCO2"
+#define INFLUXDB_FIELD_SPS30_MC_1p0        "sps30_mc_1p0"
+#define INFLUXDB_FIELD_SPS30_MC_2p5        "sps30_mc_2p5"
+#define INFLUXDB_FIELD_SPS30_MC_4p0        "sps30_mc_4p0"
+#define INFLUXDB_FIELD_SPS30_MC_10p0       "sps30_mc_10p0"
+#define INFLUXDB_FIELD_SPS30_PARTICLE_SIZE "sps30_particle_size"
+#define INFLUXDB_FIELD_MHZ19_CO2           "mhz19_co2"
+#define INFLUXDB_FIELD_ENS160_TEMPERATURE  "aht2x_temperature"
+#define INFLUXDB_FIELD_ENS160_HUMIDITY     "aht2x_humidity"
+#define INFLUXDB_FIELD_ENS160_ECO2         "ens160_eco2"
+#define INFLUXDB_FIELD_ENS160_TVOC         "ens160_tvoc"
 
 // Telnet settings.
 #define HAS_TELNET

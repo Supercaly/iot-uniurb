@@ -6,7 +6,7 @@
 
 #include "../board_preference.h"
 #include "../log.h"
-#include "../network/influxdb.h"
+#include "../config.h"
 
 ENS160_Sensor ENS160Sensor;
 

@@ -6,7 +6,6 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
-#include "../network/influxdb.h"
 
 MHZ19_Sensor MHZ19Sensor;
 

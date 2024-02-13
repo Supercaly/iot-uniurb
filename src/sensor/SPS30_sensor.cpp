@@ -6,7 +6,6 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
-#include "../network/influxdb.h"
 
 SPS30_Sensor SPS30Sensor;
 

@@ -6,7 +6,6 @@
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
-#include "../network/influxdb.h"
 
 DHT11_Sensor DHT11Sensor;
 
