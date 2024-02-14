@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <esp_ota_ops.h>
 
 #include "src/board_preference.h"
 #include "src/config.h"
@@ -38,7 +39,18 @@ void setup() {
     app_fatalln("something went wrong initializing board preferences");
   }
 
+  // Print name of boot partition
+  const esp_partition_t *boot_partition = esp_ota_get_running_partition();
+  app_infoln("Boot Partition:     '" + String(boot_partition->label) + "'");
+
+  // Connect to WiFi network
+  if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
+    app_fatalln("something went wrong connecting to WiFi");
+    reboot_board();
+  }
+
 #ifdef HAS_BUTTON
+  // Init button
   xTaskCreatePinnedToCore(button_task_code,
                           "button_task",
                           BUTTON_TASK_STACK_SIZE,
@@ -47,12 +59,6 @@ void setup() {
                           &button_task_handler,
                           BUTTON_TASK_CORE);
 #endif // HAS_BUTTON
-
-  // Connect to WiFi network
-  if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
-    app_fatalln("something went wrong connecting to WiFi");
-    reboot_board();
-  }
 
 #ifdef HAS_TELNET
   // Init telnet
