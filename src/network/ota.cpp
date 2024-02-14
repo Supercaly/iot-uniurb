@@ -3,20 +3,37 @@
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 
-#include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
 
-bool ota_init() {
-  app_traceln("ota_init: initializing OTA");
-  BoardInfo bi;
-  if (!Preference.get_board_info(&bi)) {
-    app_errorln("ota_init: error retrieving board info");
-    return false;
+static String ota_error_to_string(ota_error_t e) {
+  switch (e) {
+  case OTA_AUTH_ERROR:
+    return "Auth Failed";
+    break;
+  case OTA_BEGIN_ERROR:
+    return "Begin Failed";
+    break;
+  case OTA_CONNECT_ERROR:
+    return "Connect Failed";
+    break;
+  case OTA_RECEIVE_ERROR:
+    return "Receive Failed";
+    break;
+  case OTA_END_ERROR:
+    return "End Failed";
+    break;
+  default:
+    return "Unknown";
+    break;
   }
+}
+
+bool ota_init(String host_name) {
+  app_traceln("ota_init: initializing OTA");
 
   ArduinoOTA.setPort(OTA_PORT)
-      .setHostname(bi.host_name.c_str())
+      .setHostname(host_name.c_str())
       .setPassword(OTA_PWD)
       .onStart([]() {
         // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
@@ -26,23 +43,11 @@ bool ota_init() {
       })
       .onEnd([]() { app_infoln("ota_init: onEnd: upload finished"); })
       .onProgress([](unsigned int progress, unsigned int total) {
-        app_info("ota_init: onProgress: " + String(progress / (total / 100)) + "\r");
+        app_infoln("ota_init: onProgress: " + String(progress / (total / 100)));
       })
       .onError([](ota_error_t error) {
-        app_error("ota_init: onError: error (" + String(error) + ") ");
-        if (error == OTA_AUTH_ERROR) {
-          app_errorln("Auth Failed");
-        } else if (error == OTA_BEGIN_ERROR) {
-          app_errorln("Begin Failed");
-        } else if (error == OTA_CONNECT_ERROR) {
-          app_errorln("Connect Failed");
-        } else if (error == OTA_RECEIVE_ERROR) {
-          app_errorln("Receive Failed");
-        } else if (error == OTA_END_ERROR) {
-          app_errorln("End Failed");
-        }
+        app_error("ota_init: onError: error (" + ota_error_to_string(error) + ") ");
       });
-
   ArduinoOTA.begin();
 
   app_infoln("ota_init: init OTA server of port " + String(OTA_PORT));

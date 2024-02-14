@@ -70,16 +70,20 @@ void setup() {
 #endif // HAS_TELNET
 
 #ifdef HAS_OTA
-  if (ota_init()) {
-    xTaskCreatePinnedToCore(ota_task_code,
-                            "ota_task",
-                            OTA_TASK_STACK_SIZE,
-                            nullptr,
-                            OTA_TASK_PRIORITY,
-                            &ota_task_handler,
-                            OTA_TASK_CORE);
-  } else {
-    app_errorln("something went wrong initializing OTA updates");
+  // Init OTA updates
+  BoardInfo bi;
+  Preference.get_board_info(&bi);
+    if (ota_init(bi.host_name)) {
+      xTaskCreatePinnedToCore(ota_task_code,
+                              "ota_task",
+                              OTA_TASK_STACK_SIZE,
+                              nullptr,
+                              OTA_TASK_PRIORITY,
+                              &ota_task_handler,
+                              OTA_TASK_CORE);
+    } else {
+      app_errorln("something went wrong initializing OTA updates");
+    }
   }
 #endif // HAS_OTA
 
