@@ -79,6 +79,7 @@ void setup() {
   // Init OTA updates
   BoardInfo bi;
   Preference.get_board_info(&bi);
+  if (bi.ota_enabled) {
     if (ota_init(bi.host_name)) {
       xTaskCreatePinnedToCore(ota_task_code,
                               "ota_task",
@@ -90,6 +91,8 @@ void setup() {
     } else {
       app_errorln("something went wrong initializing OTA updates");
     }
+  } else {
+    app_infoln("OTA updates disabled");
   }
 #endif // HAS_OTA
 

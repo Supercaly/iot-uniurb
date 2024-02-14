@@ -19,6 +19,7 @@ struct BoardInfo {
   String host_name;
   String room;
   String location;
+  bool   ota_enabled;
 };
 
 /*
