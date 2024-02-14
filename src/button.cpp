@@ -17,7 +17,6 @@ void button_task_code(void *args) {
   for (;;) {
     xTaskDelayUntil(&last_check, pdMS_TO_TICKS(1000));
     int btn_state = digitalRead(BUTTON_PIN);
-    // TODO: Switch the WiFi connection back once the jumper is unset.
     if (old_button_state != btn_state && btn_state == LOW) {
       app_infoln("button_task_code: button pressed!");
     }

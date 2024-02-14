@@ -48,6 +48,7 @@ static void cmd_board_host(String);
 static void cmd_board_location(String);
 static void cmd_board_room(String);
 static void cmd_board_mac(String);
+static void cmd_board_ota(String);
 static void cmd_offset_temp(String);
 static void cmd_offset_hum(String);
 static void cmd_offset_co2(String);
@@ -82,6 +83,7 @@ static const TelnetCommand board_commands[] = {
     {"location", cmd_board_location, "get or set board's location" },
     {"room",     cmd_board_room,     "get or set board's room"     },
     {"mac",      cmd_board_mac,      "get board's MAC address"     },
+    {"ota",      cmd_board_ota,      "enable/disable OTA updates"  },
 };
 static const TelnetCommand offset_commands[] = {
     {"temp", cmd_offset_temp, "get or set temperature offset"},
@@ -330,6 +332,29 @@ static void cmd_board_mac(String _) {
   return;
 }
 
+static void cmd_board_ota(String str) {
+  str.trim();
+  BoardInfo bi;
+  Preference.get_board_info(&bi);
+
+  if (str.isEmpty()) {
+    app_traceln("cmd_board_ota: want to get the board ota state");
+    telnet.println((bi.ota_enabled ? "on" : "off"));
+  } else {
+    app_traceln("cmd_board_ota: want to set the board ota state to '" + str + "'");
+    str.toUpperCase();
+    if (str == "ON") {
+      bi.ota_enabled = true;
+      Preference.set_board_info(bi);
+    } else if (str == "OFF") {
+      bi.ota_enabled = false;
+      Preference.set_board_info(bi);
+    } else {
+      telnet.println("unknown parameter '" + str + "' [on, off]");
+    }
+  }
+}
+
 // Offset sub commands.
 
 static void cmd_offset_temp(String str) {
@@ -484,8 +509,8 @@ telnet_parse_input_defer:
   telnet.print("> ");
 }
 
-bool telnet_init(int port) {
-  app_traceln("telnet_init: init telnet server on port " + String(port));
+bool telnet_init() {
+  app_traceln("telnet_init: init telnet server on port " + String(TELNET_PORT));
 
   telnet.onConnect(telnet_on_connect_cb);
   telnet.onConnectionAttempt(telnet_on_connection_attempt_cb);
@@ -493,7 +518,7 @@ bool telnet_init(int port) {
   telnet.onDisconnect(telnet_on_disconnect_cb);
   telnet.onInputReceived(telnet_on_input_received_cb);
 
-  if (!telnet.begin(port)) {
+  if (!telnet.begin(TELNET_PORT)) {
     app_errorln("telnet_init: init error");
     return false;
   }

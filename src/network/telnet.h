@@ -5,9 +5,6 @@
 
 #include "../config.h"
 
-// Default telnet port
-#define TELNET_PORT 23
-
 // Telent Task config.
 #define TELNET_TASK_STACK_SIZE 10240
 #define TELNET_TASK_PRIORITY   5
@@ -24,7 +21,7 @@
 /*
  * Init Telnet server.
  */
-bool telnet_init(int port = TELNET_PORT);
+bool telnet_init();
 
 /*
  * Function representing a task running inside the board

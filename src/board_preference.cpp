@@ -10,6 +10,7 @@
 #define PREF_HOST_NAME_KEY    "board-host"
 #define PREF_ROOM_KEY         "board-room"
 #define PREF_LOCATION_KEY     "board-loc"
+#define PREF_OTA_KEY          "ota-enabled"
 #define PREF_TEMP_OFFSET_KEY  "offs-temp"
 #define PREF_HUM_OFFSET_KEY   "offs-hum"
 #define PREF_CO2_OFFSET_KEY   "offs-co2"
@@ -49,6 +50,7 @@ bool BoardPreference::init() {
   _board_info->host_name       = _prefs.getString(PREF_HOST_NAME_KEY, DEFAULT_BOARD_HOST_NAME);
   _board_info->room            = _prefs.getString(PREF_ROOM_KEY, DEFAULT_BOARD_ROOM);
   _board_info->location        = _prefs.getString(PREF_LOCATION_KEY, DEFAULT_BOARD_ROOM);
+  _board_info->ota_enabled     = _prefs.getBool(PREF_OTA_KEY, false);
   _sensor_offsets->temperature = _prefs.getShort(PREF_TEMP_OFFSET_KEY, 0);
   _sensor_offsets->humidity    = _prefs.getShort(PREF_HUM_OFFSET_KEY, 0);
   _sensor_offsets->co2         = _prefs.getShort(PREF_CO2_OFFSET_KEY, 0);
@@ -61,6 +63,7 @@ bool BoardPreference::init() {
   app_infoln("Device Host Name:   '" + _board_info->host_name + "'");
   app_infoln("Device Location:    '" + _board_info->location + "'");
   app_infoln("Device Room:        '" + _board_info->room + "'");
+  app_infoln("OTA enabled:        '" + String(_board_info->ota_enabled) + "'");
   app_infoln("Temp Offset:        '" + String(_sensor_offsets->temperature) + "'");
   app_infoln("Hum Offset:         '" + String(_sensor_offsets->humidity) + "'");
   app_infoln("CO2 Offset:         '" + String(_sensor_offsets->co2) + "'");
@@ -115,16 +118,18 @@ String BoardPreference::available_sensors_to_String() {
 }
 
 bool BoardPreference::get_board_info(BoardInfo *info) {
-  info->host_name = _board_info->host_name;
-  info->room      = _board_info->room;
-  info->location  = _board_info->location;
+  info->host_name   = _board_info->host_name;
+  info->room        = _board_info->room;
+  info->location    = _board_info->location;
+  info->ota_enabled = _board_info->ota_enabled;
   return true;
 }
 
 bool BoardPreference::set_board_info(BoardInfo info) {
-  _board_info->host_name = info.host_name;
-  _board_info->room      = info.room;
-  _board_info->location  = info.location;
+  _board_info->host_name   = info.host_name;
+  _board_info->room        = info.room;
+  _board_info->location    = info.location;
+  _board_info->ota_enabled = info.ota_enabled;
   if (_prefs.putString(PREF_HOST_NAME_KEY, _board_info->host_name) <= 0) {
     return false;
   }
@@ -132,6 +137,9 @@ bool BoardPreference::set_board_info(BoardInfo info) {
     return false;
   }
   if (_prefs.putString(PREF_LOCATION_KEY, _board_info->location) <= 0) {
+    return false;
+  }
+  if (_prefs.putBool(PREF_OTA_KEY, _board_info->ota_enabled) <= 0) {
     return false;
   }
   return true;
