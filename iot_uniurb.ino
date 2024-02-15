@@ -35,9 +35,7 @@ void setup() {
   logger_init();
 
   // Init preferences
-  if (!Preference.init()) {
-    app_fatalln("something went wrong initializing board preferences");
-  }
+  Preference.init();
 
   // Print name of boot partition
   const esp_partition_t *boot_partition = esp_ota_get_running_partition();
@@ -70,8 +68,6 @@ void setup() {
                             TELNET_TASK_PRIORITY,
                             &telnet_task_handler,
                             TELNET_TASK_CORE);
-  } else {
-    app_errorln("something went wrong initializing Telnet");
   }
 #endif // HAS_TELNET
 
@@ -96,9 +92,7 @@ void setup() {
 
 #ifdef HAS_INFLUXDB
   // Init InfluxDB
-  if (!influxdb_init()) {
-    app_fatalln("something went wrong initializing InfluxDB");
-  }
+  influxdb_init();
 #endif // HAS_INFLUXDB
 
   // Init available sensors
