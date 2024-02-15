@@ -13,6 +13,7 @@
 #include "utils.h"
 
 // Measure task config.
+#define MEASURE_TASK_NAME       "measure_task"
 #define MEASURE_TASK_STACK_SIZE 4096
 #define MEASURE_TASK_PRIORITY   8
 #define MEASURE_TASK_CORE       tskNO_AFFINITY

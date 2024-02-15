@@ -31,6 +31,7 @@ static uint16_t measure_co2_pwm() {
 }
 
 bool MHZ19_Sensor::on_init() {
+  app_traceln("MHZ19_Sensor::on_init: initializing sensor");
   attachInterrupt(digitalPinToInterrupt(MHZ19B_PWM_PIN), irq_fn, CHANGE);
 
   delay(MHZ19_INIT_DELAY_MS);
@@ -60,7 +61,7 @@ bool MHZ19_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  app_traceln("MHZ19_Sensor::on_measure: using offset of " + String(so.co2) + " for real CO2 of "
+  app_debugln("MHZ19_Sensor::on_measure: using offset of " + String(so.co2) + " for real CO2 of "
               + String(_co2));
   _co2 += so.co2;
 

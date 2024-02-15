@@ -10,6 +10,7 @@
 static int old_button_state = HIGH;
 
 void button_task_code(void *args) {
+  app_traceln("button_task_code: starting task '" + String(BUTTON_TASK_NAME) + "'");
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   digitalWrite(BUTTON_PIN, HIGH);
 

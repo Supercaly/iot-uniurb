@@ -2,21 +2,16 @@
 
 #include <Arduino.h>
 #include <IPAddress.h>
-#include <WString.h>
 #include <WiFi.h>
 #include <esp_wifi.h>
-#include <stdint.h>
-#include <stdio.h>
 
 #include "../board_preference.h"
 #include "../config.h"
 #include "../log.h"
 #include "../utils.h"
 
-bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
-  app_traceln("wifi_connect: connecting to SSID: '" + String(ssid) + "' with pwd: '" + String(pwd)
-              + "' attempts: " + String(max_retry) + " delay: " + String(pause));
-
+bool wifi_connect() {
+  app_traceln("wifi_connect: connecting WiFi with SSID: '" + String(WIFI_SSID) + "'");
   app_infoln("SSID:               '" + String(WIFI_SSID) + "'");
   app_infoln("MAC Address:        '" + wifi_get_mac_address() + "'");
 
@@ -28,27 +23,27 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   // Enable WiFi
   WiFi.mode(WIFI_STA);
 
-  WiFi.begin(ssid, pwd);
-  app_debug("wifi_connect: connecting to WiFi");
+  WiFi.begin(WIFI_SSID, WIFI_PWD);
+  app_debug("Connecting WiFi");
 
   // Test the connection for some times
   int conn_attempt = 0;
-  while (!wifi_is_connected() && conn_attempt < max_retry) {
+  while (!wifi_is_connected() && conn_attempt < WIFI_MAX_CONN_RETRY) {
     app_debug(".");
-    delay(pause);
+    delay(WIFI_RETRY_PAUSE_MS);
     conn_attempt++;
   }
 
   // If we are not connected return failure
-  if (conn_attempt >= max_retry) {
-    app_debugln("failed");
+  if (conn_attempt >= WIFI_MAX_CONN_RETRY) {
+    app_debugln(" FAILED");
     return false;
   }
 
   // Connection done
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
-  app_debugln("done");
+  app_debugln(" DONE");
 
   app_infoln("Device IP:          '" + wifi_get_ip() + "'");
 

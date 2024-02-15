@@ -10,8 +10,8 @@
  * various elements of the project.
  */
 
-// Enable Debug Mode.
-#define IS_DEBUG
+// Set App Log Level.
+#define APP_CURRENT_LOG_LEVEL APP_LOG_LEVEL_TRACE
 
 // Print the value of sensors after reading them.
 #define PRINT_SENSORS_ON_READ

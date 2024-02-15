@@ -10,6 +10,7 @@
 SGP30_Sensor SGP30Sensor;
 
 bool SGP30_Sensor::on_init() {
+  app_traceln("SGP30_Sensor::on_init: initializing sensor");
   if (!_sgp.begin()) {
     app_errorln("SGP30_Sensor::on_init: sensor not found");
     return false;
@@ -53,10 +54,10 @@ bool SGP30_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  app_traceln("SGP30_Sensor::on_measure: using offset of " + String(so.eco2) + " for real eCO2 of "
+  app_debugln("SGP30_Sensor::on_measure: using offset of " + String(so.eco2) + " for real eCO2 of "
               + String(_eco2));
   _eco2 += so.eco2;
-  app_traceln("SGP30_Sensor::on_measure: using offset of " + String(so.tvoc) + " for real TVOC of "
+  app_debugln("SGP30_Sensor::on_measure: using offset of " + String(so.tvoc) + " for real TVOC of "
               + String(_tvoc));
   _tvoc += so.tvoc;
 

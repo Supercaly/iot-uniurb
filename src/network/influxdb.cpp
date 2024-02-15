@@ -12,10 +12,7 @@ static InfluxDBClient influxdb_client;
 static Point          influxdb_point(INFLUXDB_POINT_NAME);
 
 bool influxdb_init() {
-  app_debugln("influxdb_init: init influxDB with following parameters: "
-              "url: '" INFLUXDB_URL "', "
-              "org: '" INFLUXDB_ORG "', "
-              "bucket: '" INFLUXDB_BUCKET "'");
+  app_debugln("influxdb_init: init influxDB");
 
   app_infoln("InfluxDB url:       '" INFLUXDB_URL "'");
   app_infoln("InfluxDB org:       '" INFLUXDB_ORG "'");
@@ -30,7 +27,7 @@ bool influxdb_init() {
   influxdb_point.addTag("location", bi.location);
   influxdb_point.addTag("room", bi.room);
 
-  app_traceln("influxdb_init: added tags: host: '" + bi.host_name + "', location: '" + bi.location
+  app_traceln("influxdb_init: added tags host: '" + bi.host_name + "', location: '" + bi.location
               + "', room: '" + bi.room + "'");
 
   if (!influxdb_client.validateConnection()) {
@@ -43,7 +40,7 @@ bool influxdb_init() {
 }
 
 bool influxdb_write_sensors() {
-  app_traceln("influxdb_write_sensors: sending data to influxdb...");
+  app_traceln("influxdb_write_sensors: sending data to influxdb");
 
   influxdb_point.clearFields();
 
@@ -61,7 +58,7 @@ bool influxdb_write_sensors() {
     return true;
   }
 
-  app_debugln("influxdb_write_sensors: writing data: " + influxdb_point.toLineProtocol());
+  app_traceln("influxdb_write_sensors: writing data: " + influxdb_point.toLineProtocol());
   if (!influxdb_client.writePoint(influxdb_point)) {
     app_errorln("influxdb_write_sensors: write failed: " + influxdb_client.getLastErrorMessage());
     return false;
