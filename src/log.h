@@ -11,12 +11,6 @@
 #define APP_LOG_LEVEL_FATAL  4
 #define APP_LOG_LEVEL_SILENT 5
 
-#ifdef IS_DEBUG
-#  define APP_CURRENT_LOG_LEVEL APP_LOG_LEVEL_DEBUG
-#else
-#  define APP_CURRENT_LOG_LEVEL APP_LOG_LEVEL_INFO
-#endif
-
 #if APP_CURRENT_LOG_LEVEL <= APP_LOG_LEVEL_TRACE
 #  define app_trace(msg)   logger_log(APP_LOG_LEVEL_TRACE, false, msg)
 #  define app_traceln(msg) logger_log(APP_LOG_LEVEL_TRACE, true, msg)
