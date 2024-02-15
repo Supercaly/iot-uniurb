@@ -44,7 +44,7 @@ void setup() {
   app_infoln("Boot Partition:     '" + String(boot_partition->label) + "'");
 
   // Connect to WiFi network
-  if (!wifi_connect(WIFI_SSID, WIFI_PWD)) {
+  if (!wifi_connect()) {
     app_fatalln("something went wrong connecting to WiFi");
     reboot_board();
   }
