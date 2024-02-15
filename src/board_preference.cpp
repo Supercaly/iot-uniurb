@@ -43,8 +43,6 @@ bool BoardPreference::init() {
     return false;
   }
 
-  app_traceln("BoardPreference::init: preferences initialized");
-
   // Read all preferences from memory and store it in variables for easy access
   _available_sensors_bytes     = _prefs.getUShort(PREF_SENSORS_KEY, 0);
   _board_info->host_name       = _prefs.getString(PREF_HOST_NAME_KEY, DEFAULT_BOARD_HOST_NAME);
@@ -59,19 +57,21 @@ bool BoardPreference::init() {
   _sensor_offsets->pm10        = _prefs.getShort(PREF_PM10_OFFSET_KEY, 0);
   _reboot_count                = _prefs.getUShort(PREF_REBOOT_COUNT_KEY, 0);
 
-  app_infoln("Available Sensors:   " + available_sensors_to_String());
-  app_infoln("Device Host Name:   '" + _board_info->host_name + "'");
-  app_infoln("Device Location:    '" + _board_info->location + "'");
-  app_infoln("Device Room:        '" + _board_info->room + "'");
-  app_infoln("OTA enabled:        '" + String(_board_info->ota_enabled) + "'");
-  app_infoln("Temp Offset:        '" + String(_sensor_offsets->temperature) + "'");
-  app_infoln("Hum Offset:         '" + String(_sensor_offsets->humidity) + "'");
-  app_infoln("CO2 Offset:         '" + String(_sensor_offsets->co2) + "'");
-  app_infoln("eCO2 Offset:        '" + String(_sensor_offsets->eco2) + "'");
-  app_infoln("TVOC Offset:        '" + String(_sensor_offsets->tvoc) + "'");
-  app_infoln("PM 10 Offset:       '" + String(_sensor_offsets->pm10) + "'");
-  app_infoln("Reboot Count:       '" + String(_reboot_count) + "'");
+  app_infoln("Board Preferences:");
+  app_infoln("  Available Sensors:   " + available_sensors_to_String());
+  app_infoln("  Device Host Name:   '" + _board_info->host_name + "'");
+  app_infoln("  Device Location:    '" + _board_info->location + "'");
+  app_infoln("  Device Room:        '" + _board_info->room + "'");
+  app_infoln("  OTA enabled:        '" + String(_board_info->ota_enabled) + "'");
+  app_infoln("  Temp Offset:        '" + String(_sensor_offsets->temperature) + "'");
+  app_infoln("  Hum Offset:         '" + String(_sensor_offsets->humidity) + "'");
+  app_infoln("  CO2 Offset:         '" + String(_sensor_offsets->co2) + "'");
+  app_infoln("  eCO2 Offset:        '" + String(_sensor_offsets->eco2) + "'");
+  app_infoln("  TVOC Offset:        '" + String(_sensor_offsets->tvoc) + "'");
+  app_infoln("  PM 10 Offset:       '" + String(_sensor_offsets->pm10) + "'");
+  app_infoln("  Reboot Count:       '" + String(_reboot_count) + "'");
 
+  app_debugln("BoardPreference::init: preferences initialized");
   return true;
 }
 

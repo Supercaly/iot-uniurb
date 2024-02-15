@@ -29,7 +29,7 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
   WiFi.mode(WIFI_STA);
 
   WiFi.begin(ssid, pwd);
-  app_debug("wifi_connect: connecting to WiFi");
+  app_debug("Connecting WiFi");
 
   // Test the connection for some times
   int conn_attempt = 0;
@@ -41,14 +41,14 @@ bool wifi_connect(const char *ssid, const char *pwd, int max_retry, int pause) {
 
   // If we are not connected return failure
   if (conn_attempt >= max_retry) {
-    app_debugln("failed");
+    app_debugln(" FAILED");
     return false;
   }
 
   // Connection done
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
-  app_debugln("done");
+  app_debugln(" DONE");
 
   app_infoln("Device IP:          '" + wifi_get_ip() + "'");
 

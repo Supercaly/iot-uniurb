@@ -1,8 +1,6 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <WString.h>
-
 #include "config.h"
 
 // Log levels.

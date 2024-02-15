@@ -18,6 +18,7 @@ void logger_init(int speed) {
   LOGGER_SERIAL.begin(speed);
   delay(200);
   LOGGER_SERIAL.println();
+  app_traceln("logger_init: logger initialized");
 }
 
 void logger_log(int level, bool line, const String &msg) {

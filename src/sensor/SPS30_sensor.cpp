@@ -12,11 +12,12 @@ SPS30_Sensor SPS30Sensor;
 bool SPS30_Sensor::on_init() {
   int16_t ret;
 
+  app_traceln("SPS30_Sensor::on_init: initializing sensor");
   sensirion_i2c_init();
 
   int probe_attempt = 0;
   while (sps30_probe() != 0 && probe_attempt < SPS30_MAX_PROBE_RETRY) {
-    app_traceln("SPS30_Sensor::on_init: sensor probe failed... retrying");
+    app_errorln("SPS30_Sensor::on_init: sensor probe failed... retrying");
     delay(SPS30_PROBE_RETRY_DELAY_MS);
     probe_attempt++;
   }
@@ -71,7 +72,7 @@ bool SPS30_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  app_traceln("SGP30_Sensor::on_measure: using offset of " + String(so.pm10) + " for real PM 10 of "
+  app_debugln("SGP30_Sensor::on_measure: using offset of " + String(so.pm10) + " for real PM 10 of "
               + String(_sps_meas.mc_10p0));
   _sps_meas.mc_10p0 += so.pm10;
 

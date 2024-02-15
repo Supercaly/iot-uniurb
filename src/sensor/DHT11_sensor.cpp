@@ -12,6 +12,7 @@ DHT11_Sensor DHT11Sensor;
 DHT11_Sensor::DHT11_Sensor() : _dht(DHT11_PIN, DHT11), _temperature(0.0), _humidity(0.0) {}
 
 bool DHT11_Sensor::on_init() {
+  app_traceln("DHT11_Sensor::on_init: initializing sensor");
   _dht.begin();
   delay(DHT11_INIT_DELAY_MS);
   app_traceln("DHT11_Sensor::on_init: sensor initialized");
@@ -26,10 +27,10 @@ bool DHT11_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  app_traceln("DHT11_Sensor::on_measure: using offset of " + String(so.temperature)
+  app_debugln("DHT11_Sensor::on_measure: using offset of " + String(so.temperature)
               + " for real temperature of " + String(_temperature));
   _temperature += so.temperature;
-  app_traceln("DHT11_Sensor::on_measure: using offset of " + String(so.humidity)
+  app_debugln("DHT11_Sensor::on_measure: using offset of " + String(so.humidity)
               + " for real humidity of " + String(_humidity));
   _humidity += so.humidity;
 

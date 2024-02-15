@@ -5,14 +5,16 @@
 #include <ScioSense_ENS160.h>
 
 #include "../board_preference.h"
-#include "../log.h"
 #include "../config.h"
+#include "../log.h"
 
 ENS160_Sensor ENS160Sensor;
 
 ENS160_Sensor::ENS160_Sensor() : _ens(ENS160_I2CADDR_1) {}
 
 bool ENS160_Sensor::on_init() {
+  app_traceln("ENS160_Sensor::on_init: initializing sensor");
+
   if (!_ens.begin()) {
     app_errorln("ENS160_Sensor::on_init: sensor not found");
     return false;
@@ -46,16 +48,16 @@ bool ENS160_Sensor::on_measure() {
   // Remove offset from data
   SensorOffsets so;
   Preference.get_sensor_offsets(&so);
-  app_traceln("ENS160_Sensor::on_measure: using offset of " + String(so.temperature)
+  app_debugln("ENS160_Sensor::on_measure: using offset of " + String(so.temperature)
               + " for real temperature of" + String(_temperature));
   _temperature += so.temperature;
-  app_traceln("ENS160_Sensor::on_measure: using offset of " + String(so.humidity)
+  app_debugln("ENS160_Sensor::on_measure: using offset of " + String(so.humidity)
               + " for real humidity of" + String(_humidity));
   _humidity += so.humidity;
-  app_traceln("ENS160_Sensor::on_measure: using offset of " + String(so.eco2) + " for real eCO2 of"
+  app_debugln("ENS160_Sensor::on_measure: using offset of " + String(so.eco2) + " for real eCO2 of"
               + String(_eco2));
   _eco2 += so.eco2;
-  app_traceln("ENS160_Sensor::on_measure: using offset of " + String(so.tvoc) + " for real TVOC of"
+  app_debugln("ENS160_Sensor::on_measure: using offset of " + String(so.tvoc) + " for real TVOC of"
               + String(_tvoc));
   _tvoc += so.tvoc;
 
