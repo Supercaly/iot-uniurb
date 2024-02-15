@@ -541,9 +541,10 @@ bool telnet_init() {
 }
 
 void telnet_task_code(void *args) {
+  app_traceln("telnet_task_code: starting task '" + String(TELNET_TASK_NAME) + "'");
   TickType_t last_loop_time = xTaskGetTickCount();
   for (;;) {
-    xTaskDelayUntil(&last_loop_time, pdMS_TO_TICKS(TELNET_LOOP_DELAY_MS));
     telnet.loop();
+    xTaskDelayUntil(&last_loop_time, pdMS_TO_TICKS(TELNET_LOOP_DELAY_MS));
   }
 }

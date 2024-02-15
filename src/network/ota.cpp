@@ -57,6 +57,7 @@ bool ota_init(String host_name) {
 }
 
 void ota_task_code(void *args) {
+  app_traceln("ota_task_code: starting task '" + String(OTA_TASK_NAME) + "'");
   TickType_t last_loop_time = xTaskGetTickCount();
   for (;;) {
     ArduinoOTA.handle();

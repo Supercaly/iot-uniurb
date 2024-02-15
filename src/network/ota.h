@@ -2,6 +2,7 @@
 #define OTA_H
 
 // OTA task config.
+#define OTA_TASK_NAME       "ota_task"
 #define OTA_TASK_STACK_SIZE 10240
 #define OTA_TASK_PRIORITY   5
 #define OTA_TASK_CORE       tskNO_AFFINITY

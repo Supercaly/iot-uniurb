@@ -52,7 +52,7 @@ void setup() {
 #ifdef HAS_BUTTON
   // Init button
   xTaskCreatePinnedToCore(button_task_code,
-                          "button_task",
+                          BUTTON_TASK_NAME,
                           BUTTON_TASK_STACK_SIZE,
                           nullptr,
                           BUTTON_TASK_PRIORITY,
@@ -64,7 +64,7 @@ void setup() {
   // Init telnet
   if (telnet_init()) {
     xTaskCreatePinnedToCore(telnet_task_code,
-                            "telnet_task",
+                            TELNET_TASK_NAME,
                             TELNET_TASK_STACK_SIZE,
                             nullptr,
                             TELNET_TASK_PRIORITY,
@@ -82,17 +82,15 @@ void setup() {
   if (bi.ota_enabled) {
     if (ota_init(bi.host_name)) {
       xTaskCreatePinnedToCore(ota_task_code,
-                              "ota_task",
+                              OTA_TASK_NAME,
                               OTA_TASK_STACK_SIZE,
                               nullptr,
                               OTA_TASK_PRIORITY,
                               &ota_task_handler,
                               OTA_TASK_CORE);
-    } else {
-      app_errorln("something went wrong initializing OTA updates");
     }
   } else {
-    app_infoln("OTA updates disabled");
+    app_infoln("OTA updates:        'disabled'");
   }
 #endif // HAS_OTA
 
@@ -107,7 +105,7 @@ void setup() {
   init_available_sensors();
 
   xTaskCreatePinnedToCore(measure_and_send_task_code,
-                          "measure_task",
+                          MEASURE_TASK_NAME,
                           MEASURE_TASK_STACK_SIZE,
                           nullptr,
                           MEASURE_TASK_PRIORITY,
