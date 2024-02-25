@@ -16,7 +16,7 @@ bool ENS160_Sensor::on_init() {
   app_traceln("ENS160_Sensor::on_init: initializing sensor");
 
   if (!_ens.begin()) {
-    app_errorln("ENS160_Sensor::on_init: sensor not found");
+    app_errorln("ENS160_Sensor::on_init: ENS160 sensor not found");
     return false;
   }
   if (!_ens.available()) {
@@ -24,7 +24,7 @@ bool ENS160_Sensor::on_init() {
     return false;
   }
   if (!_aht.begin()) {
-    app_errorln("ENS160_Sensor::on_init: sensor not found");
+    app_errorln("ENS160_Sensor::on_init: AHT2x sensor not found");
     return false;
   }
 
